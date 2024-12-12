@@ -193,6 +193,4 @@ This extension was primarily developed by **Maanas Sehgal** and **Devendra Surya
 | **Devendra Suryavanshi** | [LinkedIn](https://www.linkedin.com/in/devendrasuryavanshi/) | [GitHub](https://github.com/devendrasuryavanshi) |
 | **Jaspreet Kaur🐸** | [LinkedIn](https://www.linkedin.com) | [GitHub](https://github.com) |
 
-![frog](/public/assets/images/frog.jpg)
-
-# Thanks for using our extension!
+# Thanks for using our extension! Special thanks to Jaspreet for her valuable contribution in getting our code executed successfully. Also thanks to Anish for being the first open source contributer to codeforces lite. 
