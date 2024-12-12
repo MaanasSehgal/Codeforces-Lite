@@ -191,5 +191,8 @@ This extension was primarily developed by **Maanas Sehgal** and **Devendra Surya
 | ------------------------ | ------------------------------------------------------------ | ------------------------------------------------ |
 | **Maanas Sehgal**        | [LinkedIn](https://www.linkedin.com/in/maanassehgal/)        | [GitHub](https://github.com/MaanasSehgal)        |
 | **Devendra Suryavanshi** | [LinkedIn](https://www.linkedin.com/in/devendrasuryavanshi/) | [GitHub](https://github.com/devendrasuryavanshi) |
+| **Jaspreet Kaur🐸** | [LinkedIn](https://www.linkedin.com) | [GitHub](https://github.com) |
+
+![frog](/public/assets/images/frog.jpg)
 
 # Thanks for using our extension!
