@@ -89,7 +89,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         cpu_time_limit: 2,
     });
 
-    const processResults = async (tokens: string[], apiKey: string) => {
+    const processResults = async (tokens: string[], apiKey: string, region: string = 'AUTO') => {
         const controller = executionState.startNew();
         await new Promise((resolve, reject) => {
             const timeout = setTimeout(resolve, (language === 'kotlin' ? 6000 : EXECUTE_CODE_LIMIT) * testCases.testCases.length);
@@ -101,7 +101,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
 
         const resultsResponse = await makeJudge0CERequest(
             `submissions/batch?base64_encoded=true&tokens=${tokens.join(',')}&fields=stdout,stderr,status,compile_output,status_id,time,memory`,
-            { method: 'GET' },
+            { method: 'GET', headers: { 'X-Judge0-Region': region } },
             apiKey
         );
         return resultsResponse.json();
@@ -149,7 +149,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
             }
 
             const tokens = batchResponse.map(submission => submission.token);
-            let results = await processResults(tokens, apiKey);
+            let results = await processResults(tokens, apiKey, submitResponse.headers.get('X-Judge0-Region') || 'AUTO');
 
             if (!results?.submissions) {
                 testCases.ErrorMessage = `Compilation Error`;
