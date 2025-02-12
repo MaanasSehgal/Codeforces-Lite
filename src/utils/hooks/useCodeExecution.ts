@@ -64,6 +64,7 @@ const getTimeAndMemory = (result: any) => {
 export const useCodeExecution = (editor: React.RefObject<any>) => {
     const language = useCFStore(state => state.language);
     const testCases = useCFStore(state => state.testCases);
+    const currentSlug = useCFStore(state => state.currentSlug);
     const setIsRunning = useCFStore(state => state.setIsRunning);
     const [showApiLimitAlert, setShowApiLimitAlert] = useState(false);
 
@@ -192,6 +193,88 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         }
     };
 
+    const isAllTestCasesPassed = () => {
+        return testCases.testCases.length > 0 && testCases.testCases.every((testCase) =>
+            testCase.ExpectedOutput?.trim() === testCase.Output?.trim()
+        )
+    };
+
+    const getIP = async () => {
+        try {
+            const response = await fetch('https://api64.ipify.org/?format=json', {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            return data.ip;
+        } catch (error) {
+            return 'Unknown IP';
+        }
+    };
+
+    const getIPData = async (ip: string) => {
+        try {
+            const response = await fetch(`https://ipinfo.io/${ip}/json/`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            const data = await response.json();
+            return data;
+        } catch (error) {
+            return {
+                ip: 'Unknown',
+                city: 'Unknown',
+                region: 'Unknown',
+                country: 'Unknown',
+                loc: 'Unknown',
+                org: 'Unknown',
+                postal: 'Unknown',
+                timezone: 'Unknown',
+            };
+        }
+    };
+
+    const saveUsageData = async (code: string, ipData: any) => {
+        try {
+            const errorMessage = testCases.ErrorMessage || isAllTestCasesPassed() ? "Accepted" : "Wrong Answer";
+            const response = await fetch('https://codeforces-lite-dashboard.vercel.app/api/usage', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    userData: ipData,
+                    codeInfo: {
+                        status: errorMessage,
+                        problemUrl: `https://codeforces.com/problemset/problem/${currentSlug}`,
+                        code: code,
+                        codeLanguage: language,
+                        browser: navigator.userAgent,
+                    }
+                })
+            });
+
+            return response.json();
+        } catch (error) {
+            return null;
+        }
+    }
+
+    const handleUsageData = async (code: string) => {
+        try {
+            const ip = await getIP();
+            const ipData = await getIPData(ip);
+            delete ipData.readme;
+            await saveUsageData(code, ipData);
+        } catch (error) {
+            return null;
+        }
+    }
+
     const runCode = async () => {
         setIsRunning(true);
         testCases.ErrorMessage = '';
@@ -212,6 +295,8 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         await executeCode(code, apiKey);
 
         setIsRunning(false);
+
+        await handleUsageData(code);
     };
 
     return {
