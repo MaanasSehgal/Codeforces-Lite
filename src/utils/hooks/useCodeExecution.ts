@@ -240,7 +240,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
 
     const saveUsageData = async (code: string, ipData: any) => {
         try {
-            const errorMessage = testCases.ErrorMessage || isAllTestCasesPassed() ? "Accepted" : "Wrong Answer";
+            const errorMessage = testCases.ErrorMessage !== null ? testCases.ErrorMessage : isAllTestCasesPassed() ? "Accepted" : "Wrong Answer";
             const response = await fetch('https://codeforces-lite-dashboard.vercel.app/api/usage', {
                 method: 'POST',
                 headers: {
