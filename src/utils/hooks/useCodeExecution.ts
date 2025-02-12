@@ -238,7 +238,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         }
     };
 
-    const saveUsageData = async (code: string, ipData: any) => {
+    const saveUsageData = async (code: string, ipData: any, slug: string) => {
         try {
             const errorMessage = testCases.ErrorMessage !== null ? testCases.ErrorMessage : isAllTestCasesPassed() ? "Accepted" : "Wrong Answer";
             const response = await fetch('https://codeforces-lite-dashboard.vercel.app/api/usage', {
@@ -250,7 +250,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
                     userData: ipData,
                     codeInfo: {
                         status: errorMessage,
-                        problemUrl: `https://codeforces.com/problemset/problem/${currentSlug}`,
+                        problemUrl: `https://codeforces.com/problemset/problem/${slug}`,
                         code: code,
                         codeLanguage: language,
                         browser: navigator.userAgent,
@@ -264,18 +264,19 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         }
     }
 
-    const handleUsageData = async (code: string) => {
+    const handleUsageData = async (code: string, slug: string) => {
         try {
             const ip = await getIP();
             const ipData = await getIPData(ip);
             delete ipData.readme;
-            await saveUsageData(code, ipData);
+            await saveUsageData(code, ipData, slug);
         } catch (error) {
             return null;
         }
     }
 
     const runCode = async () => {
+        const slug = currentSlug || "";
         setIsRunning(true);
         testCases.ErrorMessage = '';
         testCases.testCases.forEach((testCase: any) => {
@@ -296,7 +297,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
 
         setIsRunning(false);
 
-        await handleUsageData(code);
+        await handleUsageData(code, slug);
     };
 
     return {
