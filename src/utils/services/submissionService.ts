@@ -1,4 +1,9 @@
-export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmitting: (isSubmitting: boolean) => void) => {
+import { usageDataHelper } from "../usageDataHelper";
+
+export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmitting: (isSubmitting: boolean) => void, language: string, currentSlug: string, testCases: any) => {
+    const slug = currentSlug || "Unknown";
+    const code = editor.current?.view?.state.doc.toString();
+
     setIsSubmitting(true);
     const editorValue = editor.current?.view?.state?.doc?.toString();
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -42,4 +47,9 @@ export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmit
             }
         }
     );
+
+    try {
+        await usageDataHelper(language, testCases).handleUsageData(code, slug, "SUBMISSION");
+    } catch (error) {
+    }
 };

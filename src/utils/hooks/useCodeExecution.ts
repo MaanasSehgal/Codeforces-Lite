@@ -2,6 +2,7 @@ import { useCFStore } from '../../zustand/useCFStore';
 import { adjustCodeForJudge0 } from '../codeAdjustments';
 import { EXECUTE_CODE_LIMIT } from '../../data/constants';
 import { useState } from 'react';
+import { usageDataHelper } from '../usageDataHelper';
 
 const languageMap: { [key: string]: number } = {
     'java': 62,
@@ -193,88 +194,6 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         }
     };
 
-    const isAllTestCasesPassed = () => {
-        return testCases.testCases.length > 0 && testCases.testCases.every((testCase) =>
-            testCase.ExpectedOutput?.trim() === testCase.Output?.trim()
-        )
-    };
-
-    const getIP = async () => {
-        try {
-            const response = await fetch('https://api64.ipify.org/?format=json', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const data = await response.json();
-            return data.ip;
-        } catch (error) {
-            return 'Unknown IP';
-        }
-    };
-
-    const getIPData = async (ip: string) => {
-        try {
-            const response = await fetch(`https://ipinfo.io/${ip}/json/`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            return {
-                ip: 'Unknown',
-                city: 'Unknown',
-                region: 'Unknown',
-                country: 'Unknown',
-                loc: 'Unknown',
-                org: 'Unknown',
-                postal: 'Unknown',
-                timezone: 'Unknown',
-            };
-        }
-    };
-
-    const saveUsageData = async (code: string, ipData: any, slug: string) => {
-        try {
-            const errorMessage = testCases.ErrorMessage !== null ? testCases.ErrorMessage : isAllTestCasesPassed() ? "Accepted" : "Wrong Answer";
-            const response = await fetch('https://codeforces-lite-dashboard.vercel.app/api/usage', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    userData: ipData,
-                    codeInfo: {
-                        status: errorMessage,
-                        problemUrl: `https://codeforces.com/problemset/problem/${slug}`,
-                        code: code,
-                        codeLanguage: language,
-                        browser: navigator.userAgent,
-                    }
-                })
-            });
-
-            return response.json();
-        } catch (error) {
-            return null;
-        }
-    }
-
-    const handleUsageData = async (code: string, slug: string) => {
-        try {
-            const ip = await getIP();
-            const ipData = await getIPData(ip);
-            delete ipData.readme;
-            await saveUsageData(code, ipData, slug);
-        } catch (error) {
-            return null;
-        }
-    }
-
     const runCode = async () => {
         const slug = currentSlug || "";
         setIsRunning(true);
@@ -296,8 +215,9 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         await executeCode(code, apiKey);
 
         setIsRunning(false);
+        console.log('Run Code:');
 
-        await handleUsageData(code, slug);
+        await usageDataHelper(language, testCases).handleUsageData(code, slug, "RUN");
     };
 
     return {
