@@ -49,11 +49,11 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray) => {
         }
     };
 
-    const saveUsageData = async (code: string, ipData: any, slug: string, useType: string) => {
+    const saveUsageData = async (code: string, ipData: any, slug: string, useType: string, problemName: string) => {
         try {
             const ui = localStorage.getItem('changeUI');
             const errorMessage = useType === "RUN" ? testCases.ErrorMessage !== null ? testCases.ErrorMessage : isAllTestCasesPassed() ? "Accepted" : "Wrong Answer" : "Submitted";
-            const response = await fetch('https://codeforces-lite-dashboard.vercel.app/api/usage', {
+            const response = await fetch('http://localhost:3000/api/usage', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -66,8 +66,8 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray) => {
                         ui: ui,
                     },
                     codeInfo: {
-                        useType: useType,
                         status: errorMessage,
+                        problemName: problemName,
                         problemUrl: `https://codeforces.com/problemset/problem/${slug}`,
                         code: code,
                         codeLanguage: language,
@@ -75,18 +75,17 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray) => {
                 })
             });
 
-            console.log(response.json());
             return response.json();
         } catch (error) {
             return null;
         }
     }
 
-    const handleUsageData = async (code: string, slug: string, useType: string) => {
+    const handleUsageData = async (code: string, slug: string, useType: string, problemName: string) => {
         try {
             const ipData = await getIPData();
             delete ipData.readme;
-            await saveUsageData(code, ipData, slug, useType);
+            await saveUsageData(code, ipData, slug, useType, problemName);
         } catch (error) {
             return null;
         }

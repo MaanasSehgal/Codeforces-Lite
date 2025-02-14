@@ -3,6 +3,7 @@ import { adjustCodeForJudge0 } from '../codeAdjustments';
 import { EXECUTE_CODE_LIMIT } from '../../data/constants';
 import { useState } from 'react';
 import { usageDataHelper } from '../usageDataHelper';
+import { getProblemName } from '../dom/getProblemName';
 
 const languageMap: { [key: string]: number } = {
     'java': 62,
@@ -195,6 +196,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
     };
 
     const runCode = async () => {
+        const problemName = await getProblemName();
         const slug = currentSlug || "";
         setIsRunning(true);
         testCases.ErrorMessage = '';
@@ -215,9 +217,8 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         await executeCode(code, apiKey);
 
         setIsRunning(false);
-        console.log('Run Code:');
 
-        await usageDataHelper(language, testCases).handleUsageData(code, slug, "RUN");
+        await usageDataHelper(language, testCases).handleUsageData(code, slug, "RUN", problemName);
     };
 
     return {

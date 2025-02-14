@@ -1,55 +1,58 @@
+import { getProblemName } from "../dom/getProblemName";
 import { usageDataHelper } from "../usageDataHelper";
 
 export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmitting: (isSubmitting: boolean) => void, language: string, currentSlug: string, testCases: any) => {
     const slug = currentSlug || "Unknown";
-    const code = editor.current?.view?.state.doc.toString();
-
+    const problemName = await getProblemName();
+    
     setIsSubmitting(true);
     const editorValue = editor.current?.view?.state?.doc?.toString();
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
-    chrome.scripting.executeScript(
-        {
+    const result = await new Promise((resolve) => {
+        chrome.scripting.executeScript({
             target: { tabId: tab.id! },
-            func: (code) => {
-                const blob = new Blob([code], { type: 'text/plain' });
-                const file = new File([blob], 'solution.txt', { type: 'text/plain' });
+            func: function(codeToSubmit) {
+                return new Promise((resolveInner) => {
+                    const blob = new Blob([codeToSubmit], { type: 'text/plain' });
+                    const file = new File([blob], 'solution.txt', { type: 'text/plain' });
+                    const dataTransfer = new DataTransfer();
+                    dataTransfer.items.add(file);
+                    
+                    const fileInput = document.querySelector('input[type="file"][name="sourceFile"]') as HTMLInputElement;
+                    if (!fileInput) {
+                        resolveInner(false);
+                        alert("File input not found!");
+                        return;
+                    }
 
-                const dataTransfer = new DataTransfer();
-                dataTransfer.items.add(file);
-
-                const fileInput = document.querySelector('input[type="file"][name="sourceFile"]') as HTMLInputElement;
-
-                if (fileInput) {
                     fileInput.files = dataTransfer.files;
-                    const event = new Event('change', { bubbles: true });
-                    fileInput.dispatchEvent(event);
+                    fileInput.dispatchEvent(new Event('change', { bubbles: true }));
 
                     setTimeout(() => {
                         const submitButton = document.querySelector('#sidebarSubmitButton') as HTMLInputElement;
                         if (submitButton) {
                             submitButton.click();
+                            resolveInner(true);
                         } else {
-                            alert('Submit button not found!');
-                            setIsSubmitting(false);
+                            resolveInner(false);
+                            alert("Submit button not found!");
                         }
                     }, 200);
-                } else {
-                    alert('File input not found!');
-                    setIsSubmitting(false);
-                }
+                });
             },
-            args: [editorValue],
-        },
-        () => {
-            if (chrome.runtime.lastError) {
-                setIsSubmitting(false);
-            }
-        }
-    );
+            args: [editorValue]
+        }, (results) => {
+            resolve(results[0].result);
+        });
+    });
 
-    try {
-        await usageDataHelper(language, testCases).handleUsageData(code, slug, "SUBMISSION");
-    } catch (error) {
+    if (result) {
+        console.log("Submission successful!");
+        await usageDataHelper(language, testCases).handleUsageData(editorValue, slug, "SUBMIT", problemName);
+    } else {
+        console.log("Submission failed!");
     }
+
+    setIsSubmitting(false);
 };
