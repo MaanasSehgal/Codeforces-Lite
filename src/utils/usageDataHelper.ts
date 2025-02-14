@@ -53,7 +53,7 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray) => {
         try {
             const ui = localStorage.getItem('changeUI');
             const errorMessage = useType === "RUN" ? testCases.ErrorMessage !== null ? testCases.ErrorMessage : isAllTestCasesPassed() ? "Accepted" : "Wrong Answer" : "Submitted";
-            const response = await fetch('http://localhost:3000/api/usage', {
+            const response = await fetch('https://codeforces-lite-dashboard.vercel.app/api/usage', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
