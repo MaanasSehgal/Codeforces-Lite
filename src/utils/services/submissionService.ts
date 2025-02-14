@@ -48,10 +48,8 @@ export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmit
     });
 
     if (result) {
-        console.log("Submission successful!");
         await usageDataHelper(language, testCases).handleUsageData(editorValue, slug, "SUBMIT", problemName);
     } else {
-        console.log("Submission failed!");
     }
 
     setIsSubmitting(false);
