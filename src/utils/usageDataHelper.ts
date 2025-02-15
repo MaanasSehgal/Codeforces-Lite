@@ -1,6 +1,6 @@
 import { TestCaseArray } from "../types/types";
 
-export const usageDataHelper = (language: string, testCases: TestCaseArray) => {
+export const usageDataHelper = (language: string, testCases: TestCaseArray, userId: string) => {
 
     const isAllTestCasesPassed = () => {
         return testCases.testCases.length > 0 && testCases.testCases.every((testCase) =>
@@ -25,6 +25,16 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray) => {
 
     const getIPData = async () => {
         const ip = await getIP();
+        if(ip === 'Unknown IP') return {
+            ip: 'Unknown',
+            city: 'Unknown',
+            region: 'Unknown',
+            country: 'Unknown',
+            loc: 'Unknown',
+            org: 'Unknown',
+            postal: 'Unknown',
+            timezone: 'Unknown',
+        };
 
         try {
             const response = await fetch(`https://ipinfo.io/${ip}/json/`, {
@@ -53,7 +63,7 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray) => {
         try {
             const ui = localStorage.getItem('changeUI');
             const errorMessage = useType === "RUN" ? testCases.ErrorMessage !== null ? testCases.ErrorMessage : isAllTestCasesPassed() ? "Accepted" : "Wrong Answer" : "Submitted";
-            const response = await fetch('https://codeforces-lite-dashboard.vercel.app/api/usage', {
+            const response = await fetch('http://localhost:3000/api/usage', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -61,6 +71,7 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray) => {
                 body: JSON.stringify({
                     userData: {
                         ...ipData,
+                        userId: userId,
                         browser: navigator.userAgent,
                         theme: localStorage.getItem('theme'),
                         ui: ui,

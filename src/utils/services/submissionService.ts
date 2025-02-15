@@ -1,9 +1,11 @@
 import { getProblemName } from "../dom/getProblemName";
+import { getUserId } from "../dom/getUserId";
 import { usageDataHelper } from "../usageDataHelper";
 
 export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmitting: (isSubmitting: boolean) => void, language: string, currentSlug: string, testCases: any) => {
     const slug = currentSlug || "Unknown";
     const problemName = await getProblemName();
+    const userId = await getUserId();
     
     setIsSubmitting(true);
     const editorValue = editor.current?.view?.state?.doc?.toString();
@@ -48,7 +50,7 @@ export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmit
     });
 
     if (result) {
-        await usageDataHelper(language, testCases).handleUsageData(editorValue, slug, "SUBMIT", problemName);
+        await usageDataHelper(language, testCases, userId).handleUsageData(editorValue, slug, "SUBMIT", problemName);
     } else {
     }
 

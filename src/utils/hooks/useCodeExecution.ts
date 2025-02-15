@@ -4,6 +4,7 @@ import { EXECUTE_CODE_LIMIT } from '../../data/constants';
 import { useState } from 'react';
 import { usageDataHelper } from '../usageDataHelper';
 import { getProblemName } from '../dom/getProblemName';
+import { getUserId } from '../dom/getUserId';
 
 const languageMap: { [key: string]: number } = {
     'java': 62,
@@ -197,6 +198,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
 
     const runCode = async () => {
         const problemName = await getProblemName();
+        const userId = await getUserId();
         const slug = currentSlug || "";
         setIsRunning(true);
         testCases.ErrorMessage = '';
@@ -218,7 +220,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
 
         setIsRunning(false);
 
-        await usageDataHelper(language, testCases).handleUsageData(code, slug, "RUN", problemName);
+        await usageDataHelper(language, testCases, userId).handleUsageData(code, slug, "RUN", problemName);
     };
 
     return {
