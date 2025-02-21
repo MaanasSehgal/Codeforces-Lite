@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { usageDataHelper } from '../usageDataHelper';
 import { getProblemName } from '../dom/getProblemName';
 import { getUserId } from '../dom/getUserId';
+import { getTimeLimit } from '../dom/getTimeLimit';
 
 const languageMap: { [key: string]: number } = {
     'java': 62,
@@ -97,11 +98,11 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         });
     }
 
-    const createSubmissionPayload = (code: string, input: string) => ({
+    const createSubmissionPayload = (code: string, input: string, timeLimit: number) => ({
         language_id: languageMap[language],
         source_code: btoa(adjustCodeForJudge0({ code, language })),
         stdin: btoa(input),
-        cpu_time_limit: 2,
+        cpu_time_limit: timeLimit,
     });
 
     const processResults = async (tokens: string[], apiKey: string, region: string = 'AUTO') => {
@@ -137,8 +138,8 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         });
     };
 
-    const executeCodeCE = async (code: string, apiKey: string) => {
-        const submissions = testCases.testCases.map(testCase => createSubmissionPayload(code, testCase.Input));
+    const executeCodeCE = async (code: string, apiKey: string, timeLimit: number) => {
+        const submissions = testCases.testCases.map(testCase => createSubmissionPayload(code, testCase.Input, timeLimit));
 
         try {
             const submitResponse = await makeJudge0CERequest('submissions/batch?base64_encoded=true', {
@@ -205,9 +206,9 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
     };
 
 
-    const executeCode = async (code: string, apiKey: string) => {
+    const executeCode = async (code: string, apiKey: string, timeLimit: number) => {
         try {
-            await executeCodeCE(code, apiKey);
+            await executeCodeCE(code, apiKey, timeLimit);
         } catch (error: any) {
             setCatchError(error);
         }
@@ -216,6 +217,8 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
     const runCode = async () => {
         const problemName = await getProblemName();
         const userId = await getUserId();
+        const timeLimit = await getTimeLimit();
+
         if(userId.includes("Unknown")) {
             alert("Please login to run code");
             return;
@@ -237,7 +240,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
             return;
         }
 
-        await executeCode(code, apiKey || "");
+        await executeCode(code, apiKey || "", timeLimit);
 
         setIsRunning(false);
 
