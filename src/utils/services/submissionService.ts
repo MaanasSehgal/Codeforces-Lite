@@ -6,6 +6,10 @@ export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmit
     const slug = currentSlug || "Unknown";
     const problemName = await getProblemName();
     const userId = await getUserId();
+    if(userId.includes("Unknown")) {
+        alert("Please login to submit code");
+        return;
+    }
     
     setIsSubmitting(true);
     const editorValue = editor.current?.view?.state?.doc?.toString();

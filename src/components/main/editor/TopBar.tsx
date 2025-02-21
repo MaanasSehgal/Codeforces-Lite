@@ -2,7 +2,6 @@ import { Braces, CloudUpload, Code2, LoaderCircle, Play, RotateCcw, Settings } f
 import { TopBarProps } from '../../../types/types';
 import { useState } from 'react';
 import Timer from './CodeTimer';
-import { useCFStore } from '../../../zustand/useCFStore';
 
 const TopBar: React.FC<TopBarProps> = ({
     theme,
@@ -23,7 +22,7 @@ const TopBar: React.FC<TopBarProps> = ({
 
     const [showRunTooltip, setShowRunTooltip] = useState<boolean>(false);
     const [showSubmitTooltip, setShowSubmitTooltip] = useState<boolean>(false);
-    const apiKey = useCFStore((state) => state.apiKey);
+    // const apiKey = useCFStore((state) => state.apiKey);
 
     return (
         <>
@@ -34,12 +33,12 @@ const TopBar: React.FC<TopBarProps> = ({
                 <div className='flex justify-center items-center gap-3'>
                     <div className="relative inline-flex shadow-sm">
                         <button
-                            disabled={!currentSlug || !apiKey || isRunning || testCases.length === 0}
+                            disabled={!currentSlug || isRunning || testCases.length === 0}
                             onClick={runCode}
                             onMouseEnter={() => setShowRunTooltip(true)}
                             onMouseLeave={() => setShowRunTooltip(false)}
                             className={`
-                                ${(!currentSlug || !apiKey || isRunning || testCases.length === 0) && "cursor-not-allowed"}
+                                ${(!currentSlug || isRunning || testCases.length === 0) && "cursor-not-allowed"}
                                 h-7 px-3
                                 text-white text-sm font-medium
                                 bg-blue-500 hover:bg-blue-600

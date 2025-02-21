@@ -7,7 +7,6 @@ import TestCaseNotAccess from './TestCaseNotAccess';
 
 const TestCases = () => {
     const [selectedTab, setSelectedTab] = useState<number>(0);
-    const apiKey = useCFStore((state) => state.apiKey);
     const currentSlug = useCFStore((state) => state.currentSlug);
     const testCases = useCFStore((state) => state.testCases);
     const setTestCases = useCFStore((state) => state.setTestCases);
@@ -62,7 +61,9 @@ const TestCases = () => {
                         testCases.ErrorMessage.includes('Time Limit') ? 'Time Limit Exceeded' :
                             testCases.ErrorMessage.includes('Memory Limit') ? 'Memory Limit Exceeded' :
                                 testCases.ErrorMessage.includes('Runtime Error') ? 'Runtime Error' :
-                                    'Wrong Answer'}
+                                    testCases.ErrorMessage.includes('Rate Limit Exceeded') ? 'Rate Limit Exceeded' :
+                                        testCases.ErrorMessage.includes('Internal Error') ? 'Internal Error' :
+                                            'Wrong Answer'}
                 </div>
             );
         } else if (testCases.testCases[selectedTab]?.Output) {
@@ -150,7 +151,7 @@ const TestCases = () => {
 
     return (
         <>
-            {!currentSlug || !apiKey ? (
+            {!currentSlug ? (
                 <TestCaseNotAccess />
             ) : (
                 <div className="w-full dark:bg-[#111111] p-4 rounded-md overflow-auto">
@@ -257,8 +258,8 @@ const TestCases = () => {
                                                     value={testCases.testCases[selectedTab].ExpectedOutput}
                                                     onChange={(e) => handleExpectedOutputChange(selectedTab, e.target.value)}
                                                     className={`mono-font w-full p-2 border rounded-md bg-white dark:bg-zinc-800 text-gray-900 dark:text-white transition-colors duration-200 ${testCases.testCases[selectedTab].Output
-                                                            ? getInputBorderColor(testCases.testCases[selectedTab])
-                                                            : 'border-gray-300 dark:border-gray-700'
+                                                        ? getInputBorderColor(testCases.testCases[selectedTab])
+                                                        : 'border-gray-300 dark:border-gray-700'
                                                         }`}
                                                 />
                                             </label>

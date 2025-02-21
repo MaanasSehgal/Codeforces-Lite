@@ -80,8 +80,20 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
             resetStates();
             return;
         }
+        if (error.message.includes("Insufficie")) {
+            setShowApiLimitAlert(true);
+            testCases.ErrorMessage = "Rate Limit Exceeded";
+            testCases.testCases.forEach((testCase: any) => {
+                testCase.Output = "Rate Limit Exceeded";
+                testCase.TimeAndMemory = { Time: '0', Memory: '0' };
+            });
+            return;
+        }
+
+        testCases.ErrorMessage = "Internal Error";
         testCases.testCases.forEach((testCase: any) => {
-            testCase.Output = 'Execution failed. Please try again.';
+            testCase.Output = "Something went wrong. Please try again later or contact support.";
+            testCase.TimeAndMemory = { Time: '0', Memory: '0' };
         });
     }
 
@@ -137,6 +149,11 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
 
             if (submitResponse.status === 429) {
                 setShowApiLimitAlert(true);
+                testCases.ErrorMessage = "Rate Limit Exceeded";
+                testCases.testCases.forEach((testCase: any) => {
+                    testCase.Output = "Rate Limit Exceeded";
+                    testCase.TimeAndMemory = { Time: '0', Memory: '0' };
+                });
                 return;
             }
 
@@ -199,6 +216,10 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
     const runCode = async () => {
         const problemName = await getProblemName();
         const userId = await getUserId();
+        if(userId.includes("Unknown")) {
+            alert("Please login to run code");
+            return;
+        }
         const slug = currentSlug || "";
         setIsRunning(true);
         testCases.ErrorMessage = '';
@@ -210,13 +231,13 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         const code = editor.current?.view?.state.doc.toString();
         const apiKey = localStorage.getItem('judge0CEApiKey');
 
-        if (!code || !apiKey) {
-            testCases.ErrorMessage = 'No code provided or API key missing';
+        if (!code) {
+            testCases.ErrorMessage = 'No code provided';
             setIsRunning(false);
             return;
         }
 
-        await executeCode(code, apiKey);
+        await executeCode(code, apiKey || "");
 
         setIsRunning(false);
 

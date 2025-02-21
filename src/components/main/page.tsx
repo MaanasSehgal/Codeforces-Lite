@@ -95,11 +95,6 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
         const handleRunCode = async (event: KeyboardEvent) => {
             if (isRunning) return;
             if (event.ctrlKey && event.key === "'") {
-                const apiKey = localStorage.getItem('judge0CEApiKey');
-                if (!apiKey) {
-                    alert('Please add your API to use the run code feature.');
-                    return;
-                }
                 if (!currentSlug) {
                     alert('Please select a problem to run code.');
                     return;

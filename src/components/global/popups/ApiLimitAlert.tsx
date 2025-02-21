@@ -8,29 +8,58 @@ interface ApiLimitAlertProps {
 }
 
 const ApiLimitAlert: React.FC<ApiLimitAlertProps> = ({ isOpen, setIsOpen }) => {
+    const apiKey = localStorage.getItem('judge0CEApiKey');
+
+    const removeAPIKey = () => {
+        localStorage.removeItem('judge0CEApiKey');
+        setIsOpen(false);
+    };
+
     return (
         <PopupModal isOpen={isOpen} setIsOpen={setIsOpen}>
             <PopupBox
                 isOpen={isOpen}
                 setIsOpen={setIsOpen}
-                title="API Limit Exceeded"
+                title="Rate Limit Exceeded"
                 customClass="max-w-xs"
                 popupHeight="h-auto"
             >
                 <div className="text-gray-700 dark:text-darkText-400">
                     <p className="mb-4 text-sm">
-                        API rate limit exceeded.
+                        {apiKey ? 'Your API key has reached its rate limit.' : 'Your IP has reached its rate limit.'}
                     </p>
                     <div className="mb-6 text-sm">
-                        <a
-                            href="https://platform.sulu.sh/apis/judge0"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
-                        >
-                            Subscribe to a plan
-                        </a>
-                        <span className="text-gray-600 dark:text-gray-300"> or use another account.</span>
+                        {apiKey ? (
+                            <>
+                                <button
+                                    onClick={removeAPIKey}
+                                    className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                                >
+                                    Switch to IP-based limit
+                                </button>
+                                <span className="text-gray-600 dark:text-gray-300"> or </span>
+                                <a
+                                    href="https://platform.sulu.sh/apis/judge0"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                                >
+                                    upgrade plan
+                                </a>
+                            </>
+                        ) : (
+                            <>
+                                <a
+                                    href="https://platform.sulu.sh/apis/judge0"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+                                >
+                                    Get API key
+                                </a>
+                                <span className="text-gray-600 dark:text-gray-300"> for higher limits</span>
+                            </>
+                        )}
                     </div>
                     <button
                         onClick={() => setIsOpen(false)}

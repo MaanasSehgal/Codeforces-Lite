@@ -45,6 +45,9 @@
             "matches": [
                 "https://codeforces.com/*"
             ],
+            "exclude_matches": [
+                "https://codeforces.com/api/*"
+            ],
             "css": [
                 "assets/styles/inject-styles.css"
             ],
