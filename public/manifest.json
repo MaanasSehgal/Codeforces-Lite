@@ -27,7 +27,7 @@
     "web_accessible_resources": [
         {
             "resources": [
-                "assets/scripts/ftaa-script.js",
+                "assets/scripts/ftaa-script.js"
             ],
             "matches": [
                 "<all_urls>"
