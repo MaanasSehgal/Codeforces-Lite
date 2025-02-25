@@ -7,6 +7,5 @@ export const getProblemUrl = async () => {
             return url;
         }
     });
-    alert(result.result);
     return result.result || "Unknown";
 };
