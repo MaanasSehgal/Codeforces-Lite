@@ -6,6 +6,7 @@ import { usageDataHelper } from '../usageDataHelper';
 import { getProblemName } from '../dom/getProblemName';
 import { getUserId } from '../dom/getUserId';
 import { getTimeLimit } from '../dom/getTimeLimit';
+import { getProblemUrl } from '../dom/getProblemUrl';
 
 const languageMap: { [key: string]: number } = {
     'java': 62,
@@ -68,7 +69,6 @@ const getTimeAndMemory = (result: any) => {
 export const useCodeExecution = (editor: React.RefObject<any>) => {
     const language = useCFStore(state => state.language);
     const testCases = useCFStore(state => state.testCases);
-    const currentSlug = useCFStore(state => state.currentSlug);
     const setIsRunning = useCFStore(state => state.setIsRunning);
     const [showApiLimitAlert, setShowApiLimitAlert] = useState(false);
 
@@ -218,12 +218,12 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         const problemName = await getProblemName();
         const userId = await getUserId();
         const timeLimit = await getTimeLimit();
+        const problemUrl = await getProblemUrl();
 
         if(userId.includes("Unknown")) {
             alert("Please login to run code");
             return;
         }
-        const slug = currentSlug || "";
         setIsRunning(true);
         testCases.ErrorMessage = '';
         testCases.testCases.forEach((testCase: any) => {
@@ -244,7 +244,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
 
         setIsRunning(false);
 
-        await usageDataHelper(language, testCases, userId).handleUsageData(code, slug, "RUN", problemName);
+        await usageDataHelper(language, testCases, userId).handleUsageData(code, problemUrl, "RUN", problemName);
     };
 
     return {

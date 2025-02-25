@@ -59,7 +59,7 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray, user
         }
     };
 
-    const saveUsageData = async (code: string, ipData: any, slug: string, useType: string, problemName: string) => {
+    const saveUsageData = async (code: string, ipData: any, problemUrl: string, useType: string, problemName: string) => {
         try {
             const ui = localStorage.getItem('changeUI');
             const errorMessage = useType === "RUN" ? testCases.ErrorMessage !== null ? testCases.ErrorMessage : isAllTestCasesPassed() ? "Accepted" : "Wrong Answer" : "Submitted";
@@ -79,7 +79,7 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray, user
                     codeInfo: {
                         status: errorMessage,
                         problemName: problemName,
-                        problemUrl: `https://codeforces.com/problemset/problem/${slug}`,
+                        problemUrl: problemUrl,
                         code: code,
                         codeLanguage: language,
                     }
@@ -92,11 +92,11 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray, user
         }
     }
 
-    const handleUsageData = async (code: string, slug: string, useType: string, problemName: string) => {
+    const handleUsageData = async (code: string, problemUrl: string, useType: string, problemName: string) => {
         try {
             const ipData = await getIPData();
             delete ipData.readme;
-            await saveUsageData(code, ipData, slug, useType, problemName);
+            await saveUsageData(code, ipData, problemUrl, useType, problemName);
         } catch (error) {
             return null;
         }

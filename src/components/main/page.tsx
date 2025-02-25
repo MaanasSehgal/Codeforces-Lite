@@ -83,7 +83,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
             if (event.ctrlKey && event.key === 'Enter') {
                 event.stopPropagation();
                 event.preventDefault();
-                handleSubmission(editor, setIsSubmitting, language, currentSlug || "", testCases);
+                handleSubmission(editor, setIsSubmitting, language, testCases);
                 return false;
             }
         };
@@ -124,7 +124,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
             />
             <TopBar
                 theme={theme as "light" | "dark"}
-                handleClick={() => handleSubmission(editor, setIsSubmitting, language, currentSlug || "", testCases)}
+                handleClick={() => handleSubmission(editor, setIsSubmitting, language, testCases)}
                 setShowOptions={setShowOptions}
                 language={language}
                 handleLanguageChange={handleLanguageChange}

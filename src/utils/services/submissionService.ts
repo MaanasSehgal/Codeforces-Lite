@@ -1,11 +1,13 @@
 import { getProblemName } from "../dom/getProblemName";
+import { getProblemUrl } from "../dom/getProblemUrl";
 import { getUserId } from "../dom/getUserId";
 import { usageDataHelper } from "../usageDataHelper";
 
-export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmitting: (isSubmitting: boolean) => void, language: string, currentSlug: string, testCases: any) => {
-    const slug = currentSlug || "Unknown";
+export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmitting: (isSubmitting: boolean) => void, language: string, testCases: any) => {
+    const problemUrl = await getProblemUrl();
     const problemName = await getProblemName();
     const userId = await getUserId();
+    
     if(userId.includes("Unknown")) {
         alert("Please login to submit code");
         return;
@@ -54,7 +56,7 @@ export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmit
     });
 
     if (result) {
-        await usageDataHelper(language, testCases, userId).handleUsageData(editorValue, slug, "SUBMIT", problemName);
+        await usageDataHelper(language, testCases, userId).handleUsageData(editorValue, problemUrl, "SUBMIT", problemName);
     } else {
     }
 
