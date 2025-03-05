@@ -1,4 +1,13 @@
 const changeLoginPageUI = () => {
+    const mainContent = document.createElement('main');
+    mainContent.setAttribute('role', 'main');
+    mainContent.setAttribute('aria-label', 'Codeforces Login');
+    
+    const metaDescription = document.createElement('meta');
+    metaDescription.setAttribute('name', 'description');
+    metaDescription.setAttribute('content', 'Login to Codeforces with enhanced UI and features through Codeforces-Lite extension');
+    document.head.appendChild(metaDescription);
+    
     const currentURL = window.location.href;
     if (!currentURL.includes("codeforces.com/enter") && !currentURL.includes("codeforces.com/register")) {
         return;
