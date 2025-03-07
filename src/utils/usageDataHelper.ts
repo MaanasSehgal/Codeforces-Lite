@@ -40,11 +40,8 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray, user
                 })
             });
 
-            console.log(response.json());
-
             return response.json();
-        } catch (error) {
-            console.error('Error saving usage data:', error);
+        } catch {
             return null;
         }
     }
