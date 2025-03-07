@@ -8,61 +8,16 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray, user
         )
     };
 
-    const getIP = async () => {
-        try {
-            const response = await fetch('https://api64.ipify.org/?format=json', {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const data = await response.json();
-            return data.ip;
-        } catch (error) {
-            return 'Unknown IP';
-        }
-    };
-
-    const getIPData = async () => {
-        const ip = await getIP();
-        if(ip === 'Unknown IP') return {
-            ip: 'Unknown',
-            city: 'Unknown',
-            region: 'Unknown',
-            country: 'Unknown',
-            loc: 'Unknown',
-            org: 'Unknown',
-            postal: 'Unknown',
-            timezone: 'Unknown',
-        };
-
-        try {
-            const response = await fetch(`https://ipinfo.io/${ip}/json/`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-            });
-            const data = await response.json();
-            return data;
-        } catch (error) {
-            return {
-                ip: 'Unknown',
-                city: 'Unknown',
-                region: 'Unknown',
-                country: 'Unknown',
-                loc: 'Unknown',
-                org: 'Unknown',
-                postal: 'Unknown',
-                timezone: 'Unknown',
-            };
-        }
-    };
-
-    const saveUsageData = async (code: string, ipData: any, problemUrl: string, useType: string, problemName: string) => {
+    const saveUsageData = async (code: string, problemUrl: string, useType: string, problemName: string) => {
         try {
             const ui = localStorage.getItem('changeUI');
-            const errorMessage = useType === "RUN" ? testCases.ErrorMessage !== null ? testCases.ErrorMessage : isAllTestCasesPassed() ? "Accepted" : "Wrong Answer" : "Submitted";
+
+            const errorMessage = useType === "RUN"
+                ? testCases.ErrorMessage !== null
+                    ? testCases.ErrorMessage
+                    : isAllTestCasesPassed() ? "Accepted" : "Wrong Answer"
+                : "Submitted";
+
             const response = await fetch('https://codeforces-lite-dashboard.vercel.app/api/usage', {
                 method: 'POST',
                 headers: {
@@ -70,7 +25,6 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray, user
                 },
                 body: JSON.stringify({
                     userData: {
-                        ...ipData,
                         userId: userId,
                         browser: navigator.userAgent,
                         theme: localStorage.getItem('theme'),
@@ -86,17 +40,19 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray, user
                 })
             });
 
+            console.log(response.json());
+
             return response.json();
         } catch (error) {
+            console.error('Error saving usage data:', error);
             return null;
         }
     }
 
+
     const handleUsageData = async (code: string, problemUrl: string, useType: string, problemName: string) => {
         try {
-            const ipData = await getIPData();
-            delete ipData.readme;
-            await saveUsageData(code, ipData, problemUrl, useType, problemName);
+            await saveUsageData(code, problemUrl, useType, problemName);
         } catch (error) {
             return null;
         }
