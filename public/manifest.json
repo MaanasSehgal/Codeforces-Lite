@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "version": "1.3.2",
+    "version": "1.3.3",
     "name": "Codeforces Lite - Dark Mode & Code Runner",
     "description": "Provides dark theme and code runner for Codeforces",
     "author": "Maanas Sehgal",
