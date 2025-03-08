@@ -25,7 +25,7 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray, user
                 },
                 body: JSON.stringify({
                     userData: {
-                        userId: userId,
+                        handle: userId,
                         browser: navigator.userAgent,
                         theme: localStorage.getItem('theme'),
                         ui: ui,
