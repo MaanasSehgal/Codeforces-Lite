@@ -1,6 +1,6 @@
 // Function to extract test cases from the active tab
 const extractTestCases = async (tab) => {
-    const match = tab.url.match(/\/problemset\/problem\/([0-9]+)\/([^\/]+)|\/contest\/([0-9]+)\/problem\/([^\/]+)/);
+    const match = tab.url.match(/\/problemset\/problem\/([0-9]+)\/([^\/]+)|\/contest\/([0-9]+)\/problem\/([^\/]+)|\/gym\/([0-9]+)\/problem\/([^\/]+)/);
     if (!match) {
         return;
     }
