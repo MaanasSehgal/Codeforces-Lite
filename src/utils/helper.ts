@@ -71,7 +71,7 @@ export const getSlug = (problemUrl: string): string | null => {
             case "codeforces.com":
             case "www.codeforces.com":
                 // Handle both problemset and contest URLs
-                match = url.toString().match(/\/problemset\/problem\/([0-9]+)\/([^\/]+)|\/contest\/([0-9]+)\/problem\/([^\/]+)/);
+                match = url.toString().match(/\/problemset\/problem\/([0-9]+)\/([^\/]+)|\/contest\/([0-9]+)\/problem\/([^\/]+)|\/gym\/([0-9]+)\/problem\/([^\/]+)/);
 
                 if (match) {
                     if (match[1] && match[2]) {
@@ -80,6 +80,9 @@ export const getSlug = (problemUrl: string): string | null => {
                     } else if (match[3] && match[4]) {
                         // /contest/2030/problem/A
                         return `${match[3]}/${match[4]}`;
+                    } else if (match[5] && match[6]) {
+                        // /gym/105846/problem/A
+                        return `${match[5]}/${match[6]}`;
                     }
                 }
                 return null;
