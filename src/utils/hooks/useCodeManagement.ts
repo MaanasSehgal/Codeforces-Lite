@@ -2,10 +2,13 @@
 import { useCFStore } from '../../zustand/useCFStore';
 import { getValueFromLanguage } from '../helper';
 import { loadCodeWithCursor } from '../codeHandlers';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-export const useCodeManagement = (editor: React.RefObject<any>) => {
+export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>) => {
     const setLanguage = useCFStore(state => state.setLanguage);
     const setFontSize = useCFStore(state => state.setFontSize);
+    const setEditorTheme = useCFStore(state => state.setEditorTheme);
+    const setTabIndent = useCFStore(state => state.setTabIndent);
     const currentSlug = useCFStore(state => state.currentSlug);
 
     const handleResetCode = () => {
@@ -13,15 +16,31 @@ export const useCodeManagement = (editor: React.RefObject<any>) => {
             return;
         }
         const temmplateCode = localStorage.getItem('template') || '';
-        loadCodeWithCursor(editor.current, temmplateCode);
+        loadCodeWithCursor(monacoInstanceRef.current, temmplateCode);
     };
 
+    const handleTabIndentChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedIndent = parseInt(e.target.value, 10);
+        setTabIndent(selectedIndent);
+        localStorage.setItem('tabIndent', selectedIndent.toString());
+        if (monaco) {
+            monaco.editor.getEditors().forEach(editor => {
+                const model = editor.getModel();
+                if (model) {
+                    model.updateOptions({
+                        tabSize: selectedIndent,
+                        indentSize: selectedIndent
+                    });
+                }
+            });
+        }
+    }
+
+
     const handleLanguageChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const editorValue = editor.current?.view?.state?.doc?.toString();
         const selectedLanguage = e.target.value;
         setLanguage(selectedLanguage);
         localStorage.setItem('preferredLanguage', selectedLanguage);
-
         const languageValue = getValueFromLanguage(selectedLanguage);
 
         let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -40,25 +59,38 @@ export const useCodeManagement = (editor: React.RefObject<any>) => {
             },
             () => chrome.runtime.lastError
         );
-
-        setTimeout(() => {
-            editor.current.view?.dispatch({
-                changes: { from: 0, to: editor.current.view.state.doc.length, insert: editorValue },
+        if (monaco) {
+            monaco.editor.getEditors().forEach(editor => {
+                const model = editor.getModel();
+                if (model) {
+                    monaco.editor.setModelLanguage(model, selectedLanguage);
+                }
             });
-        }, 100);
+        }
+
     };
 
     const handleFontSizeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const editorValue = editor.current?.view?.state?.doc?.toString();
         const selectedFontSize = parseInt(e.target.value, 10);
         setFontSize(selectedFontSize);
         localStorage.setItem('preferredFontSize', selectedFontSize.toString());
-
-        setTimeout(() => {
-            editor.current.view?.dispatch({
-                changes: { from: 0, to: editor.current.view.state.doc.length, insert: editorValue },
+        if (monaco) {
+            monaco.editor.getEditors().forEach(editor => {
+                editor.updateOptions({
+                    fontSize: selectedFontSize,
+                });
             });
-        }, 100);
+        }
+    };
+
+    const handleEditorThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+        const selectedTheme = e.target.value;
+        setEditorTheme(selectedTheme);
+        localStorage.setItem('preferredEditorTheme', selectedTheme);
+        if (monaco) {
+            monaco.editor.setTheme(selectedTheme);
+            // console.log('Theme changed to:', selectedTheme);
+        }
     };
 
     const handleRedirectToLatestSubmission = async () => {
@@ -72,7 +104,7 @@ export const useCodeManagement = (editor: React.RefObject<any>) => {
                 target: { tabId: tab.id! },
                 func: () => {
                     const anchor = document.querySelector('.roundbox.sidebox .rtable tbody tr td a') as HTMLAnchorElement;
-                    if(!anchor) {
+                    if (!anchor) {
                         alert('No submission found');
                         return;
                     }
@@ -92,8 +124,10 @@ export const useCodeManagement = (editor: React.RefObject<any>) => {
 
     return {
         handleResetCode,
+        handleTabIndentChange,
         handleLanguageChange,
         handleFontSizeChange,
+        handleEditorThemeChange,
         handleRedirectToLatestSubmission
     };
 };

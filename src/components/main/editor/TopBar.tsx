@@ -1,4 +1,4 @@
-import { Braces, CloudUpload, Code2, LoaderCircle, Play, RotateCcw, Settings } from 'lucide-react';
+import { Braces, ChartNoAxesGantt, CloudUpload, Code2, LoaderCircle, Play, RotateCcw, Settings } from 'lucide-react';
 import { TopBarProps } from '../../../types/types';
 import { useState } from 'react';
 import Timer from './CodeTimer';
@@ -18,6 +18,8 @@ const TopBar: React.FC<TopBarProps> = ({
     isSubmitting,
     runCode,
     testCases,
+    isFormating,
+    handleFormatCode
 }) => {
 
     const [showRunTooltip, setShowRunTooltip] = useState<boolean>(false);
@@ -109,6 +111,9 @@ const TopBar: React.FC<TopBarProps> = ({
                         <option className='text-black dark:text-zinc-100' value="python">Python</option>
                         <option className='text-black dark:text-zinc-100' value="javascript">JavaScript</option>
                         <option className='text-black dark:text-zinc-100' value="kotlin">Kotlin</option>
+                        <option className='text-black dark:text-zinc-100' value="go">Go</option>
+                        <option className='text-black dark:text-zinc-100' value="rust">Rust</option>
+                        <option className='text-black dark:text-zinc-100' value="ruby">Ruby</option>
                     </select>
 
                     {/* Font Size Selector */}
@@ -122,6 +127,17 @@ const TopBar: React.FC<TopBarProps> = ({
                 </div>
                 <div className={`flex items-center gap-2 cursor-pointer`}>
                     <Timer theme={theme} />
+                    <button
+                        onClick={handleFormatCode}
+                        disabled={!currentSlug || isFormating}
+                        title='Format Code'
+                    >
+                        {isFormating ? (
+                            <LoaderCircle color={theme === 'light' ? '#666666' : '#ffffff'} size={16} className={`animate-spin w-4 h-4 ${!currentSlug || isFormating ? 'cursor-not-allowed' : 'cursor-pointer'}`} />
+                        ) : (
+                            <ChartNoAxesGantt color={theme === 'light' ? '#666666' : '#ffffff'} size={16} className={`${!currentSlug ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={handleFormatCode} />
+                        )}
+                    </button>
                     <button
                         disabled={!currentSlug}
                         title='Latest Submission'
@@ -139,5 +155,4 @@ const TopBar: React.FC<TopBarProps> = ({
         </>
     )
 }
-
 export default TopBar

@@ -1,4 +1,5 @@
 import {toast} from "sonner";
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 export const deleteCodesFromLocalStorage = () => {
     try {
@@ -10,8 +11,12 @@ export const deleteCodesFromLocalStorage = () => {
     }
 };
 
-export const handleSaveTemplate = (editor: any) => {
-    const editorValue = editor.current.view?.state.doc.toString();
+export const handleSaveTemplate = (editor: monaco.editor.IStandaloneCodeEditor | null) => {
+    if (!editor) {
+        toast.error("Editor not found!");
+        return;
+    }
+    const editorValue = editor.getValue();
     localStorage.setItem("template", editorValue);
     toast.success("Configuration saved successfully!");
 };

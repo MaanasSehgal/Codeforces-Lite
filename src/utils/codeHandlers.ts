@@ -1,24 +1,33 @@
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-import { EditorView } from '@uiw/react-codemirror';
+export const loadCodeWithCursor = (editor: monaco.editor.IStandaloneCodeEditor | null, code: string) => {
+    if (!editor) {
+        // console.warn('Wait for the editor to be ready before loading code.');
+        return;
+    }
 
-export const loadCodeWithCursor = (editor: any, code: string) => {
     const cursorPosition = code.indexOf('$0');
+    
     let cleanedCode = code.replace(/\$0/g, '');
 
-    editor.view?.dispatch({
-        changes: { from: 0, to: editor.view.state.doc.length, insert: cleanedCode },
-    });
+    editor.setValue(cleanedCode);
 
     if (cursorPosition !== -1) {
-        editor.view.focus();
-        editor.view.dispatch({
-            selection: { anchor: cursorPosition },
-            scrollIntoView: true,
+        const textBeforeCursor = code.substring(0, cursorPosition);
+        const lines = textBeforeCursor.split('\n');
+        const lineNumber = lines.length;
+        const column = lines[lines.length - 1].length + 1;
+
+        editor.setPosition({
+            lineNumber: lineNumber,
+            column: column
         });
 
-        editor.view.dispatch({
-            selection: { anchor: cursorPosition, head: cursorPosition },
-            effects: EditorView.scrollIntoView(cursorPosition, { x: "center", y: "center" })
+        editor.focus();
+
+        editor.revealPositionInCenter({
+            lineNumber: lineNumber,
+            column: column
         });
     }
 };

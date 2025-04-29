@@ -1,32 +1,46 @@
-import { githubDark, githubLight } from "@uiw/codemirror-theme-github";
 import { handleSaveTemplate } from "../../utils/localStorageHelper";
-import { getLanguageExtension } from "../../utils/helper";
 import { useEffect, useRef, useState } from "react";
-import { indentUnit } from "@codemirror/language";
 import { SettingsProps } from "../../types/types";
 import { Toaster } from "sonner";
 import Footer from "../global/Footer";
-import CodeMirror from '@uiw/react-codemirror';
 import DeleteCodesConfirmationPopup from "../global/popups/DeleteCodesConfirmationPopup";
 import SettingsTopBar from "./ui/SettingsTopBar";
 import Options from './ui/Options';
 import ApiSettings from '../global/ApiSettings';
+import CodeEditor from "../main/editor/CodeEditor";
+import { useCFStore } from "../../zustand/useCFStore";
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { useCodeManagement } from "../../utils/hooks/useCodeManagement";
 
-
-const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, tabIndent, setTabIndent }) => {
-    const editor = useRef<any>(null);
-    const preferredLanguage = localStorage.getItem('preferredLanguage') || 'cpp';
-    const preferredFontSize = localStorage.getItem('preferredFontSize') || '16';
+const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, tabIndent }) => {
+    const monacoInstanceRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
+    const { handleEditorThemeChange, handleTabIndentChange } = useCodeManagement(monacoInstanceRef);
     const [changeUI, setChangeUI] = useState(localStorage.getItem('changeUI') || 'true');
     const [openConfirmationPopup, setOpenConfirmationPopup] = useState<boolean>(false);
+    const {
+        language,
+        fontSize,
+    } = useCFStore();
 
     useEffect(() => {
-        const templateCode = localStorage.getItem('template');
-        setTimeout(() => {
-            editor.current.view?.dispatch({
-                changes: { from: 0, to: editor.current.view.state.doc.length, insert: templateCode || '' },
-            });
-        }, 100);
+        const defaultThemeSettings = localStorage.getItem('defaultThemeSettings');
+        if (!defaultThemeSettings) {
+            const initialSettings = {
+                brightness: 100,
+                contrast: 100,
+                sepia: 0,
+                grayscale: 0
+            };
+            localStorage.setItem('defaultThemeSettings', JSON.stringify(initialSettings));
+            chrome.storage.local.set({ defaultThemeSettings: initialSettings });
+        }
+
+        const themeCustomSettings = localStorage.getItem('themeCustomSettings');
+        if (!themeCustomSettings) {
+            const initialSettings = JSON.parse(defaultThemeSettings || '{}');
+            localStorage.setItem('themeCustomSettings', JSON.stringify(initialSettings));
+            chrome.storage.local.set({ themeCustomSettings: initialSettings });
+        }
     }, []);
 
     useEffect(() => {
@@ -44,14 +58,6 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, ta
         localStorage.setItem('changeUI', changeUI);
     }, [changeUI]);
 
-    const handleTabIndent = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const value = parseInt(e.target.value, 10);
-        if (value >= 1 && value <= 10) {
-            setTabIndent(value);
-            localStorage.setItem('tabIndent', value.toString());
-        }
-    };
-
     return (
         <>
             <DeleteCodesConfirmationPopup
@@ -60,7 +66,7 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, ta
             />
 
             <div className="Settings-container w-full h-full flex flex-col items-center justify-center dark:bg-[#111111]">
-                <Toaster closeButton richColors position="top-center" />
+                <Toaster theme={theme} position="bottom-left" />
                 <SettingsTopBar theme={theme} setShowOptions={setShowOptions} />
 
                 <div className="w-full h-full overflow-y-auto px-4">
@@ -71,7 +77,8 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, ta
                         setChangeUI={setChangeUI}
                         tabIndent={tabIndent}
                         setOpenConfirmationPopup={setOpenConfirmationPopup}
-                        handleTabIndent={handleTabIndent}
+                        handleTabIndent={handleTabIndentChange}
+                        handleEditorThemeChange={handleEditorThemeChange}
                     />
                     <ApiSettings />
                     <div className="w-full flex flex-col items-center gap-2 border-t-2 border-zinc-800">
@@ -80,19 +87,17 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, ta
                                 <p>Set your default template</p>
                                 <p className="text-[8px] font-semibold text-gray-900 dark:text-gray-300 pr-4">Use symbol <span className="font-[500] px-2 rounded-md bg-gray-300 dark:bg-gray-600">$0</span> to set your default cursor position in template.</p>
                             </div>
-                            <button onClick={() => handleSaveTemplate(editor)} className="h-1/2 bg-green-500 text-white text-sm px-2 py-1 font-bold rounded-lg hover:bg-green-600 transition duration-200">
+                            <button onClick={() => handleSaveTemplate(monacoInstanceRef.current)} className="h-1/2 bg-green-500 text-white text-sm px-2 py-1 font-bold rounded-lg hover:bg-green-600 transition duration-200">
                                 Save
                             </button>
                         </div>
                         <div className="text-left h-auto mt-2 mb-20 w-full">
-                            <CodeMirror
-                                ref={editor}
-                                className="border-zinc-500 border-2"
-                                theme={theme === 'light' ? githubLight : githubDark}
-                                height="70vh"
-                                width="100%"
-                                extensions={[getLanguageExtension(preferredLanguage), indentUnit.of(" ".repeat(tabIndent))]}
-                                style={{ fontSize: `${preferredFontSize}px` }}
+                            <CodeEditor
+                                monacoInstanceRef={monacoInstanceRef}
+                                language={language}
+                                fontSize={fontSize}
+                                tabIndent={tabIndent}
+                                templateCode={localStorage.getItem('template') || ''}
                             />
                         </div>
                     </div>

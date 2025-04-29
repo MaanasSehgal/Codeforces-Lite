@@ -1,15 +1,16 @@
 import { CodeEntry, TestCaseArray } from '../../types/types';
 import { getCodeMap, getSlugQueue, getTestCaseMap, getTestCaseQueue } from '../helper';
 import { MAX_PROBLEM_IO_SIZE, SINGLE_CODE_LIMIT_BYTES, STORAGE_LIMIT_BYTES } from '../../data/constants';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 export const saveCodeForSlug = async (
     slug: string, 
-    editor: React.RefObject<any>,
+    editor: monaco.editor.IStandaloneCodeEditor | null,
     totalSize: number,
     setTotalSize: (size: number) => void
 ) => {
-    if (editor.current) {
-        const editorValue = editor.current.view?.state.doc.toString();
+    if (editor) {
+        const editorValue = editor.getValue();
         const size = editorValue?.length || 0;
 
         if (size > SINGLE_CODE_LIMIT_BYTES) {
@@ -37,7 +38,8 @@ export const saveCodeForSlug = async (
         }
 
         setTotalSize(newTotalSize);
-        const cursorPos = editor.current.view?.state.selection.main.from;
+        const position = editor.getPosition();
+        const cursorPos = position ? editor.getModel()?.getOffsetAt(position) : undefined;
         const codeWithCursor = editorValue.slice(0, cursorPos) + "$0" + editorValue.slice(cursorPos);
 
         const entry: CodeEntry = {

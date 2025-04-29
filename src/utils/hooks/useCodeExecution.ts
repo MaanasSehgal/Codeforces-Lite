@@ -1,12 +1,13 @@
 import { useCFStore } from '../../zustand/useCFStore';
 import { adjustCodeForJudge0 } from '../codeAdjustments';
-import { EXECUTE_CODE_LIMIT } from '../../data/constants';
+import { EXECUTE_CODE_LIMIT, isProduction } from '../../data/constants';
 import { useState } from 'react';
 import { usageDataHelper } from '../usageDataHelper';
 import { getProblemName } from '../dom/getProblemName';
 import { getUserId } from '../dom/getUserId';
 import { getTimeLimit } from '../dom/getTimeLimit';
 import { getProblemUrl } from '../dom/getProblemUrl';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 const languageMap: { [key: string]: number } = {
     'java': 62,
@@ -14,6 +15,9 @@ const languageMap: { [key: string]: number } = {
     'cpp': 54,
     'python': 71,
     'kotlin': 78,
+    'go': 106,
+    'rust': 73,
+    'ruby': 72,
 };
 
 export const executionState = {
@@ -66,7 +70,7 @@ const getTimeAndMemory = (result: any) => {
     return { Time: '0', Memory: '0' };
 };
 
-export const useCodeExecution = (editor: React.RefObject<any>) => {
+export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | null) => {
     const language = useCFStore(state => state.language);
     const testCases = useCFStore(state => state.testCases);
     const setIsRunning = useCFStore(state => state.setIsRunning);
@@ -215,12 +219,16 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
     };
 
     const runCode = async () => {
+        if (!editor) {
+            alert("Wait for editor to load");
+            return;
+        }
         const problemName = await getProblemName();
         const userId = await getUserId();
         const timeLimit = await getTimeLimit();
         const problemUrl = await getProblemUrl();
 
-        if(userId.includes("Unknown")) {
+        if (userId.includes("Unknown")) {
             alert("Please login to run code");
             return;
         }
@@ -231,7 +239,7 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
             testCase.TimeAndMemory = { Time: '0', Memory: '0' };
         });
 
-        const code = editor.current?.view?.state.doc.toString();
+        const code = editor.getValue();
         const apiKey = localStorage.getItem('judge0CEApiKey');
 
         if (!code) {
@@ -243,8 +251,12 @@ export const useCodeExecution = (editor: React.RefObject<any>) => {
         await executeCode(code, apiKey || "", timeLimit);
 
         setIsRunning(false);
+        problemName;
+        problemUrl
 
-        await usageDataHelper(language, testCases, userId).handleUsageData(code, problemUrl, "RUN", problemName);
+        if (isProduction) {
+            await usageDataHelper(language, testCases, userId).handleUsageData(code, problemUrl, "RUN", problemName);
+        }
     };
 
     return {

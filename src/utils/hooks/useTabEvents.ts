@@ -4,6 +4,7 @@ import { saveCodeForSlug, saveTestCaseForSlug } from '../services/storageService
 import { loadCodeWithCursor } from '../codeHandlers';
 import { accessRestrictionMessage } from '../../data/constants';
 import { useTestCases } from './useTestCases';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 export const useTabEvents = () => {
     const currentSlug = useCFStore(state => state.currentSlug);
@@ -15,7 +16,7 @@ export const useTabEvents = () => {
         message: any,
         _sender: chrome.runtime.MessageSender,
         sendResponse: (response: any) => void,
-        editor: React.RefObject<any>
+        editor: monaco.editor.IStandaloneCodeEditor | null
     ) => {
         try {
             if (
@@ -40,12 +41,13 @@ export const useTabEvents = () => {
                     let codeForUrl = getCodeMap().get(newSlug)?.code || '';
                     codeForUrl = codeForUrl === '' ? localStorage.getItem('template') || '' : codeForUrl;
 
-                    if (editor.current) {
-                        loadCodeWithCursor(editor.current, codeForUrl);
+                    if (editor) {
+                        // console.log('Loading code with cursor:', codeForUrl);
+                        loadCodeWithCursor(editor, codeForUrl);
                     }
                     loadTestCases({ slug: newSlug });
-                } else if (editor.current) {
-                    loadCodeWithCursor(editor.current, accessRestrictionMessage);
+                } else if (editor) {
+                    loadCodeWithCursor(editor, accessRestrictionMessage);
                 }
 
                 sendResponse({ status: 'success', message: 'Tab event handled successfully' });

@@ -36,13 +36,11 @@ const extractTestCases = async (tab) => {
         },
     });
 
-    // Send extracted test cases in response
     if (result && result.result) {
         chrome.runtime.sendMessage({ testCase: result.result });
     }
 };
 
-// Listen for messages from the content script or React component
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.requestTestCases) {
         chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {

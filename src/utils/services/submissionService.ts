@@ -1,11 +1,19 @@
+import { isProduction } from "../../data/constants";
 import { getProblemName } from "../dom/getProblemName";
 import { getProblemUrl } from "../dom/getProblemUrl";
 import { getUserId } from "../dom/getUserId";
 import { usageDataHelper } from "../usageDataHelper";
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
-export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmitting: (isSubmitting: boolean) => void, language: string, testCases: any) => {
+export const handleSubmission = async (editor: monaco.editor.IStandaloneCodeEditor | null, setIsSubmitting: (isSubmitting: boolean) => void, language: string, testCases: any) => {
+    if(!editor) {
+        alert("Wait for editor to load");
+        return;
+    }
     const problemUrl = await getProblemUrl();
     const problemName = await getProblemName();
+    problemName;
+    problemUrl;
     const userId = await getUserId();
     
     if(userId.includes("Unknown")) {
@@ -14,7 +22,7 @@ export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmit
     }
     
     setIsSubmitting(true);
-    const editorValue = editor.current?.view?.state?.doc?.toString();
+    const editorValue = editor.getValue();
     let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
     const result = await new Promise((resolve) => {
@@ -55,7 +63,7 @@ export const handleSubmission = async (editor: React.RefObject<any>, setIsSubmit
         });
     });
 
-    if (result) {
+    if (result && isProduction) {
         await usageDataHelper(language, testCases, userId).handleUsageData(editorValue, problemUrl, "SUBMIT", problemName);
     } else {
     }

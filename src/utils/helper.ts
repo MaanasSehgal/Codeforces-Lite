@@ -1,9 +1,8 @@
-import { javascript } from "@codemirror/lang-javascript";
-import { python } from "@codemirror/lang-python";
-import { java } from "@codemirror/lang-java";
-import { cpp } from "@codemirror/lang-cpp";
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+
 import { CodeEntry, TestCaseArray } from "../types/types";
 import { Queue } from "./Queue";
+import { toast } from 'sonner';
 
 // In-memory storage for Map and Queue
 let testCaseMap: Map<string, TestCaseArray> = new Map<string, TestCaseArray>();
@@ -40,37 +39,43 @@ export const getValueFromLanguage = (language: string) => {
             return "34";
         case "kotlin":
             return "88";
+        case 'go':
+            return "32";
+        case 'rust':
+            return "75";
+        case 'ruby':
+            return "67";
         default:
             return "89";
     }
 };
 
 export const getLanguageExtension = (language: string) => {
-    switch (language) {
-        case "javascript":
-            return javascript({ jsx: true });
-        case "python":
-            return python();
-        case "java":
-            return java();
-        case "cpp":
-            return cpp();
-        default:
-            return cpp();
-    }
+    if(language) return '.' + language;
+    // switch (language) {
+    //     case "javascript":
+    //         return javascript({ jsx: true });
+    //     case "python":
+    //         return python();
+    //     case "java":
+    //         return java();
+    //     case "cpp":
+    //         return cpp();
+    //     default:
+    //         return cpp();
+    // }
 };
 
 export const getSlug = (problemUrl: string): string | null => {
     try {
         const url = new URL(problemUrl);
-        url.search = ""; // Clear query params
+        url.search = "";
         const hostname = url.hostname;
         let match: RegExpMatchArray | null;
 
         switch (hostname) {
             case "codeforces.com":
             case "www.codeforces.com":
-                // Handle both problemset and contest URLs
                 match = url.toString().match(/\/problemset\/problem\/([0-9]+)\/([^\/]+)|\/contest\/([0-9]+)\/problem\/([^\/]+)|\/gym\/([0-9]+)\/problem\/([^\/]+)/);
 
                 if (match) {
@@ -91,5 +96,64 @@ export const getSlug = (problemUrl: string): string | null => {
         }
     } catch (error) {
         return null;
+    }
+};
+
+const getLangForBeautify = (language: string) => {
+    switch (language) {
+        case "cpp":
+            return "c++";
+        case "java":
+            return "java";
+        case "python":
+            return "python";
+        case "javascript":
+            return "js_node";
+        case "kotlin":
+            return "kotlin";
+        case 'go':
+            return 'go';
+        case 'rust':
+            return 'rust';
+        case 'ruby':
+            return 'ruby';
+        default:
+            return "c++";
+    }
+}
+
+export const formatCode = async (monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>, language: string, tabIndent: number, setIsFormatting: (isFormatting: boolean) => void) => {
+    if (!monacoInstanceRef.current) return;
+    
+    try {
+        setIsFormatting(true);
+        
+        const currentCode = monacoInstanceRef.current.getValue();
+        
+        const response = await fetch('https://www.onlinegdb.com/beautify', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                src: currentCode,
+                lang: getLangForBeautify(language),
+                ts: tabIndent,
+            }),
+        });
+        
+        if (!response.ok) {
+            throw new Error(`Failed to format code: ${response.statusText}`);
+        }
+        
+        const result = await response.json();
+        
+        if (result.src) {
+            monacoInstanceRef.current.setValue(result.src);
+        }
+    } catch (error) {
+        toast.error(`Something went wrong. Please try again later.`);
+    } finally {
+        setIsFormatting(false);
     }
 };

@@ -33,7 +33,6 @@ function adjustPythonCode(code: string): string {
         if (!/def\s+main\s*\(/.test(code)) {
             code = `def main():\n    ${code.replace(/\n/g, '\n    ')}`;
         }
-        // Add the main guard clause
         return `${code}\n\nif __name__ == "__main__":\n    main()`;
     }
     return code;

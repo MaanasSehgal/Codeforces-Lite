@@ -1,8 +1,7 @@
 
-import { useRef, useEffect } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useCFStore } from '../../zustand/useCFStore';
-import { getCodeMap, getSlug } from '../../utils/helper';
-import CodeEditor from './editor/CodeEditor';
+import { formatCode, getCodeMap, getSlug } from '../../utils/helper';
 import TopBar from './editor/TopBar';
 import TestCases from './testcases/TestCases';
 import { ResizablePanel } from '../global/ResizablePanel';
@@ -15,6 +14,8 @@ import { initializeStorage } from '../../utils/services/storageService';
 import { loadCodeWithCursor } from '../../utils/codeHandlers';
 import { accessRestrictionMessage } from '../../data/constants';
 import ApiLimitAlert from '../global/popups/ApiLimitAlert';
+import CodeEditor from './editor/CodeEditor';
+import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 interface MainProps {
     setShowOptions: (show: boolean) => void;
@@ -23,7 +24,7 @@ interface MainProps {
 }
 
 const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
-    const editor = useRef<any>(null);
+    const monacoInstanceRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
     // Zustand store hooks
     const {
@@ -39,10 +40,11 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
     } = useCFStore();
 
     // Custom hooks
-    const { runCode, showApiLimitAlert, setShowApiLimitAlert } = useCodeExecution(editor);
-    const { handleResetCode, handleLanguageChange, handleFontSizeChange, handleRedirectToLatestSubmission } = useCodeManagement(editor);
+    const { runCode, showApiLimitAlert, setShowApiLimitAlert } = useCodeExecution(monacoInstanceRef.current);
+    const { handleResetCode, handleLanguageChange, handleFontSizeChange, handleRedirectToLatestSubmission } = useCodeManagement(monacoInstanceRef);
     const { loadTestCases, setupTestCaseListener } = useTestCases();
     const { handleTabEvents } = useTabEvents();
+    const [isFormating, setIsFormating] = useState(false);
 
     useEffect(() => {
         setTimeout(() => {
@@ -67,10 +69,14 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
                     let codeForUrl = getCodeMap().get(newSlug)?.code || '';
                     codeForUrl = codeForUrl === '' ? localStorage.getItem('template') || '' : codeForUrl;
 
-                    loadCodeWithCursor(editor.current, codeForUrl);
+                    setTimeout(() => {
+                        loadCodeWithCursor(monacoInstanceRef.current, codeForUrl);
+                    }, 500);
                     loadTestCases({ slug: newSlug });
                 } else {
-                    loadCodeWithCursor(editor.current, accessRestrictionMessage);
+                    setTimeout(() => {
+                        loadCodeWithCursor(monacoInstanceRef.current, accessRestrictionMessage);
+                    }, 500);
                 }
             }
         };
@@ -83,7 +89,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
             if (event.ctrlKey && event.key === 'Enter') {
                 event.stopPropagation();
                 event.preventDefault();
-                handleSubmission(editor, setIsSubmitting, language, testCases);
+                handleSubmission(monacoInstanceRef.current, setIsSubmitting, language, testCases);
                 return false;
             }
         };
@@ -108,8 +114,22 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
     }, [runCode]);
 
     useEffect(() => {
+        if (monacoInstanceRef.current) {
+            if (!currentSlug) {
+                monacoInstanceRef.current.updateOptions({
+                    readOnly: true
+                });
+            } else {
+                monacoInstanceRef.current.updateOptions({
+                    readOnly: false
+                });
+            }
+        }
+    }, [currentSlug, monacoInstanceRef.current]);
+
+    useEffect(() => {
         const listener = (message: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
-            return handleTabEvents(message, sender, sendResponse, editor);
+            return handleTabEvents(message, sender, sendResponse, monacoInstanceRef.current);
         };
         chrome.runtime.onMessage.addListener(listener);
         return () => {
@@ -124,7 +144,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
             />
             <TopBar
                 theme={theme as "light" | "dark"}
-                handleClick={() => handleSubmission(editor, setIsSubmitting, language, testCases)}
+                handleClick={() => handleSubmission(monacoInstanceRef.current, setIsSubmitting, language, testCases)}
                 setShowOptions={setShowOptions}
                 language={language}
                 handleLanguageChange={handleLanguageChange}
@@ -137,18 +157,18 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
                 isSubmitting={isSubmitting}
                 runCode={runCode}
                 testCases={testCases.testCases}
+                isFormating={isFormating}
+                handleFormatCode={() => formatCode(monacoInstanceRef, language, tabIndent, setIsFormating)}
             />
 
             <div className="w-full h-[calc(100vh-88px)]">
                 <ResizablePanel
                     top={
                         <CodeEditor
-                            ref={editor}
-                            theme={theme as "light" | "dark"}
+                            monacoInstanceRef={monacoInstanceRef}
                             language={language}
                             fontSize={fontSize}
                             tabIndent={tabIndent}
-                            currentSlug={currentSlug}
                         />
                     }
                     bottom={<TestCases />}

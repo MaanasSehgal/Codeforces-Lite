@@ -1,9 +1,10 @@
 const currentURL = window.location.href;
 let styleElement;
+let customStyleElement;
 
 const injectDarkModeCSS = () => {
-  styleElement = document.createElement("style");
-  styleElement.innerHTML = `
+    styleElement = document.createElement("style");
+    styleElement.innerHTML = `
             html {
                 background-color: #000000 !important;
             }
@@ -106,45 +107,75 @@ const injectDarkModeCSS = () => {
                 color: #121212;
             }
         `;
-  document.addEventListener("DOMContentLoaded", () => {
-    document.head.appendChild(styleElement);
-  });
-
-  if (document.head) {
-    document.head.appendChild(styleElement);
-  } else {
-    const observer = new MutationObserver(() => {
-      if (document.head) {
+    document.addEventListener("DOMContentLoaded", () => {
         document.head.appendChild(styleElement);
-        observer.disconnect();
-      }
     });
-    observer.observe(document, { childList: true, subtree: true });
-  }
+
+    if (document.head) {
+        document.head.appendChild(styleElement);
+    } else {
+        const observer = new MutationObserver(() => {
+            if (document.head) {
+                document.head.appendChild(styleElement);
+                observer.disconnect();
+            }
+        });
+        observer.observe(document, { childList: true, subtree: true });
+    }
+
+    chrome.storage.local.get("themeCustomSettings", (result) => {
+        if (result.themeCustomSettings) {
+            applyCustomThemeSettings(result.themeCustomSettings);
+        }
+    });
+};
+
+const applyCustomThemeSettings = (settings) => {
+    if (customStyleElement) {
+        customStyleElement.remove();
+    }
+
+    customStyleElement = document.createElement("style");
+    customStyleElement.innerHTML = `
+      html {
+        filter: 
+          brightness(${settings.brightness}%) 
+          contrast(${settings.contrast}%) 
+          sepia(${settings.sepia}%) 
+          grayscale(${settings.grayscale}%)
+          invert(${settings.invert}%) !important;
+      }
+    `;
+
+    if (document.head) {
+        document.head.appendChild(customStyleElement);
+    }
 };
 
 const sortToggleImgInvert = () => {
-  if (!currentURL.includes("codeforces.com/problemset")) {
-    return;
-  }
-  const anchorElements = document.querySelectorAll("a.non-decorated");
+    if (!currentURL.includes("codeforces.com/problemset")) {
+        return;
+    }
+    const anchorElements = document.querySelectorAll("a.non-decorated");
 
-  anchorElements.forEach((anchor) => {
-    const imgElements = anchor.querySelectorAll("img");
-
-    imgElements[1].classList.add("custom-image");
-  });
+    anchorElements.forEach((anchor) => {
+        const imgElements = anchor.querySelectorAll("img");
+        if (imgElements && imgElements.length > 1) {
+            imgElements[1].classList.add("custom-image");
+        }
+    });
 };
 
 const removeSortToggleImgInvert = () => {
-  if (!currentURL.includes("codeforces.com/problemset")) {
-    return;
-  }
-  const anchorElements = document.querySelectorAll("a.non-decorated");
+    if (!currentURL.includes("codeforces.com/problemset")) {
+        return;
+    }
+    const anchorElements = document.querySelectorAll("a.non-decorated");
 
-  anchorElements.forEach((anchor) => {
-    const imgElements = anchor.querySelectorAll("img");
-
-    imgElements[1].classList.remove("custom-image");
-  });
+    anchorElements.forEach((anchor) => {
+        const imgElements = anchor.querySelectorAll("img");
+        if (imgElements && imgElements.length > 1) {
+            imgElements[1].classList.remove("custom-image");
+        }
+    });
 };
