@@ -1,6 +1,7 @@
 /// <reference types="node" />
 
 import path from "path";
+import * as webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
@@ -8,8 +9,8 @@ import BundleAnalyzerPlugin from "webpack-bundle-analyzer";
 
 const targetBrowser = process.env.TARGET_BROWSER || 'chrome';
 
-module.exports = {
-    mode: process.env.NODE_ENV || 'development',
+const config: webpack.Configuration = {
+    mode: (process.env.NODE_ENV as "development" | "production" | "none") || 'development',
     entry: {
         sidepanel: path.resolve(__dirname, 'src/main.tsx'),
     },
@@ -116,3 +117,5 @@ module.exports = {
     },
     devtool: process.env.NODE_ENV === 'development' ? 'source-map' : 'hidden-source-map',
 };
+
+export default config;

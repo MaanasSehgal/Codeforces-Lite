@@ -9,6 +9,7 @@
         }
     ],
     "compilerOptions": {
+        "types": ["node"],
         "sourceMap": true,
     }
 }
