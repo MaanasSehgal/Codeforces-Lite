@@ -1,3 +1,8 @@
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 import path from "path";
 import * as webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
@@ -92,7 +97,6 @@ const config: webpack.Configuration = {
                     from: path.resolve(__dirname, 'public/assets/styles'),
                     to: path.resolve(__dirname, `dist/${targetBrowser}/assets/styles`),
                 },
-                // conditionally copy serviceWorker.js only for Chrome
                 ...(targetBrowser === 'chrome' ? [
                     {
                         from: path.resolve(__dirname, 'public/assets/scripts/serviceWorker.js'),
