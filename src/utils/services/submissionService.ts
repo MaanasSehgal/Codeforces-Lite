@@ -4,6 +4,7 @@ import { getProblemUrl } from "../dom/getProblemUrl";
 import { getUserId } from "../dom/getUserId";
 import { usageDataHelper } from "../usageDataHelper";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { browserAPI } from "../browser/browserDetect";
 
 export const handleSubmission = async (editor: monaco.editor.IStandaloneCodeEditor | null, setIsSubmitting: (isSubmitting: boolean) => void, language: string, testCases: any) => {
     if(!editor) {
@@ -23,10 +24,10 @@ export const handleSubmission = async (editor: monaco.editor.IStandaloneCodeEdit
     
     setIsSubmitting(true);
     const editorValue = editor.getValue();
-    let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    let [tab] = await browserAPI.tabs.query({ active: true, currentWindow: true });
 
     const result = await new Promise((resolve) => {
-        chrome.scripting.executeScript({
+        browserAPI.scripting.executeScript({
             target: { tabId: tab.id! },
             func: function(codeToSubmit) {
                 return new Promise((resolveInner) => {

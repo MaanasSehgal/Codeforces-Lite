@@ -1,8 +1,10 @@
 // Functions in respective folders
 // changeLoginPageUI, changeProblemSetPageUI, removeLoginPageUI, removeProblemSetPageUI-> changeUIFunctions
 // injectDarkModeCSS, sortToggleImgInvert, removeSortToggleImgInvert -> darkModeFunctions
+const isFirefox = typeof browser !== 'undefined';
+const browserAPI = isFirefox ? browser : chrome;
 
-chrome.storage.local.get(["changeUI", "theme", "themeCustomSettings", "defaultThemeSettings"]).then((result) => {
+browserAPI.storage.local.get(["changeUI", "theme", "themeCustomSettings", "defaultThemeSettings"]).then((result) => {
     if (result.changeUI === "true") {
         document.addEventListener("DOMContentLoaded", () => {
             changeLoginPageUI();
@@ -22,14 +24,14 @@ chrome.storage.local.get(["changeUI", "theme", "themeCustomSettings", "defaultTh
     }
 });
 
-chrome.storage.onChanged.addListener((changes, areaName) => {
+browserAPI.storage.onChanged.addListener((changes, areaName) => {
     if (areaName === "local") {
         if (changes.theme) {
             if (changes.theme.newValue === "dark") {
                 injectDarkModeCSS();
                 sortToggleImgInvert();
 
-                chrome.storage.local.get(["themeCustomSettings", "defaultThemeSettings"], (result) => {
+                browserAPI.storage.local.get(["themeCustomSettings", "defaultThemeSettings"], (result) => {
                     if (result.themeCustomSettings) {
                         applyCustomThemeSettings(result.themeCustomSettings);
                     } else if (result.defaultThemeSettings) {
@@ -62,7 +64,7 @@ chrome.storage.onChanged.addListener((changes, areaName) => {
     }
 });
 
-chrome.runtime.onMessage.addListener((message, sendResponse) => {
+browserAPI.runtime.onMessage.addListener((message, sendResponse) => {
     if (message.type === 'APPLY_CUSTOM_THEME') {
         applyCustomThemeSettings(message.settings);
         sendResponse({ success: true });

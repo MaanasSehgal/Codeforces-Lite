@@ -11,6 +11,7 @@ import CodeEditor from "../main/editor/CodeEditor";
 import { useCFStore } from "../../zustand/useCFStore";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { useCodeManagement } from "../../utils/hooks/useCodeManagement";
+import { browserAPI } from "../../utils/browser/browserDetect";
 
 const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, tabIndent }) => {
     const monacoInstanceRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -32,14 +33,14 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, ta
                 grayscale: 0
             };
             localStorage.setItem('defaultThemeSettings', JSON.stringify(initialSettings));
-            chrome.storage.local.set({ defaultThemeSettings: initialSettings });
+            browserAPI.storage.local.set({ defaultThemeSettings: initialSettings });
         }
 
         const themeCustomSettings = localStorage.getItem('themeCustomSettings');
         if (!themeCustomSettings) {
             const initialSettings = JSON.parse(defaultThemeSettings || '{}');
             localStorage.setItem('themeCustomSettings', JSON.stringify(initialSettings));
-            chrome.storage.local.set({ themeCustomSettings: initialSettings });
+            browserAPI.storage.local.set({ themeCustomSettings: initialSettings });
         }
     }, []);
 
@@ -49,12 +50,12 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, ta
         } else {
             document.documentElement.classList.remove('dark');
         }
-        chrome.storage.local.set({ theme: theme });
+        browserAPI.storage.local.set({ theme: theme });
         localStorage.setItem('theme', theme);
     }, [theme]);
 
     useEffect(() => {
-        chrome.storage.local.set({ changeUI: changeUI });
+        browserAPI.storage.local.set({ changeUI: changeUI });
         localStorage.setItem('changeUI', changeUI);
     }, [changeUI]);
 

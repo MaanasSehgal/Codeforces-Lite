@@ -14,7 +14,7 @@ export const useTabEvents = () => {
 
     const handleTabEvents = async (
         message: any,
-        _sender: chrome.runtime.MessageSender,
+        _sender: any,
         sendResponse: (response: any) => void,
         editor: monaco.editor.IStandaloneCodeEditor | null
     ) => {

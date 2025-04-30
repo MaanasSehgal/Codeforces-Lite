@@ -1,6 +1,8 @@
+import { browserAPI } from "../browser/browserDetect";
+
 export const getTimeLimit = async () => {
-    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-    const [result] = await chrome.scripting.executeScript({
+    const [tab] = await browserAPI.tabs.query({ active: true, currentWindow: true });
+    const [result] = await browserAPI.scripting.executeScript({
         target: { tabId: tab.id! },
         func: () => {
             const timeLimitElement = document.querySelector('.time-limit');

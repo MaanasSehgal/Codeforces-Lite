@@ -4,6 +4,7 @@ import { MAX_TEST_CASES } from '../../../data/constants';
 import { useCFStore } from '../../../zustand/useCFStore';
 import { CircleX, Plus, Copy, Check, RotateCcw, Terminal, LoaderCircle } from 'lucide-react';
 import TestCaseNotAccess from './TestCaseNotAccess';
+import { browserAPI } from '../../../utils/browser/browserDetect';
 
 const TestCases = () => {
     const [selectedTab, setSelectedTab] = useState<number>(0);
@@ -145,7 +146,7 @@ const TestCases = () => {
     };
 
     const resetTestCases = () => {
-        chrome.runtime.sendMessage({ requestTestCases: true });
+        browserAPI.runtime.sendMessage({ requestTestCases: true });
         setSelectedTab(0);
     };
 

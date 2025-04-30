@@ -52,7 +52,6 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, tabIndent, template
 
         return () => {
             if (monacoInstanceRef.current) {
-                console.log('Disposing Monaco Editor instance...');
                 monacoInstanceRef.current.dispose();
                 monacoInstanceRef.current = null;
             }

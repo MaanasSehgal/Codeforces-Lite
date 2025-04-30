@@ -1,3 +1,5 @@
+import { browserAPI } from "./browser/browserDetect";
+
 export interface ThemeSettings {
     brightness: number;
     contrast: number;
@@ -21,24 +23,24 @@ export const getThemeSettings = (): ThemeSettings => {
 
 export const saveThemeSettings = (settings: ThemeSettings): void => {
     localStorage.setItem('themeCustomSettings', JSON.stringify(settings));
-    chrome.storage.local.set({ themeCustomSettings: settings });
+    browserAPI.storage.local.set({ themeCustomSettings: settings });
 };
 
 export const resetThemeSettings = (): ThemeSettings => {
     localStorage.setItem('themeCustomSettings', JSON.stringify(defaultThemeSettings));
-    chrome.storage.local.set({ themeCustomSettings: defaultThemeSettings });
+    browserAPI.storage.local.set({ themeCustomSettings: defaultThemeSettings });
     return defaultThemeSettings;
 };
 
 export const applyThemeSettings = (settings: ThemeSettings): void => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+    browserAPI.tabs.query({ active: true, currentWindow: true }, (tabs) => {
         if (tabs[0]?.id) {
-            chrome.tabs.sendMessage(tabs[0].id, {
+            browserAPI.tabs.sendMessage(tabs[0].id, {
                 type: 'APPLY_CUSTOM_THEME',
                 settings
             }, (response) => {
-                if (chrome.runtime.lastError) {
-                    console.log('Could not establish connection:', chrome.runtime.lastError.message);
+                if (browserAPI.runtime.lastError) {
+                    console.log('Could not establish connection:', browserAPI.runtime.lastError.message);
                 }
             });
         }

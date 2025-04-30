@@ -1,3 +1,8 @@
+if (typeof isFirefox === 'undefined') {
+    let isFirefox = typeof browser !== 'undefined';
+    let browserAPI = isFirefox ? browser : chrome;
+}
+
 const currentURL = window.location.href;
 let styleElement;
 let customStyleElement;
@@ -123,7 +128,7 @@ const injectDarkModeCSS = () => {
         observer.observe(document, { childList: true, subtree: true });
     }
 
-    chrome.storage.local.get("themeCustomSettings", (result) => {
+    browserAPI.storage.local.get("themeCustomSettings", (result) => {
         if (result.themeCustomSettings) {
             applyCustomThemeSettings(result.themeCustomSettings);
         }

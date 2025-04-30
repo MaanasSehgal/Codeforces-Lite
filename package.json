@@ -5,8 +5,16 @@
     "type": "module",
     "scripts": {
         "start": "webpack serve --mode development",
-        "build": "webpack --mode production",
-        "build:dev": "webpack --mode development"
+        "build": "npm run build:chrome && npm run build:firefox",
+        "build:chrome": "cross-env TARGET_BROWSER=chrome webpack --mode production",
+        "build:firefox": "cross-env TARGET_BROWSER=firefox webpack --mode production",
+        "build:dev:chrome": "cross-env TARGET_BROWSER=chrome webpack --mode development",
+        "build:dev:firefox": "cross-env TARGET_BROWSER=firefox webpack --mode development",
+        "build:dev": "npm run build:dev:chrome && npm run build:dev:firefox",
+        "package": "npm run build && npm run zip",
+        "zip": "npm run zip:chrome && npm run zip:firefox",
+        "zip:chrome": "cd dist/chrome && bestzip ../../releases/codeforces-lite-chrome-v$npm_package_version.zip *",
+        "zip:firefox": "cd dist/firefox && bestzip ../../releases/codeforces-lite-firefox-v$npm_package_version.zip *"
     },
     "dependencies": {
         "@monaco-editor/react": "^4.7.0",
@@ -30,9 +38,11 @@
         "@types/react": "^18.3.3",
         "@types/react-dom": "^18.3.0",
         "@types/react-resizable": "^3.0.8",
+        "@types/webextension-polyfill": "^0.12.3",
         "autoprefixer": "^10.4.21",
         "babel-loader": "^10.0.0",
         "copy-webpack-plugin": "^13.0.0",
+        "cross-env": "^7.0.3",
         "css-loader": "^7.1.2",
         "eslint": "^9.9.0",
         "eslint-plugin-react-hooks": "^5.1.0-rc.0",

@@ -128,7 +128,6 @@ const TopBar: React.FC<TopBarProps> = ({
                 <div className={`flex items-center gap-2 cursor-pointer`}>
                     <Timer theme={theme} />
                     <button
-                        onClick={handleFormatCode}
                         disabled={!currentSlug || isFormating}
                         title='Format Code'
                     >

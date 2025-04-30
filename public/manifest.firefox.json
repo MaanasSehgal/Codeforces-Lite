@@ -1,0 +1,80 @@
+{
+    "manifest_version": 3,
+    "version": "1.3.7",
+    "name": "Codeforces Lite - Dark Mode & Code Runner",
+    "description": "Provides dark theme and code runner for Codeforces",
+    "author": "Devendra Suryavanshi & Maanas Sehgal",
+    "browser_specific_settings": {
+        "gecko": {
+            "id": "codeforces-lite@extension.com",
+            "strict_min_version": "109.0"
+        }
+    },
+    "permissions": [
+        "tabs",
+        "storage",
+        "unlimitedStorage",
+        "activeTab",
+        "scripting",
+        "idle"
+    ],
+    "host_permissions": [
+        "http://*/*",
+        "https://*/*"
+    ],
+    "icons": {
+        "16": "assets/icons/codeforces16.png",
+        "32": "assets/icons/codeforces32.png",
+        "48": "assets/icons/codeforces48.png",
+        "128": "assets/icons/codeforces128.png"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "assets/scripts/ftaa-script.js"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ],
+    "content_security_policy": {
+        "extension_pages": "script-src 'self'; object-src 'self';"
+    },
+    "background": {
+        "scripts": [
+            "assets/scripts/browserDetect.js",
+            "assets/scripts/extractTestcases/extractTestcases.js",
+            "assets/scripts/background.js"
+        ],
+        "type": "module"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "https://codeforces.com/*"
+            ],
+            "exclude_matches": [
+                "https://codeforces.com/api/*"
+            ],
+            "css": [
+                "assets/styles/inject-styles.css"
+            ],
+            "js": [
+                "assets/scripts/content.js",
+                "assets/scripts/changeUIFunctions/loginPageChanges.js",
+                "assets/scripts/changeUIFunctions/problemSetPageChanges.js",
+                "assets/scripts/darkModeFunctions/darkMode.js"
+            ],
+            "run_at": "document_start"
+        }
+    ],
+    "sidebar_action": {
+        "default_title": "Codeforces Lite",
+        "default_panel": "index.html",
+        "default_icon": {
+            "16": "assets/icons/codeforces16.png",
+            "32": "assets/icons/codeforces32.png"
+        }
+    }
+}

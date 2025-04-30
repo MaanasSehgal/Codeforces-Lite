@@ -1,8 +1,8 @@
-
 import { useCFStore } from '../../zustand/useCFStore';
 import { getValueFromLanguage } from '../helper';
 import { loadCodeWithCursor } from '../codeHandlers';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { browserAPI } from '../browser/browserDetect';
 
 export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>) => {
     const setLanguage = useCFStore(state => state.setLanguage);
@@ -43,8 +43,8 @@ export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<mona
         localStorage.setItem('preferredLanguage', selectedLanguage);
         const languageValue = getValueFromLanguage(selectedLanguage);
 
-        let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-        chrome.scripting.executeScript(
+        let [tab] = await browserAPI.tabs.query({ active: true, currentWindow: true });
+        browserAPI.scripting.executeScript(
             {
                 target: { tabId: tab.id! },
                 func: (languageValue) => {
@@ -57,7 +57,7 @@ export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<mona
                 },
                 args: [languageValue],
             },
-            () => chrome.runtime.lastError
+            () => browserAPI.runtime.lastError
         );
         if (monaco) {
             monaco.editor.getEditors().forEach(editor => {
@@ -97,9 +97,9 @@ export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<mona
         if (!currentSlug) {
             return;
         }
-        let [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+        let [tab] = await browserAPI.tabs.query({ active: true, currentWindow: true });
 
-        chrome.scripting.executeScript(
+        browserAPI.scripting.executeScript(
             {
                 target: { tabId: tab.id! },
                 func: () => {
@@ -114,8 +114,8 @@ export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<mona
                 },
             },
             () => {
-                if (chrome.runtime.lastError) {
-                    console.error(chrome.runtime.lastError.message);
+                if (browserAPI.runtime.lastError) {
+                    console.error(browserAPI.runtime.lastError.message);
                 }
             }
         );

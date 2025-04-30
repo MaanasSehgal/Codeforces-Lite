@@ -1,4 +1,3 @@
-
 import { useRef, useEffect, useState } from 'react';
 import { useCFStore } from '../../zustand/useCFStore';
 import { formatCode, getCodeMap, getSlug } from '../../utils/helper';
@@ -16,6 +15,7 @@ import { accessRestrictionMessage } from '../../data/constants';
 import ApiLimitAlert from '../global/popups/ApiLimitAlert';
 import CodeEditor from './editor/CodeEditor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { browserAPI } from '../../utils/browser/browserDetect';
 
 interface MainProps {
     setShowOptions: (show: boolean) => void;
@@ -61,7 +61,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
 
     useEffect(() => {
         const getCurrentSlug = async () => {
-            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+            const [tab] = await browserAPI.tabs.query({ active: true, currentWindow: true });
             if (tab && tab.url) {
                 const newSlug = getSlug(tab.url);
                 setCurrentSlug(newSlug);
@@ -128,12 +128,12 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
     }, [currentSlug, monacoInstanceRef.current]);
 
     useEffect(() => {
-        const listener = (message: any, sender: chrome.runtime.MessageSender, sendResponse: (response: any) => void) => {
+        const listener = (message: any, sender: any, sendResponse: (response: any) => void) => {
             return handleTabEvents(message, sender, sendResponse, monacoInstanceRef.current);
         };
-        chrome.runtime.onMessage.addListener(listener);
+        browserAPI.runtime.onMessage.addListener(listener);
         return () => {
-            chrome.runtime.onMessage.removeListener(listener);
+            browserAPI.runtime.onMessage.removeListener(listener);
         };
     }, [currentSlug, testCases]);
     return (

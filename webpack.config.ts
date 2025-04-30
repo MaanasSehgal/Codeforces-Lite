@@ -4,19 +4,22 @@ import CopyWebpackPlugin from "copy-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import BundleAnalyzerPlugin from "webpack-bundle-analyzer";
 
+const targetBrowser = process.env.TARGET_BROWSER || 'chrome';
+
 module.exports = {
     mode: process.env.NODE_ENV || 'development',
     entry: {
         sidepanel: path.resolve(__dirname, 'src/main.tsx'),
     },
     output: {
-        path: path.resolve(__dirname, 'dist'),
+        path: path.resolve(__dirname, `dist/${targetBrowser}`),
         filename: '[name].bundle.js',
         publicPath: '',
         globalObject: 'self',
+        clean: true,
     },
     cache: {
-        type: 'filesystem', // Enable filesystem caching
+        type: 'filesystem',
         buildDependencies: {
             config: [__filename],
         },
@@ -70,21 +73,31 @@ module.exports = {
         new CopyWebpackPlugin({
             patterns: [
                 {
-                    from: path.resolve(__dirname, 'public/manifest.json'),
-                    to: path.resolve(__dirname, 'dist'),
+                    from: path.resolve(__dirname, `public/manifest.${targetBrowser}.json`),
+                    to: path.resolve(__dirname, `dist/${targetBrowser}/manifest.json`),
                 },
                 {
                     from: path.resolve(__dirname, 'public/assets/icons'),
-                    to: path.resolve(__dirname, 'dist/assets/icons'),
+                    to: path.resolve(__dirname, `dist/${targetBrowser}/assets/icons`),
                 },
                 {
                     from: path.resolve(__dirname, 'public/assets/scripts'),
-                    to: path.resolve(__dirname, 'dist/assets/scripts'),
+                    to: path.resolve(__dirname, `dist/${targetBrowser}/assets/scripts`),
+                    globOptions: {
+                        ignore: ['**/serviceWorker.js']
+                    }
                 },
                 {
                     from: path.resolve(__dirname, 'public/assets/styles'),
-                    to: path.resolve(__dirname, 'dist/assets/styles'),
+                    to: path.resolve(__dirname, `dist/${targetBrowser}/assets/styles`),
                 },
+                // conditionally copy serviceWorker.js only for Chrome
+                ...(targetBrowser === 'chrome' ? [
+                    {
+                        from: path.resolve(__dirname, 'public/assets/scripts/serviceWorker.js'),
+                        to: path.resolve(__dirname, `dist/${targetBrowser}/assets/scripts/serviceWorker.js`),
+                    }
+                ] : [])
             ],
         }),
         new MonacoWebpackPlugin({
