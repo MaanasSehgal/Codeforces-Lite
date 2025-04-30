@@ -1,5 +1,3 @@
-/// <reference types="node" />
-
 import path from "path";
 import * as webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
