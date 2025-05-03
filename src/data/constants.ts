@@ -53,4 +53,4 @@ export const DEFAULT_EDITOR_SETTINGS: EditorSettingsTypes = {
      lineNumbers: true,
 };
 
-export const isProduction = false;
+export const isProduction = true;

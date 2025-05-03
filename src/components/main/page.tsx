@@ -31,6 +31,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
         fontSize,
         currentSlug,
         setCurrentSlug,
+        setCurrentUrl,
         setTotalSize,
         testCases,
         isRunning,
@@ -64,6 +65,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
             if (tab && tab.url) {
                 const newSlug = getSlug(tab.url);
                 setCurrentSlug(newSlug);
+                setCurrentUrl(tab.url);
                 if (newSlug) {
                     let codeForUrl = getCodeMap().get(newSlug)?.code || '';
                     codeForUrl = codeForUrl === '' ? localStorage.getItem('template') || '' : codeForUrl;

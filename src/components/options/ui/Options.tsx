@@ -8,18 +8,11 @@ import { toast } from "sonner";
 import EditorSettings from "./EditorSettings";
 
 const Options = ({ theme, setTheme, changeUI, setChangeUI, setOpenConfirmationPopup }: OptionsProps) => {
+    const buttonClass = "w-9 h-9 rounded-xl bg-gray-200 dark:bg-[#2a2a2a] hover:bg-gray-300 dark:hover:bg-[#3a3a3a] transition-all duration-200 flex justify-center items-center shadow-sm";
+
     const currentUrl = useCFStore(state => state.currentUrl);
     const [isThemeCustomizerOpen, setIsThemeCustomizerOpen] = useState(false);
     const [isEditorSettingsOpen, setIsEditorSettingsOpen] = useState(false);
-
-    const buttonClass = "w-9 h-9 rounded-xl bg-gray-200 dark:bg-[#2a2a2a] hover:bg-gray-300 dark:hover:bg-[#3a3a3a] transition-all duration-200 flex justify-center items-center shadow-sm";
-
-    useEffect(() => {
-        if (isThemeCustomizerOpen && (!currentUrl || (currentUrl && !currentUrl.includes('codeforces.com')))) {
-            toast.error('You can only customize the theme while on Codeforces.');
-            setIsThemeCustomizerOpen(false);
-        }
-    }, [currentUrl]);
 
     const handlOpenThemeCustomizer = () => {
         if (!currentUrl || (currentUrl && !currentUrl.includes('codeforces.com'))) {
@@ -28,6 +21,13 @@ const Options = ({ theme, setTheme, changeUI, setChangeUI, setOpenConfirmationPo
         }
         setIsThemeCustomizerOpen(true);
     };
+
+    useEffect(() => {
+        if (isThemeCustomizerOpen && (!currentUrl || (currentUrl && !currentUrl.includes('codeforces.com')))) {
+            toast.error('You can only customize the theme while on Codeforces.');
+            setIsThemeCustomizerOpen(false);
+        }
+    }, [currentUrl]);
 
     return (
         <>
