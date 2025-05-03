@@ -4,7 +4,7 @@
     "name": "Codeforces Lite - Dark Mode & Code Runner",
     "description": "Provides dark theme and code runner for Codeforces",
     "author": "Devendra Suryavanshi & Maanas Sehgal",
-    "short_name": "CF Lite",
+    "short_name": "Codeforces Lite",
     "side_panel": {
         "default_path": "index.html"
     },
