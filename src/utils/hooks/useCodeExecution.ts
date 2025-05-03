@@ -20,6 +20,10 @@ const languageMap: { [key: string]: number } = {
     'ruby': 72,
 };
 
+const compilerOptionsMap: { [key: string]: string } = {
+    'cpp': '-D ONLINE_JUDGE'
+};
+
 export const executionState = {
     abortController: null as AbortController | null,
     isExecuting: false,
@@ -107,6 +111,7 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
         source_code: btoa(adjustCodeForJudge0({ code, language })),
         stdin: btoa(input),
         cpu_time_limit: timeLimit,
+        compiler_options: compilerOptionsMap[language] || null,
     });
 
     const processResults = async (tokens: string[], apiKey: string, region: string = 'AUTO') => {
