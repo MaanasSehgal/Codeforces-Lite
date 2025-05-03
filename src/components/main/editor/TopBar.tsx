@@ -105,7 +105,21 @@ const TopBar: React.FC<TopBarProps> = ({
             <div className='w-full flex items-center justify-between py-2 px-2'>
                 <div className='text-black flex items-center gap-2'>
                     {/* Language Selector */}
-                    <select disabled={!currentSlug} value={language} onChange={handleLanguageChange} className={`${!currentSlug && "cursor-not-allowed"} bg-white dark:bg-zinc-800 border border-gray-300 text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500`}>
+                    <select
+                        disabled={!currentSlug}
+                        value={language}
+                        onChange={handleLanguageChange}
+                        className={`
+                            ${!currentSlug && "cursor-not-allowed opacity-70"} 
+                            bg-zinc-200 dark:bg-zinc-800  
+                            text-gray-700 dark:text-zinc-100 
+                            rounded-md 
+                            shadow-sm 
+                            focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
+                            text-sm
+                            transition-all duration-200 py-1
+                        `}
+                    >
                         <option className='text-black dark:text-zinc-100' value="cpp">C++</option>
                         <option className='text-black dark:text-zinc-100' value="java">Java</option>
                         <option className='text-black dark:text-zinc-100' value="python">Python</option>
@@ -117,7 +131,21 @@ const TopBar: React.FC<TopBarProps> = ({
                     </select>
 
                     {/* Font Size Selector */}
-                    <select disabled={!currentSlug} value={fontSize} onChange={handleFontSizeChange} className={`${!currentSlug && "cursor-not-allowed"} bg-white dark:bg-zinc-800 border border-gray-300 text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500`}>
+                    <select
+                        disabled={!currentSlug}
+                        value={fontSize}
+                        onChange={handleFontSizeChange}
+                        className={`
+                            ${!currentSlug && "cursor-not-allowed opacity-70"} 
+                            bg-zinc-200 dark:bg-zinc-800
+                            text-gray-700 dark:text-zinc-100 
+                            rounded-md 
+                            shadow-sm 
+                            focus:outline-none focus:ring-1 focus:ring-blue-500 focus:border-blue-500
+                            text-sm
+                            transition-all duration-200 py-1
+                        `}
+                    >
                         <option className='text-black dark:text-zinc-100' value="12">12px</option>
                         <option className='text-black dark:text-zinc-100' value="14">14px</option>
                         <option className='text-black dark:text-zinc-100' value="16">16px</option>

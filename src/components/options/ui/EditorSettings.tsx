@@ -7,6 +7,7 @@ import { useEditorSettings } from '../../../utils/hooks/useEditorSettings';
 import CodeEditor from '../../main/editor/CodeEditor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { PREVIEW_CODE } from '../../../data/constants';
+import { formatCode } from '../../../utils/helper';
 
 interface EditorSettingsProps {
     isOpen: boolean;
@@ -118,7 +119,10 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                             </label>
                                             <select
                                                 value={editorSettings.indentSize || 4}
-                                                onChange={(e) => setEditorSettings({ ...editorSettings, indentSize: Number(e.target.value) })}
+                                                onChange={(e) => { 
+                                                    setEditorSettings({ ...editorSettings, indentSize: Number(e.target.value) }) 
+                                                    formatCode(monacoInstanceRef, language);
+                                                }}
                                                 className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                                 aria-label="Select tab indent size"
                                             >

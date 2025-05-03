@@ -125,12 +125,12 @@ const getLangForBeautify = (language: string) => {
     }
 }
 
-export const formatCode = async (monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>, language: string, setIsFormatting: (isFormatting: boolean) => void) => {
+export const formatCode = async (monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>, language: string, setIsFormatting?: (isFormatting: boolean) => void) => {
     if (!monacoInstanceRef.current) return;
     const editorSettings = getEditorSettings();
     
     try {
-        setIsFormatting(true);
+        setIsFormatting && setIsFormatting(true);
         const currentCode = monacoInstanceRef.current.getValue();
         
         const response = await fetch('https://www.onlinegdb.com/beautify', {
@@ -157,6 +157,6 @@ export const formatCode = async (monacoInstanceRef: React.MutableRefObject<monac
     } catch (error) {
         toast.error(`Something went wrong. Please try again later.`);
     } finally {
-        setIsFormatting(false);
+        setIsFormatting && setIsFormatting(false);
     }
 };

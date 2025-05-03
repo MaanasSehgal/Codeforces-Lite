@@ -36,7 +36,7 @@ const Timer = ({ theme = 'light' }: { theme?: string }) => {
     };
 
     return (
-        <div className='flex items-center justify-center gap-2 bg-zinc-200 dark:bg-zinc-700 text-sm px-2 py-1 rounded-lg'>
+        <div className='flex items-center justify-center gap-2 bg-zinc-200 dark:bg-zinc-800 text-sm px-2 py-1 rounded-lg'>
             <p className='text-[#777777] dark:text-zinc-100'>{formatTime(time)}</p>
             <div onClick={handleStartPause} className='cursor-pointer'>
                 {isActive ? <CirclePause size={16} color={theme === 'light' ? '#666666' : '#ffffff'} /> : <CirclePlay size={16} color={theme === 'light' ? '#666666' : '#ffffff'} />}
