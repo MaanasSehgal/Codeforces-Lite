@@ -61,7 +61,7 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                     >
                         {/* Header */}
                         <div className="sticky top-0 bg-white dark:bg-[#1a1a1a] z-10 px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">
-                            <h2 className="text-xl font-bold dark:text-white flex items-center gap-2">
+                            <h2 className="text-xl font-bold dark:text-white text-black flex items-center gap-2">
                                 <Code size={20} />
                                 Editor Settings
                             </h2>

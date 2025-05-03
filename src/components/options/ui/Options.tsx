@@ -69,7 +69,7 @@ const Options = ({ theme, setTheme, changeUI, setChangeUI, setOpenConfirmationPo
                         <button
                             onClick={() => setIsEditorSettingsOpen(true)}
                             className={buttonClass}
-                            title="Editor settings and snippets"
+                            title="Editor settings"
                         >
                             <Code color={theme === 'light' ? "#111111" : "#ffffff"} />
                         </button>

@@ -81,7 +81,7 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme }) 
                                 <p className="text-xl font-semibold text-gray-800 dark:text-white">Set your default template</p>
                                 <p className="text-[10px] font-semibold text-gray-900 dark:text-gray-300 pr-4">Use symbol <span className="font-[500] px-2 rounded-md bg-gray-300 dark:bg-gray-600">$0</span> to set your default cursor position in template.</p>
                             </div>
-                            <button onClick={() => handleSaveTemplate(monacoInstanceRef.current)} aria-label="Save template" className="h-1/2 bg-green-500 text-white text-sm px-2 py-1 font-bold rounded-lg hover:bg-green-600 transition duration-200 flex items-center gap-1 mt-1">
+                            <button onClick={() => handleSaveTemplate(monacoInstanceRef.current)} aria-label="Save template" className="h-1/2 bg-green-500 text-zinc-900 text-sm px-2 py-1 font-bold rounded-lg hover:bg-green-600 transition duration-200 flex items-center gap-1 mt-1">
                                 <Save size={18} />
                                 Save
                             </button>

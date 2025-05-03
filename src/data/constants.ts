@@ -25,18 +25,23 @@ Code Editor Access:
 `;
 
 export const PREVIEW_CODE = 
-`#include <iostream>
+`#include <bits/stdc++.h>
 using namespace std;
 
-// Returns the nth Fibonacci number
-int fib(int n) {
-    int a = 0, b = 1;
-    while (n--) b += a, a = b - a;
-    return a;
+// Checks if a number is prime
+bool isPrime(int n) {
+    if (n <= 1) return false;
+    for (int i = 2; i * i <= n; i++) {
+        if (n % i == 0) return false;
+    }
+    return true;
 }
 
 int main() {
-    cout << fib(10);
+    int n;
+    cin >> n;
+    if (isPrime(n)) cout << "YES\n";
+    else cout << "NO\n";
     return 0;
 }
 `;
