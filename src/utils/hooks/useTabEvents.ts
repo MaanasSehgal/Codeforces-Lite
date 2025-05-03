@@ -7,6 +7,7 @@ import { useTestCases } from './useTestCases';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 export const useTabEvents = () => {
+    const setCurrentUrl = useCFStore(state => state.setCurrentUrl);
     const currentSlug = useCFStore(state => state.currentSlug);
     const setCurrentSlug = useCFStore(state => state.setCurrentSlug);
     const testCases = useCFStore(state => state.testCases);
@@ -26,6 +27,7 @@ export const useTabEvents = () => {
                 message.type === 'USER_RETURNED'
             ) {
                 const newUrl = message.url;
+                setCurrentUrl(newUrl);
 
                 if (currentSlug) {
                     await saveCodeForSlug(currentSlug, editor, useCFStore.getState().totalSize, useCFStore.getState().setTotalSize);

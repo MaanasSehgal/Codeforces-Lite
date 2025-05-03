@@ -7,8 +7,6 @@ import { browserAPI } from '../browser/browserDetect';
 export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>) => {
     const setLanguage = useCFStore(state => state.setLanguage);
     const setFontSize = useCFStore(state => state.setFontSize);
-    const setEditorTheme = useCFStore(state => state.setEditorTheme);
-    const setTabIndent = useCFStore(state => state.setTabIndent);
     const currentSlug = useCFStore(state => state.currentSlug);
 
     const handleResetCode = () => {
@@ -18,24 +16,6 @@ export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<mona
         const temmplateCode = localStorage.getItem('template') || '';
         loadCodeWithCursor(monacoInstanceRef.current, temmplateCode);
     };
-
-    const handleTabIndentChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedIndent = parseInt(e.target.value, 10);
-        setTabIndent(selectedIndent);
-        localStorage.setItem('tabIndent', selectedIndent.toString());
-        if (monaco) {
-            monaco.editor.getEditors().forEach(editor => {
-                const model = editor.getModel();
-                if (model) {
-                    model.updateOptions({
-                        tabSize: selectedIndent,
-                        indentSize: selectedIndent
-                    });
-                }
-            });
-        }
-    }
-
 
     const handleLanguageChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
         const selectedLanguage = e.target.value;
@@ -83,16 +63,6 @@ export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<mona
         }
     };
 
-    const handleEditorThemeChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-        const selectedTheme = e.target.value;
-        setEditorTheme(selectedTheme);
-        localStorage.setItem('preferredEditorTheme', selectedTheme);
-        if (monaco) {
-            monaco.editor.setTheme(selectedTheme);
-            // console.log('Theme changed to:', selectedTheme);
-        }
-    };
-
     const handleRedirectToLatestSubmission = async () => {
         if (!currentSlug) {
             return;
@@ -124,10 +94,8 @@ export const useCodeManagement = (monacoInstanceRef: React.MutableRefObject<mona
 
     return {
         handleResetCode,
-        handleTabIndentChange,
         handleLanguageChange,
         handleFontSizeChange,
-        handleEditorThemeChange,
         handleRedirectToLatestSubmission
     };
 };

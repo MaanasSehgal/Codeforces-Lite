@@ -1,14 +1,33 @@
-import { CircleCheck, CircleX, Moon, Palette, Settings, SunMedium, Trash2 } from "lucide-react";
+import { CircleCheck, CircleX, Code, Moon, Settings, SunMedium, Trash2 } from "lucide-react";
 import { OptionsProps } from "../../../types/types";
 import Option from "./Option";
 import { useCFStore } from "../../../zustand/useCFStore";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ThemeCustomizer from "./ThemeCustomizer";
+import { toast } from "sonner";
+import EditorSettings from "./EditorSettings";
 
-const Options = ({ theme, setTheme, changeUI, setChangeUI, tabIndent, setOpenConfirmationPopup, handleTabIndent, handleEditorThemeChange }: OptionsProps) => {
-    const editorTheme = useCFStore(state => state.editorTheme);
-    const editorThemeList = useCFStore(state => state.editorThemeList);
+const Options = ({ theme, setTheme, changeUI, setChangeUI, setOpenConfirmationPopup }: OptionsProps) => {
+    const currentUrl = useCFStore(state => state.currentUrl);
     const [isThemeCustomizerOpen, setIsThemeCustomizerOpen] = useState(false);
+    const [isEditorSettingsOpen, setIsEditorSettingsOpen] = useState(false);
+
+    const buttonClass = "w-9 h-9 rounded-xl bg-gray-200 dark:bg-[#2a2a2a] hover:bg-gray-300 dark:hover:bg-[#3a3a3a] transition-all duration-200 flex justify-center items-center shadow-sm";
+
+    useEffect(() => {
+        if (isThemeCustomizerOpen && (!currentUrl || (currentUrl && !currentUrl.includes('codeforces.com')))) {
+            toast.error('You can only customize the theme while on Codeforces.');
+            setIsThemeCustomizerOpen(false);
+        }
+    }, [currentUrl]);
+
+    const handlOpenThemeCustomizer = () => {
+        if (!currentUrl || (currentUrl && !currentUrl.includes('codeforces.com'))) {
+            toast.error('You can only customize the theme while on Codeforces.');
+            return;
+        }
+        setIsThemeCustomizerOpen(true);
+    };
 
     return (
         <>
@@ -17,62 +36,68 @@ const Options = ({ theme, setTheme, changeUI, setChangeUI, tabIndent, setOpenCon
                 onClose={() => setIsThemeCustomizerOpen(false)}
                 theme={theme}
             />
+            <EditorSettings
+                isOpen={isEditorSettingsOpen}
+                onClose={() => setIsEditorSettingsOpen(false)}
+            />
 
-            <div className="w-full flex flex-wrap justify-evenly items-center gap-x-10 max-w-[1200px] mt-4 mx-auto">
-                <Option title="Appearance">
-                    <div className="flex items-center gap-2">
-                        {theme === 'dark' && (
+            <div className="w-full py-4 max-w-3xl mx-auto">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <Option title="Appearance">
+                        <div className="flex items-center gap-2">
+                            {theme === 'dark' && (
+                                <button
+                                    onClick={() => handlOpenThemeCustomizer()}
+                                    className={buttonClass}
+                                    title="Advanced theme settings"
+                                    aria-label="Theme settings"
+                                >
+                                    <Settings size={20} color="#ffffff" />
+                                </button>
+                            )}
+
                             <button
-                                onClick={() => setIsThemeCustomizerOpen(true)}
-                                className="w-8 h-8 rounded-full bg-gray-300 dark:bg-[#333333] hover:bg-gray-400 dark:hover:bg-[#444444] transition duration-200 flex justify-center items-center"
-                                title="Advanced theme settings"
+                                onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')}
+                                className={buttonClass}
+                                aria-label="Toggle theme"
                             >
-                                <Settings color="#ffffff" />
+                                {theme === 'light' ? <Moon size={20} color="#111111" /> : <SunMedium size={20} color="#ffffff" />}
                             </button>
-                        )}
-                        <button onClick={() => setTheme(theme === 'light' ? 'dark' : 'light')} className="w-8 h-8 rounded-full bg-gray-300 dark:bg-[#333333] hover:bg-gray-400 dark:hover:bg-[#444444] transition duration-200 flex justify-center items-center">
-                            {theme === 'light' ? <Moon color="#111111" /> : <SunMedium color="#ffffff" />}
-                        </button>
-                    </div>
-                </Option>
-                <Option title="Change UI">
-                    <button onClick={() => setChangeUI(changeUI === 'true' ? 'false' : 'true')} className="w-8 h-8 rounded-full bg-gray-300 dark:bg-[#333333] hover:bg-gray-400 dark:hover:bg-[#444444] transition duration-200 flex justify-center items-center">
-                        {changeUI === 'true' ? <CircleCheck color={theme === 'light' ? '#22c55e' : '#22c55e'} /> : <CircleX color={'#ef4444'} />}
-                    </button>
-                </Option>
-                <Option title="Delete saved codes">
-                    <button onClick={() => setOpenConfirmationPopup(true)} className="w-8 h-8 rounded-full bg-gray-300 dark:bg-[#333333] hover:bg-gray-400 dark:hover:bg-[#444444] transition duration-200 flex justify-center items-center">
-                        <Trash2 color={'#ef4444'} />
-                    </button>
-                </Option>
-                <Option title="Tab indent">
-                    <select value={tabIndent} onChange={handleTabIndent} className='cursor-pointer bg-gray-300 text-xl font-semibold dark:bg-[#333333] w-10 h-8 hover:bg-gray-400 dark:hover:bg-[#444444] transition duration-200 flex justify-center items-center text-gray-700 dark:text-zinc-100 rounded-full shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500'>
-                        <option className='text-black dark:text-zinc-100' value="2">2</option>
-                        <option className='text-black dark:text-zinc-100' value="4">4</option>
-                        <option className='text-black dark:text-zinc-100' value="6">6</option>
-                        <option className='text-black dark:text-zinc-100' value="8">8</option>
-                    </select>
-                </Option>
-                <Option title="Editor Theme">
-                    <div className="flex items-center">
-                        <Palette className="mr-2 text-gray-700 dark:text-zinc-100" size={16} />
-                        <select
-                            value={editorTheme}
-                            onChange={handleEditorThemeChange}
-                            className="cursor-pointer bg-gray-300 dark:bg-[#333333] hover:bg-gray-400 dark:hover:bg-[#444444] transition duration-200 text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 py-1 px-2 text-sm"
+                        </div>
+                    </Option>
+                    <Option title="Editor Settings">
+                        <button
+                            onClick={() => setIsEditorSettingsOpen(true)}
+                            className={buttonClass}
+                            title="Editor settings and snippets"
                         >
-                            <option value="default" className="text-black dark:text-zinc-100">Default</option>
-                            <option value="vs-dark" className="text-black dark:text-zinc-100">Dark</option>
-                            <option value="vs-light" className="text-black dark:text-zinc-100">Light</option>
-                            <option value="hc-black" className="text-black dark:text-zinc-100">High Contrast</option>
-                            {
-                                Object.keys(editorThemeList).map((theme, index) => (
-                                    <option key={index} value={theme} className="text-black dark:text-zinc-100">{editorThemeList[theme]}</option>
-                                ))
+                            <Code color={theme === 'light' ? "#111111" : "#ffffff"} />
+                        </button>
+                    </Option>
+
+                    <Option title="Change UI">
+                        <button
+                            onClick={() => setChangeUI(changeUI === 'true' ? 'false' : 'true')}
+                            className={buttonClass}
+                            aria-label="Toggle UI mode"
+                        >
+                            {changeUI === 'true'
+                                ? <CircleCheck size={20} color="#22c55e" />
+                                : <CircleX size={20} color="#ef4444" />
                             }
-                        </select>
-                    </div>
-                </Option>
+                        </button>
+                    </Option>
+
+                    <Option title="Delete Saved Codes">
+                        <button
+                            onClick={() => setOpenConfirmationPopup(true)}
+                            className={`${buttonClass} hover:bg-red-100 dark:hover:bg-red-900/30`}
+                            aria-label="Delete saved codes"
+                        >
+                            <Trash2 size={20} color="#ef4444" />
+                        </button>
+                    </Option>
+                </div>
             </div>
         </>
     );

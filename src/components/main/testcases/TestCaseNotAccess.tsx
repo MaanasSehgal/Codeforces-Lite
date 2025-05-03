@@ -23,16 +23,6 @@ const TestCaseNotAccess: React.FC = () => {
                             >
                                 Go to Problemset <ExternalLink size={14} />
                             </a>
-                            or
-                            <a
-                                href="https://track-hub-tan.vercel.app/problems"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                className="flex items-center gap-1 text-blue-500 hover:text-blue-600"
-                            >
-                                Find Perfect Practice Problems <ExternalLink size={14} />
-                            </a>
-
                         </p>
                     </div>
                 </div>

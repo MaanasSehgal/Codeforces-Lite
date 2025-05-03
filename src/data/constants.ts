@@ -1,3 +1,5 @@
+import { EditorSettingsTypes } from "../types/types";
+
 export const STORAGE_LIMIT_BYTES = 7 * 1024 * 1024; // local storage limit in bytes, 7MB
 export const SINGLE_CODE_LIMIT_BYTES = 0.5 * 1024 * 1024; // single code limit in bytes, 0.5MB
 export const MAX_PROBLEM_IO_SIZE = 15; // max number problem IO size
@@ -21,5 +23,31 @@ Code Editor Access:
 '''
 */
 `;
+
+export const PREVIEW_CODE = 
+`#include <iostream>
+using namespace std;
+
+// Returns the nth Fibonacci number
+int fib(int n) {
+    int a = 0, b = 1;
+    while (n--) b += a, a = b - a;
+    return a;
+}
+
+int main() {
+    cout << fib(10);
+    return 0;
+}
+`;
+
+export const DEFAULT_EDITOR_SETTINGS: EditorSettingsTypes = {
+     indentSize: 4,
+     theme: 'vs-dark',
+     lineWrapping: false,
+     autoSuggestions: true,
+     minimap: true,
+     lineNumbers: true,
+};
 
 export const isProduction = false;

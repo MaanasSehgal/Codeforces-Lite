@@ -1,8 +1,11 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { useEditorSettings } from './hooks/useEditorSettings';
+const { getEditorSettings } = useEditorSettings(useCFStore.getState().editorSettings, useCFStore.getState().setEditorSettings);
 
 import { CodeEntry, TestCaseArray } from "../types/types";
 import { Queue } from "./Queue";
 import { toast } from 'sonner';
+import { useCFStore } from '../zustand/useCFStore';
 
 // In-memory storage for Map and Queue
 let testCaseMap: Map<string, TestCaseArray> = new Map<string, TestCaseArray>();
@@ -122,12 +125,12 @@ const getLangForBeautify = (language: string) => {
     }
 }
 
-export const formatCode = async (monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>, language: string, tabIndent: number, setIsFormatting: (isFormatting: boolean) => void) => {
+export const formatCode = async (monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>, language: string, setIsFormatting: (isFormatting: boolean) => void) => {
     if (!monacoInstanceRef.current) return;
+    const editorSettings = getEditorSettings();
     
     try {
         setIsFormatting(true);
-        
         const currentCode = monacoInstanceRef.current.getValue();
         
         const response = await fetch('https://www.onlinegdb.com/beautify', {
@@ -138,7 +141,7 @@ export const formatCode = async (monacoInstanceRef: React.MutableRefObject<monac
             body: JSON.stringify({
                 src: currentCode,
                 lang: getLangForBeautify(language),
-                ts: tabIndent,
+                ts: editorSettings.indentSize,
             }),
         });
         

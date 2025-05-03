@@ -42,7 +42,7 @@ const ApiSettings: React.FC = () => {
     };
 
     return (
-        <div className="w-full max-w-2xl mx-auto py-4 border-t-2 border-zinc-800">
+        <div className="w-full py-4 max-w-3xl mx-auto border-t-2 border-zinc-800">
             <div className='flex items-center justify-between mb-4'>
                 <h2 className="text-xl font-semibold text-gray-800 dark:text-white">API Settings</h2>
                 <a className='text-blue-500 hover:text-blue-600 flex items-center gap-1' href="https://github.com/MaanasSehgal/Codeforces-Lite?tab=readme-ov-file#how-to-get-api-key" target='_blank'>
@@ -52,7 +52,7 @@ const ApiSettings: React.FC = () => {
             </div>
             <div className="bg-white dark:bg-zinc-900 border dark:border-zinc-800 px-3 rounded-2xl">
                 <div className="py-4">
-                    <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center justify-between">
                         <div className="flex items-center gap-2">
                             <Key size={16} className="text-gray-500" />
                             <span className="font-medium text-gray-700 dark:text-gray-300">

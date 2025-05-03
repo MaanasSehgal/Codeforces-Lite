@@ -20,10 +20,9 @@ import { browserAPI } from '../../utils/browser/browserDetect';
 interface MainProps {
     setShowOptions: (show: boolean) => void;
     theme: string;
-    tabIndent: number;
 }
 
-const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
+const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
     const monacoInstanceRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
     // Zustand store hooks
@@ -158,7 +157,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
                 runCode={runCode}
                 testCases={testCases.testCases}
                 isFormating={isFormating}
-                handleFormatCode={() => formatCode(monacoInstanceRef, language, tabIndent, setIsFormating)}
+                handleFormatCode={() => formatCode(monacoInstanceRef, language,  setIsFormating)}
             />
 
             <div className="w-full h-[calc(100vh-88px)]">
@@ -168,7 +167,6 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme, tabIndent }) => {
                             monacoInstanceRef={monacoInstanceRef}
                             language={language}
                             fontSize={fontSize}
-                            tabIndent={tabIndent}
                         />
                     }
                     bottom={<TestCases />}

@@ -6,22 +6,18 @@ import Footer from "../global/Footer";
 import DeleteCodesConfirmationPopup from "../global/popups/DeleteCodesConfirmationPopup";
 import SettingsTopBar from "./ui/SettingsTopBar";
 import Options from './ui/Options';
-import ApiSettings from '../global/ApiSettings';
 import CodeEditor from "../main/editor/CodeEditor";
 import { useCFStore } from "../../zustand/useCFStore";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { useCodeManagement } from "../../utils/hooks/useCodeManagement";
 import { browserAPI } from "../../utils/browser/browserDetect";
+import { Save } from "lucide-react";
+import ApiSettings from "../global/ApiSettings";
 
-const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, tabIndent }) => {
+const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme }) => {
     const monacoInstanceRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
-    const { handleEditorThemeChange, handleTabIndentChange } = useCodeManagement(monacoInstanceRef);
     const [changeUI, setChangeUI] = useState(localStorage.getItem('changeUI') || 'true');
     const [openConfirmationPopup, setOpenConfirmationPopup] = useState<boolean>(false);
-    const {
-        language,
-        fontSize,
-    } = useCFStore();
+    const { language, fontSize } = useCFStore();
 
     useEffect(() => {
         const defaultThemeSettings = localStorage.getItem('defaultThemeSettings');
@@ -76,28 +72,25 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme, ta
                         setTheme={setTheme}
                         changeUI={changeUI}
                         setChangeUI={setChangeUI}
-                        tabIndent={tabIndent}
                         setOpenConfirmationPopup={setOpenConfirmationPopup}
-                        handleTabIndent={handleTabIndentChange}
-                        handleEditorThemeChange={handleEditorThemeChange}
                     />
                     <ApiSettings />
-                    <div className="w-full flex flex-col items-center gap-2 border-t-2 border-zinc-800">
-                        <div className="self-center text-base text-zinc-700 font-semibold mt-2 dark:text-zinc-200 flex justify-between w-full max-w-[400px]">
+                    <div className="py-4 mx-auto w-full max-w-3xl flex flex-col items-center gap-2 border-t-2 border-zinc-800">
+                        <div className="self-center text-base text-zinc-700 font-semibold mt-2 dark:text-zinc-200 flex justify-between w-full">
                             <div className="flex flex-col gap-1">
-                                <p>Set your default template</p>
-                                <p className="text-[8px] font-semibold text-gray-900 dark:text-gray-300 pr-4">Use symbol <span className="font-[500] px-2 rounded-md bg-gray-300 dark:bg-gray-600">$0</span> to set your default cursor position in template.</p>
+                                <p className="text-xl font-semibold text-gray-800 dark:text-white">Set your default template</p>
+                                <p className="text-[10px] font-semibold text-gray-900 dark:text-gray-300 pr-4">Use symbol <span className="font-[500] px-2 rounded-md bg-gray-300 dark:bg-gray-600">$0</span> to set your default cursor position in template.</p>
                             </div>
-                            <button onClick={() => handleSaveTemplate(monacoInstanceRef.current)} className="h-1/2 bg-green-500 text-white text-sm px-2 py-1 font-bold rounded-lg hover:bg-green-600 transition duration-200">
+                            <button onClick={() => handleSaveTemplate(monacoInstanceRef.current)} aria-label="Save template" className="h-1/2 bg-green-500 text-white text-sm px-2 py-1 font-bold rounded-lg hover:bg-green-600 transition duration-200 flex items-center gap-1 mt-1">
+                                <Save size={18} />
                                 Save
                             </button>
                         </div>
-                        <div className="text-left h-auto mt-2 mb-20 w-full">
+                        <div className="text-left mt-2 mb-20 w-full h-[28rem]">
                             <CodeEditor
                                 monacoInstanceRef={monacoInstanceRef}
                                 language={language}
                                 fontSize={fontSize}
-                                tabIndent={tabIndent}
                                 templateCode={localStorage.getItem('template') || ''}
                             />
                         </div>

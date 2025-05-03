@@ -1,6 +1,5 @@
 import React from 'react';
 import { Check } from 'lucide-react';
-import { toast } from 'sonner';
 import { ThemeSettings } from '../../../utils/themeUtils';
 
 interface ThemePreset {

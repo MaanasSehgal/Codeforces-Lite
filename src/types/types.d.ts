@@ -2,7 +2,6 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 export interface MainProps {
     theme: "light" | "dark";
-    tabIndent: number;
     setShowOptions: (showOptions: boolean) => void;
 }
 
@@ -34,7 +33,6 @@ export interface CodeEditorProps {
     monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>;
     language: string;
     fontSize: number;
-    tabIndent: number;
     currentSlug?: string | null;
     templateCode?: string;
 }
@@ -58,27 +56,14 @@ export type PopupModalProps = {
 };
 
 export interface SettingsProps {
-    tabIndent: number;
     theme: "light" | "dark";
     setTheme: (theme: "light" | "dark") => void;
     setShowOptions: (showOptions: boolean) => void;
-    setTabIndent: (tabIndent: number) => void;
 }
 
 export interface OptionProps {
     title: string;
     children: ReactNode;
-}
-
-export interface OptionsProps {
-    theme: "light" | "dark";
-    setTheme: (theme: "light" | "dark") => void;
-    changeUI: string;
-    setChangeUI: (changeUI: string) => void;
-    tabIndent: number;
-    setOpenConfirmationPopup: (open: boolean) => void;
-    handleTabIndent: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    handleEditorThemeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
 }
 
 export interface TestCase {
@@ -106,12 +91,18 @@ export interface ThemeSettings {
 }
 
 export interface OptionsProps {
-    theme: string;
-    setTheme: (theme: string) => void;
+    theme: "light" | "dark";
+    setTheme: (theme: "light" | "dark") => void;
     changeUI: string;
     setChangeUI: (changeUI: string) => void;
-    tabIndent: string;
     setOpenConfirmationPopup: (open: boolean) => void;
-    handleTabIndent: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-    handleEditorThemeChange: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+}
+
+export interface EditorSettingsTypes {
+    indentSize: number;
+    theme: string;
+    lineWrapping: boolean;
+    autoSuggestions: boolean;
+    minimap: boolean;
+    lineNumbers: boolean;
 }

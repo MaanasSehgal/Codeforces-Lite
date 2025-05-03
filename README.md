@@ -2,6 +2,7 @@
 #### A sidebar Chrome extension that enhances Codeforces, making it a more productive platform for competitive programmers.
 
 [![Chrome Web Store](https://i.imgur.com/iswHnpJ.png)](https://chromewebstore.google.com/detail/codeforces-lite/hgcgfmgjkfjmhoebifgmbfipinkkjgco)
+[![Firefox Add-ons](https://i.imgur.com/kMH6r1a.png)](https://addons.mozilla.org/en-US/firefox/addon/codeforces-lite/)
 
 ---
 
@@ -9,6 +10,7 @@
 * [Overview](#overview)
 * [Features](#features)
 * [How to get API Key?](#how-to-get-api-key)
+* [Browser Compatibility](#browser-compatibility)
 * [Local Setup for Developers](#local-setup-for-developers)
 * [How to Contribute?](#how-to-contribute)
 * [Know the Developers](#developers)
@@ -23,14 +25,20 @@
 ---
 
 # Features
-## 1. Advanced Code Editor with Execution & Storage Capabilities
+## 1. Advanced Monaco Code Editor with Execution & Storage Capabilities
 
 ![Code Editor](/public/assets/images/preview2.png)
 
-#### Write, test, and submit code directly from the problem page with our feature-rich editor. No more switching tabs or manual file uploads.
+#### Write, test, and submit code directly from the problem page with our feature-rich Monaco editor. No more switching tabs or manual file uploads.
 
 Key features include:
-- Default language selector supporting multiple languages (C++, Python, Java, JavaScript, Kotlin)
+- Default language selector supporting multiple languages (C++, Python, Java, JavaScript, Kotlin, Go, Rust, Ruby)
+- Rich editor features:
+  - Syntax highlighting with multiple theme options
+  - Intelligent autosuggestions and code completion
+  - Customizable indentation and line wrapping
+  - Minimap navigation for quick code overview
+  - Line numbers and editor customization
 - Built-in code execution system with real-time results
   - Test against sample cases instantly
   - View execution time and memory usage
@@ -43,6 +51,7 @@ Key features include:
   - Automatic retrieval when revisiting problems
   - Efficient storage management handling 1000+ files (200+ lines each)
   - Automatic cleanup using HashMap and Queue for optimal performance
+- Code formatting with language-specific rules
 
 This comprehensive system combines coding, testing, and submission in one seamless interface, making your competitive programming workflow more efficient.
 
@@ -57,7 +66,7 @@ This comprehensive system combines coding, testing, and submission in one seamle
 ![Limitations](/public/assets/images/v1.1preview3.png)
 
 
-## 3. Dark Theme
+## 3. Dark Theme with Advanced Customization
 
 ![Dark Theme Support](/public/assets/images/preview3.png)
 
@@ -69,17 +78,32 @@ This comprehensive system combines coding, testing, and submission in one seamle
 - **Battery Efficiency:** On devices with OLED or AMOLED screens, the dark theme can help conserve battery life by reducing the energy used to display brighter pixels.
 - **Code Readability:** Syntax highlighting is optimized for better readability in dark mode, ensuring that different elements in the code—such as keywords, variables, and comments—stand out clearly without causing visual fatigue.
 - **User Control:** You can toggle the dark theme on or off based on your preferences, allowing you to switch between light and dark modes seamlessly.
+- **Theme Customizer:** Fine-tune your dark theme experience with adjustable settings for:
+  - Brightness
+  - Contrast
+  - Sepia tone
+  - Grayscale
+  - Invert colors
+- **Theme Presets:** Choose from predefined theme presets for quick visual adjustments
 
+## 4. Editor Theme Selection
 
-## 4. Custom Templates and Default Cursor Placement
+#### Codeforces Lite now includes a wide variety of editor themes to match your coding style and preferences:
+
+- Classic themes: Default, Dark, Light, High Contrast
+- Popular coding themes: Monokai, Dracula, GitHub, Nord, Solarized, and many more
+- Seamless theme switching without disrupting your workflow
+- Theme preview to help you choose the perfect look
+
+## 5. Custom Templates and Default Cursor Placement
 
 #### With Codeforces Lite, you can set up custom templates that automatically load whenever you start solving a new problem. This feature helps you avoid the repetitive task of setting up your environment or writing boilerplate code from scratch.
 
 #### By predefining your commonly used template (such as input/output functions, imports, or debugging statements), you can focus directly on problem-solving, improving your speed and efficiency during contests or practice sessions.
 
-#### Additionally, you can specify the exact position for your cursor using the `$0` symbol in your template, allowing you to start typing right where you need. The extension also remembers the cursor’s position when switching tabs and revisiting problems, ensuring you pick up exactly where you left off—saving valuable time during contests.
+#### Additionally, you can specify the exact position for your cursor using the `$0` symbol in your template, allowing you to start typing right where you need. The extension also remembers the cursor's position when switching tabs and revisiting problems, ensuring you pick up exactly where you left off—saving valuable time during contests.
 
-## 5. UI Enhancements
+## 6. UI Enhancements
 
 ![UI Enhancements](/public/assets/images/preview4.png)
 
@@ -92,6 +116,26 @@ This comprehensive system combines coding, testing, and submission in one seamle
 - Customized dark theme for various extension components to ensure consistency with our dark theme design.
 - **User Control:** You can easily toggle the `Change UI` option on or off according to your preferences, allowing you to switch seamlessly between the default user interface and the enhanced version.
 
+## 7. Code Formatting
+
+#### Codeforces Lite now includes a powerful code formatting feature that helps maintain clean, consistent code:
+
+- One-click formatting for all supported languages
+- Language-specific formatting rules
+- Customizable indentation settings
+
+---
+
+## Browser Compatibility
+
+#### Codeforces Lite now works seamlessly across multiple browsers:
+
+- Google Chrome
+- Mozilla Firefox
+- Microsoft Edge
+- Brave Browser
+
+This cross-browser compatibility ensures you can enjoy the enhanced Codeforces experience regardless of your preferred browser.
 
 ---
 
@@ -117,7 +161,7 @@ This comprehensive system combines coding, testing, and submission in one seamle
 ```
 You have been provided with limited credit for the IP.
 
-Once your IP’s credit limit is reached, please consider:
+Once your IP's credit limit is reached, please consider:
   1. Upgrading your plan to continue using the API.
 ```
 

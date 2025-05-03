@@ -4,9 +4,10 @@ import 'monaco-editor/esm/vs/language/typescript/monaco.contribution';
 import 'monaco-editor/esm/vs/language/css/monaco.contribution';
 import 'monaco-editor/esm/vs/language/json/monaco.contribution';
 import 'monaco-editor/esm/vs/editor/contrib/find/browser/findController.js';
-import { CodeEditorProps } from '../../../types/types';
-import { useCFStore } from '../../../zustand/useCFStore';
+import { CodeEditorProps, EditorSettingsTypes } from '../../../types/types';
 import themesJSON from '../../../../themes/themelist.json';
+import { useEditorSettings } from '../../../utils/hooks/useEditorSettings';
+import { useCFStore } from '../../../zustand/useCFStore';
 
 const editorStyle: React.CSSProperties = {
     height: '250px',
@@ -15,8 +16,10 @@ const editorStyle: React.CSSProperties = {
     flexGrow: 1,
 };
 
-const CodeEditor = ({ monacoInstanceRef, language, fontSize, tabIndent, templateCode }: CodeEditorProps) => {
-    const editorTheme = useCFStore(state => state.editorTheme);
+const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: CodeEditorProps) => {
+    const editorSettings = useCFStore((state) => state.editorSettings);
+    const setEditorSettings = useCFStore((state) => state.setEditorSettings);
+    const { getEditorSettings } = useEditorSettings(editorSettings, setEditorSettings);
     const editorRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         const loadThemes = async () => {
@@ -33,13 +36,21 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, tabIndent, template
             }
 
             if (editorRef.current && !monacoInstanceRef.current) {
+                const editorSettings:EditorSettingsTypes = getEditorSettings();
                 monacoInstanceRef.current = monaco.editor.create(editorRef.current, {
                     language: language,
-                    theme: editorTheme,
+                    theme: editorSettings.theme,
                     fontSize: fontSize,
-                    tabSize: tabIndent,
+                    tabSize: editorSettings.indentSize,
                     automaticLayout: true,
                     readOnly: false,
+                    wordWrap: editorSettings.lineWrapping ? 'on' : 'off',
+                    minimap: {
+                        enabled: editorSettings.minimap
+                    },
+                    lineNumbers: editorSettings.lineNumbers ? 'on' : 'off',
+                    suggestOnTriggerCharacters: editorSettings.autoSuggestions,
+                    quickSuggestions: editorSettings.autoSuggestions,
                 });
 
                 if (templateCode) {
