@@ -13,6 +13,7 @@ dist
 dist-ssr
 *.local
 dist.zip
+extension-releases
 
 # Editor directories and files
 .vscode/*

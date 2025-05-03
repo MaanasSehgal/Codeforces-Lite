@@ -13,8 +13,8 @@
         "build:dev": "npm run build:dev:chrome && npm run build:dev:firefox",
         "package": "npm run build && npm run zip",
         "zip": "npm run zip:chrome && npm run zip:firefox",
-        "zip:chrome": "cd dist/chrome && bestzip ../../releases/codeforces-lite-chrome-v$npm_package_version.zip *",
-        "zip:firefox": "cd dist/firefox && bestzip ../../releases/codeforces-lite-firefox-v$npm_package_version.zip *"
+        "zip:chrome": "cd dist/chrome && bestzip ../../extension-releases/codeforces-lite-chrome-v$npm_package_version.zip *",
+        "zip:firefox": "cd dist/firefox && bestzip ../../extension-releases/codeforces-lite-firefox-v$npm_package_version.zip *"
     },
     "dependencies": {
         "@monaco-editor/react": "^4.7.0",
@@ -44,6 +44,7 @@
         "@types/webpack": "^5.28.5",
         "autoprefixer": "^10.4.21",
         "babel-loader": "^10.0.0",
+        "bestzip": "^2.2.1",
         "copy-webpack-plugin": "^13.0.0",
         "cross-env": "^7.0.3",
         "css-loader": "^7.1.2",
