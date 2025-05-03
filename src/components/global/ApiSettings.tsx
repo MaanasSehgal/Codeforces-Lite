@@ -83,7 +83,7 @@ const ApiSettings: React.FC = () => {
                             )}
                             <motion.button
                                 onClick={() => {
-                                    setIsEditing(true);
+                                    setIsEditing(!isEditing);
                                     setTempKey(apiKey);
                                 }}
                                 className="text-blue-500 hover:text-blue-600"

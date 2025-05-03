@@ -18,13 +18,10 @@ interface ThemeCustomizerProps {
 }
 
 const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({ isOpen, onClose, theme }) => {
-    const [settings, setSettings] = useState<ThemeSettings>(getThemeSettings());
+    const sliderClass = "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500";
+    const labelClass = "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2";
 
-    useEffect(() => {
-        if (isOpen && theme === 'dark') {
-            applyThemeSettings(settings);
-        }
-    }, [isOpen, settings, theme]);
+    const [settings, setSettings] = useState<ThemeSettings>(getThemeSettings());
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
@@ -64,28 +61,31 @@ const ThemeCustomizer: React.FC<ThemeCustomizerProps> = ({ isOpen, onClose, them
         setSettings(preset.settings);
     };
 
-    const sliderClass = "w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer dark:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500";
-    const labelClass = "block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2";
+    useEffect(() => {
+        if (isOpen && theme === 'dark') {
+            applyThemeSettings(settings);
+        }
+    }, [isOpen, settings, theme]);
 
     return (
         <AnimatePresence>
             {isOpen && (
-                <motion.div 
+                <motion.div
                     className="fixed inset-0 bg-black bg-opacity-50 backdrop-blur-sm z-50 flex items-center justify-center p-4"
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.3 }}
                 >
-                    <motion.div 
+                    <motion.div
                         className="bg-white dark:bg-[#1a1a1a] rounded-lg shadow-xl w-full max-w-md max-h-[90vh] overflow-y-auto"
                         initial={{ scale: 0.9, y: 20, opacity: 0 }}
                         animate={{ scale: 1, y: 0, opacity: 1 }}
                         exit={{ scale: 0.9, y: 20, opacity: 0 }}
-                        transition={{ 
-                            type: "spring", 
-                            damping: 25, 
-                            stiffness: 300 
+                        transition={{
+                            type: "spring",
+                            damping: 25,
+                            stiffness: 300
                         }}
                     >
                         <div className="sticky top-0 bg-white dark:bg-[#1a1a1a] z-10 px-6 py-4 border-b border-gray-200 dark:border-gray-800 flex justify-between items-center">

@@ -29,15 +29,9 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
         }
     }, [isOpen]);
 
-    const handleClose = () => {
-        onClose();
-    };
-
     useEffect(() => {
         saveEditorSettings();
     }, [editorSettings]);
-
-    if (!isOpen) return null;
 
     return (
         <AnimatePresence>
@@ -47,7 +41,7 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                     initial={{ opacity: 0 }}
                     animate={{ opacity: 1 }}
                     exit={{ opacity: 0 }}
-                    transition={{ duration: 0.2 }}
+                    transition={{ duration: 0.3 }}
                 >
                     <motion.div
                         className="bg-white dark:bg-[#1a1a1a] rounded-lg shadow-xl w-full max-w-2xl max-h-[90vh] overflow-hidden flex flex-col"
@@ -67,7 +61,7 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                 Editor Settings
                             </h2>
                             <motion.button
-                                onClick={handleClose}
+                                onClick={() => onClose()}
                                 className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors"
                                 title="Close"
                                 aria-label="Close"
@@ -119,8 +113,8 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                             </label>
                                             <select
                                                 value={editorSettings.indentSize || 4}
-                                                onChange={(e) => { 
-                                                    setEditorSettings({ ...editorSettings, indentSize: Number(e.target.value) }) 
+                                                onChange={(e) => {
+                                                    setEditorSettings({ ...editorSettings, indentSize: Number(e.target.value) })
                                                     formatCode(monacoInstanceRef, language);
                                                 }}
                                                 className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
@@ -273,7 +267,7 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                         {/* Footer */}
                         <div className="sticky bottom-0 bg-gray-50 dark:bg-[#222222] px-6 py-4 border-t border-gray-200 dark:border-gray-800 flex justify-end gap-3">
                             <motion.button
-                                onClick={handleClose}
+                                onClick={() => onClose()}
                                 className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 dark:bg-gray-700 dark:text-white dark:hover:bg-gray-600 transition-colors"
                                 whileHover={{ scale: 1.05 }}
                                 whileTap={{ scale: 0.95 }}
