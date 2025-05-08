@@ -9,7 +9,7 @@ let customStyleElement;
 
 const injectDarkModeCSS = () => {
     styleElement = document.createElement("style");
-    styleElement.innerHTML = `
+    styleElement.textContent = `
             html {
                 background-color: #000000 !important;
             }
@@ -141,7 +141,7 @@ const applyCustomThemeSettings = (settings) => {
     }
 
     customStyleElement = document.createElement("style");
-    customStyleElement.innerHTML = `
+    customStyleElement.textContent = `
       html {
         filter: 
           brightness(${settings.brightness}%) 

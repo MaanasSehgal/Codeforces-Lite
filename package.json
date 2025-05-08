@@ -13,8 +13,10 @@
         "build:dev": "npm run build:dev:chrome && npm run build:dev:firefox",
         "package": "npm run build && npm run zip",
         "zip": "npm run zip:chrome && npm run zip:firefox",
-        "zip:chrome": "cd dist/chrome && bestzip ../../extension-releases/codeforces-lite-chrome-v$npm_package_version.zip *",
-        "zip:firefox": "cd dist/firefox && bestzip ../../extension-releases/codeforces-lite-firefox-v$npm_package_version.zip *"
+        "zip:source": "bestzip extension-releases/codeforces-lite-source-v$npm_package_version.zip \"**\" \"!node_modules/**\" \"!dist/**\" \"!extension-releases/**\" \"!.git/**\"",
+        "ensure-releases-dir": "node -e \"const fs=require('fs'); if(!fs.existsSync('./extension-releases')){fs.mkdirSync('./extension-releases');}\"",
+        "zip:chrome": "npm run ensure-releases-dir && cd dist/chrome && bestzip ../../extension-releases/codeforces-lite-chrome-v$npm_package_version.zip *",
+        "zip:firefox": "npm run ensure-releases-dir && cd dist/firefox && bestzip ../../extension-releases/codeforces-lite-firefox-v$npm_package_version.zip *"
     },
     "dependencies": {
         "@monaco-editor/react": "^4.7.0",

@@ -130,10 +130,10 @@ This comprehensive system combines coding, testing, and submission in one seamle
 
 #### Codeforces Lite now works seamlessly across multiple browsers:
 
-- Google Chrome
-- Mozilla Firefox
-- Microsoft Edge
-- Brave Browser
+- [Google Chrome](https://chromewebstore.google.com/detail/hgcgfmgjkfjmhoebifgmbfipinkkjgco?utm_source=item-share-cb)
+- [Mozilla Firefox](https://addons.mozilla.org/en-US/firefox/addon/codeforces-lite/)
+- [Brave Browser](https://chromewebstore.google.com/detail/hgcgfmgjkfjmhoebifgmbfipinkkjgco?utm_source=item-share-cb)
+- [Microsoft Edge](https://www.microsoft.com/edge)
 
 This cross-browser compatibility ensures you can enjoy the enhanced Codeforces experience regardless of your preferred browser.
 

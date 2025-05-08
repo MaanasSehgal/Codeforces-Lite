@@ -119,7 +119,7 @@ const removeChangeLoginPageUI = () => {
     if (googleLoginButton) {
         const originalGmailLink = document.createElement("div");
         originalGmailLink.className = "useGmailLink";
-        originalGmailLink.innerHTML = "Use Gmail";
+        originalGmailLink.textContent = "Use Gmail";
 
         googleLoginButton.replaceWith(originalGmailLink);
     }

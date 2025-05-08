@@ -105,10 +105,17 @@ const config: webpack.Configuration = {
             filename: '[name].worker.js',
         }),
         new BundleAnalyzerPlugin.BundleAnalyzerPlugin({
-            analyzerMode: 'static',
+            analyzerMode: 'disabled', // static to generate report.html
             openAnalyzer: false,
         })
     ],
+    // optimization: {
+    //     splitChunks: {
+    //         chunks: 'all',
+    //         maxSize: 2000000, // 2MB chunks
+    //     },
+    //     usedExports: true,
+    // },
     resolve: {
         extensions: ['.js', '.jsx', '.ts', '.tsx'],
     },
