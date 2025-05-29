@@ -22,6 +22,8 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
     const setEditorSettings = useCFStore((state) => state.setEditorSettings);
     const { getEditorSettings } = useEditorSettings(editorSettings, setEditorSettings);
     const editorRef = useRef<HTMLDivElement>(null);
+    const vimStatusRef = useRef<HTMLDivElement>(null);
+
     useEffect(() => {
         const loadThemes = async () => {
             for (const [themeKey, themeName] of Object.entries(themesJSON)) {
@@ -61,9 +63,10 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
             }
 
             const vimEditor = monacoInstanceRef.current! as IVimEditor
+            vimEditor.vimStatusRef = vimStatusRef;
 
             if(editorSettings.keyBinding == "vim") {
-                vimEditor.vimMode = initVimMode(monacoInstanceRef.current, null);
+                vimEditor.vimMode = initVimMode(monacoInstanceRef.current, vimStatusRef.current);
             }
         };
 
@@ -71,8 +74,6 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
 
         return () => {
             if (monacoInstanceRef.current) {
-                (monacoInstanceRef.current as IVimEditor).vimMode?.dispose()
-
                 monacoInstanceRef.current.dispose();
                 monacoInstanceRef.current = null;
             }
@@ -82,6 +83,7 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
     return (
         <div className={`flex flex-col h-full w-full`}>
             <div className='h-full w-full z-0' ref={editorRef} style={editorStyle}></div>
+            <div ref={vimStatusRef} />
         </div>
     );
 }

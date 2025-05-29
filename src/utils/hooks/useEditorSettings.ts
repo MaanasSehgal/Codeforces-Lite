@@ -59,7 +59,7 @@ export const useEditorSettings = (editorSettings: EditorSettingsTypes, setEditor
 
             if(editorSettings.keyBinding == "vim") {
                 if(!vimEditor.vimMode) {
-                    vimEditor.vimMode = initVimMode(editor, null);
+                    vimEditor.vimMode = initVimMode(editor, vimEditor.vimStatusRef.current);
                 }
             } else {
                 if (vimEditor.vimMode) {

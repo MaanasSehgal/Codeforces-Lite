@@ -114,5 +114,6 @@ export interface EditorSettingsTypes {
 }
 
 export interface IVimEditor extends monaco.editor.IStandaloneCodeEditor {
-  vimMode?: any;
+  vimMode: any;
+  vimStatusRef: React.RefObject<HTMLDivElement | null>;
 }
