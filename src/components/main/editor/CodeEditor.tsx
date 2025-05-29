@@ -4,10 +4,11 @@ import 'monaco-editor/esm/vs/language/typescript/monaco.contribution';
 import 'monaco-editor/esm/vs/language/css/monaco.contribution';
 import 'monaco-editor/esm/vs/language/json/monaco.contribution';
 import 'monaco-editor/esm/vs/editor/contrib/find/browser/findController.js';
-import { CodeEditorProps, EditorSettingsTypes } from '../../../types/types';
+import { CodeEditorProps, EditorSettingsTypes, IVimEditor } from '../../../types/types';
 import themesJSON from '../../../../themes/themelist.json';
 import { useEditorSettings } from '../../../utils/hooks/useEditorSettings';
 import { useCFStore } from '../../../zustand/useCFStore';
+import { initVimMode } from 'monaco-vim';
 
 const editorStyle: React.CSSProperties = {
     height: '250px',
@@ -48,14 +49,21 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
                     minimap: {
                         enabled: editorSettings.minimap
                     },
-                    lineNumbers: editorSettings.lineNumbers ? 'on' : 'off',
+                    lineNumbers: editorSettings.lineNumbers,
                     suggestOnTriggerCharacters: editorSettings.autoSuggestions,
                     quickSuggestions: editorSettings.autoSuggestions,
+                    cursorSmoothCaretAnimation: editorSettings.cursorSmoothCaretAnimation,
                 });
 
                 if (templateCode) {
                     monacoInstanceRef.current.setValue(templateCode);
                 }
+            }
+
+            const vimEditor = monacoInstanceRef.current! as IVimEditor
+
+            if(editorSettings.keyBinding == "vim") {
+                vimEditor.vimMode = initVimMode(monacoInstanceRef.current, null);
             }
         };
 
@@ -63,6 +71,8 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
 
         return () => {
             if (monacoInstanceRef.current) {
+                (monacoInstanceRef.current as IVimEditor).vimMode?.dispose()
+
                 monacoInstanceRef.current.dispose();
                 monacoInstanceRef.current = null;
             }

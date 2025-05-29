@@ -98,11 +98,21 @@ export interface OptionsProps {
     setOpenConfirmationPopup: (open: boolean) => void;
 }
 
+export type KeyBinding = "standard" | "vim";
+export type LineNumber = "on" | "off" | "relative";
+export type CursorSmoothCaretAnimation = "on" | "off" | "explicit";
+
 export interface EditorSettingsTypes {
     indentSize: number;
     theme: string;
     lineWrapping: boolean;
     autoSuggestions: boolean;
     minimap: boolean;
-    lineNumbers: boolean;
+    lineNumbers: LineNumber;
+    keyBinding: KeyBinding;
+    cursorSmoothCaretAnimation: CursorSmoothCaretAnimation;
+}
+
+export interface IVimEditor extends monaco.editor.IStandaloneCodeEditor {
+  vimMode?: any;
 }

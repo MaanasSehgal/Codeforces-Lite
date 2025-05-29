@@ -1,6 +1,7 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
-import { EditorSettingsTypes } from '../../types/types';
+import { EditorSettingsTypes, IVimEditor } from '../../types/types';
 import { DEFAULT_EDITOR_SETTINGS } from '../../data/constants';
+import { initVimMode } from 'monaco-vim';
 
 export const useEditorSettings = (editorSettings: EditorSettingsTypes, setEditorSettings: (settings: EditorSettingsTypes) => void) => {
 
@@ -48,10 +49,24 @@ export const useEditorSettings = (editorSettings: EditorSettingsTypes, setEditor
                 minimap: {
                     enabled: editorSettings.minimap
                 },
-                lineNumbers: editorSettings.lineNumbers ? 'on' : 'off',
+                lineNumbers: editorSettings.lineNumbers,
                 quickSuggestions: editorSettings.autoSuggestions,
-                suggestOnTriggerCharacters: editorSettings.autoSuggestions
+                suggestOnTriggerCharacters: editorSettings.autoSuggestions,
+                cursorSmoothCaretAnimation: editorSettings.cursorSmoothCaretAnimation,
             });
+
+            const vimEditor = editor as IVimEditor;
+
+            if(editorSettings.keyBinding == "vim") {
+                if(!vimEditor.vimMode) {
+                    vimEditor.vimMode = initVimMode(editor, null);
+                }
+            } else {
+                if (vimEditor.vimMode) {
+                    vimEditor.vimMode.dispose();
+                    vimEditor.vimMode = null;
+                }
+            }
         });
     }
 

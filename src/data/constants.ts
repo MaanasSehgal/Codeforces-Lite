@@ -50,7 +50,9 @@ export const DEFAULT_EDITOR_SETTINGS: EditorSettingsTypes = {
      lineWrapping: false,
      autoSuggestions: true,
      minimap: true,
-     lineNumbers: true,
+     lineNumbers: "on",
+     keyBinding: "standard",
+     cursorSmoothCaretAnimation: "off"
 };
 
 export const isProduction = true;
