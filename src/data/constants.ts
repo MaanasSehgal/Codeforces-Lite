@@ -52,7 +52,8 @@ export const DEFAULT_EDITOR_SETTINGS: EditorSettingsTypes = {
      minimap: true,
      lineNumbers: "on",
      keyBinding: "standard",
-     cursorSmoothCaretAnimation: "off"
+     cursorSmoothCaretAnimation: "off",
+     cursorStyle: "line"
 };
 
 export const isProduction = true;

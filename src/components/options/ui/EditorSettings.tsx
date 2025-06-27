@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Code, Settings, Palette, Eye } from 'lucide-react';
 import { useCFStore } from '../../../zustand/useCFStore';
-import { CursorSmoothCaretAnimation, EditorSettingsTypes, KeyBinding, LineNumber } from '../../../types/types';
+import { CursorSmoothCaretAnimation, CursorStyle, EditorSettingsTypes, KeyBinding, LineNumber } from '../../../types/types';
 import { useEditorSettings } from '../../../utils/hooks/useEditorSettings';
 import CodeEditor from '../../main/editor/CodeEditor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -298,6 +298,30 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                             </select>
                                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
                                                 Controls whether the smooth caret animation should be enabled.
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                Cursor Style
+                                            </label>
+                                            <select
+                                                value={editorSettings.cursorStyle || "line"}
+                                                onChange={(e) => {
+                                                    setEditorSettings({ ...editorSettings, cursorStyle: e.target.value as CursorStyle })
+                                                }}
+                                                className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                                aria-label="Select cursor style"
+                                            >
+                                                <option value="line">Line</option>
+                                                <option value="block">Block</option>
+                                                <option value="underline">Underline</option>
+                                                <option value="line-thin">Line Thin</option>
+                                                <option value="block-outline">Block Outline</option>
+                                                <option value="underline-thin">Underline Thin</option>
+                                            </select>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                Controls the cursor style in the editor
                                             </p>
                                         </div>
                                     </div>

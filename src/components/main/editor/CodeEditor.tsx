@@ -55,6 +55,7 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
                     suggestOnTriggerCharacters: editorSettings.autoSuggestions,
                     quickSuggestions: editorSettings.autoSuggestions,
                     cursorSmoothCaretAnimation: editorSettings.cursorSmoothCaretAnimation,
+                    cursorStyle: editorSettings.cursorStyle || 'line',
                 });
 
                 if (templateCode) {

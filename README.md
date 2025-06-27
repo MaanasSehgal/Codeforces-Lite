@@ -86,14 +86,37 @@ This comprehensive system combines coding, testing, and submission in one seamle
   - Invert colors
 - **Theme Presets:** Choose from predefined theme presets for quick visual adjustments
 
-## 4. Editor Theme Selection
+## 4. Editor Theme Selection & Advanced Editor Settings
 
-#### Codeforces Lite now includes a wide variety of editor themes to match your coding style and preferences:
+#### Codeforces Lite now includes a comprehensive editor settings panel with extensive customization options to match your coding style and preferences:
 
+**Theme Selection:**
 - Classic themes: Default, Dark, Light, High Contrast
 - Popular coding themes: Monokai, Dracula, GitHub, Nord, Solarized, and many more
 - Seamless theme switching without disrupting your workflow
 - Theme preview to help you choose the perfect look
+
+**Advanced Editor Configuration:**
+- **Keybinding Modes:** Choose between Standard editor shortcuts or Vim keybindings for power users
+  - Standard mode: Traditional editor shortcuts
+  - Vim mode: Full Vim keybinding support with status line integration
+- **Line Numbers Display:** Customize line number appearance
+  - On: Standard line numbers
+  - Relative: Relative line numbering (popular with Vim users)
+  - Off: Hide line numbers completely
+- **Cursor Customization:** 
+  - Multiple cursor styles: Line, Block, Underline, Line Thin, Block Outline, Underline Thin
+  - Smooth caret animation controls (On/Off/Explicit) for enhanced visual feedback
+- **Editor Appearance:** Fine-tune indentation, minimap, line wrapping, and auto-suggestions
+- **Real-time Preview:** See your settings applied instantly in the live preview editor
+
+**Vim Integration:**
+- Full Vim keybinding support powered by monaco-vim
+- Dedicated Vim status line showing current mode and commands
+- Seamless switching between Standard and Vim modes
+- Maintains Vim muscle memory for experienced users
+
+This comprehensive settings system allows you to create the perfect coding environment tailored to your preferences and workflow.
 
 ## 5. Custom Templates and Default Cursor Placement
 
