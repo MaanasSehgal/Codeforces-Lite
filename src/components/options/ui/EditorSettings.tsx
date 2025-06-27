@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Code, Settings, Palette, Eye } from 'lucide-react';
 import { useCFStore } from '../../../zustand/useCFStore';
-import { EditorSettingsTypes } from '../../../types/types';
+import { CursorSmoothCaretAnimation, EditorSettingsTypes, KeyBinding, LineNumber } from '../../../types/types';
 import { useEditorSettings } from '../../../utils/hooks/useEditorSettings';
 import CodeEditor from '../../main/editor/CodeEditor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -166,7 +166,7 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                         </h3>
                                     </div>
 
-                                    <div className="space-y-5">
+                                    <div className="space-y-5 mb-6">
                                         {/* Feature Toggle Item */}
                                         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-lg bg-gray-50 dark:bg-[#222222] hover:bg-gray-100 dark:hover:bg-[#252525] transition-colors">
                                             <div className="flex-1">
@@ -222,29 +222,6 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                                             <input
                                                                 type="checkbox"
                                                                 className="sr-only"
-                                                                checked={editorSettings.lineNumbers}
-                                                                onChange={() => handleToggle('lineNumbers')}
-                                                            />
-                                                            <div className={`block w-11 h-6 rounded-full transition-colors ${editorSettings.lineNumbers ? 'bg-blue-500' : 'bg-gray-300 dark:bg-gray-600'}`}></div>
-                                                            <div className={`absolute left-1 top-1 bg-white w-4 h-4 rounded-full transition-transform ${editorSettings.lineNumbers ? 'transform translate-x-5' : ''}`}></div>
-                                                        </div>
-                                                        <span className="ml-3 text-gray-700 dark:text-gray-300 font-medium">Line Numbers</span>
-                                                    </label>
-                                                </div>
-                                                <p className="text-xs text-gray-500 dark:text-gray-400 mt-1 ml-14">
-                                                    Display line numbers in the editor gutter
-                                                </p>
-                                            </div>
-                                        </div>
-
-                                        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 p-3 rounded-lg bg-gray-50 dark:bg-[#222222] hover:bg-gray-100 dark:hover:bg-[#252525] transition-colors">
-                                            <div className="flex-1">
-                                                <div className="flex items-center gap-3">
-                                                    <label className="flex items-center cursor-pointer">
-                                                        <div className="relative">
-                                                            <input
-                                                                type="checkbox"
-                                                                className="sr-only"
                                                                 checked={editorSettings.lineWrapping}
                                                                 onChange={() => handleToggle('lineWrapping')}
                                                             />
@@ -258,6 +235,70 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                                     Wrap long lines of code instead of horizontal scrolling
                                                 </p>
                                             </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                Line Numbers
+                                            </label>
+                                            <select
+                                                value={editorSettings.lineNumbers || "on"}
+                                                onChange={(e) => {
+                                                    setEditorSettings({ ...editorSettings, lineNumbers: e.target.value as LineNumber })
+                                                }}
+                                                className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                                aria-label="Select tab indent size"
+                                            >
+                                                <option value="on">On</option>
+                                                <option value="relative">Relative</option>
+                                                <option value="off">Off</option>
+                                            </select>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                Controls the display of line numbers in the editor gutter.
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                Keybinding
+                                            </label>
+                                            <select
+                                                value={editorSettings.keyBinding || "standard"}
+                                                onChange={(e) => {
+                                                    setEditorSettings({ ...editorSettings, keyBinding: e.target.value as KeyBinding })
+                                                }}
+                                                className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                                aria-label="Select tab indent size"
+                                            >
+                                                <option value="standard">Standard</option>
+                                                <option value="vim">Vim</option>
+                                            </select>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                Keybinding to use in the editor
+                                            </p>
+                                        </div>
+
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                Cursor Smooth Caret Animation
+                                            </label>
+                                            <select
+                                                value={editorSettings.cursorSmoothCaretAnimation || "off"}
+                                                onChange={(e) => {
+                                                    setEditorSettings({ ...editorSettings, cursorSmoothCaretAnimation: e.target.value as CursorSmoothCaretAnimation })
+                                                }}
+                                                className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                                aria-label="Select tab indent size"
+                                            >
+                                                <option value="on">On</option>
+                                                <option value="explicit">Explicit</option>
+                                                <option value="off">Off</option>
+                                            </select>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                Controls whether the smooth caret animation should be enabled.
+                                            </p>
                                         </div>
                                     </div>
                                 </section>

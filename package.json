@@ -25,6 +25,7 @@
         "lucide-react": "^0.447.0",
         "monaco-editor": "^0.52.2",
         "monaco-themes": "^0.4.4",
+        "monaco-vim": "^0.4.2",
         "react": "^18.3.1",
         "react-dom": "^18.3.1",
         "sonner": "^1.5.0",
