@@ -11,6 +11,11 @@ export const handleSubmission = async (editor: monaco.editor.IStandaloneCodeEdit
         alert("Wait for editor to load");
         return;
     }
+
+    if(navigator.onLine === false) {
+        alert("No internet connection");
+        return;
+    }
     const problemUrl = await getProblemUrl();
     const problemName = await getProblemName();
     problemName;

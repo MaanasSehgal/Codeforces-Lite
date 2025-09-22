@@ -1,6 +1,6 @@
-import { Braces, ChartNoAxesGantt, CloudUpload, Code2, LoaderCircle, Play, RotateCcw, Settings } from 'lucide-react';
+import { Braces, ChartNoAxesGantt, CloudUpload, Code2, LoaderCircle, Play, RotateCcw, Settings, Wifi, WifiOff } from 'lucide-react';
 import { TopBarProps } from '../../../types/types';
-import { useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import Timer from './CodeTimer';
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -24,15 +24,207 @@ const TopBar: React.FC<TopBarProps> = ({
 
     const [showRunTooltip, setShowRunTooltip] = useState<boolean>(false);
     const [showSubmitTooltip, setShowSubmitTooltip] = useState<boolean>(false);
-    // const apiKey = useCFStore((state) => state.apiKey);
+    const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
+    const [showStatusAnimation, setShowStatusAnimation] = useState<boolean>(false);
+    const [statusText, setStatusText] = useState<string>('');
+    const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const SHOW_DURATION_MS = 4000;
+
+    useEffect(() => {
+        const handleOnline = () => {
+            setIsOnline(true);
+            setStatusText('Online');
+            setShowStatusAnimation(true);
+
+            if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+            if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+
+            hideTimeoutRef.current = setTimeout(() => {
+                setShowStatusAnimation(false);
+            }, SHOW_DURATION_MS);
+        };
+
+        const handleOffline = () => {
+            setIsOnline(false);
+            setStatusText('Offline');
+            setShowStatusAnimation(true);
+
+            if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+            if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+
+            hideTimeoutRef.current = setTimeout(() => {
+                setShowStatusAnimation(false);
+            }, SHOW_DURATION_MS);
+        };
+
+        window.addEventListener("online", handleOnline);
+        window.addEventListener("offline", handleOffline);
+
+        return () => {
+            window.removeEventListener("online", handleOnline);
+            window.removeEventListener("offline", handleOffline);
+            if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+            if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+        };
+    }, []);
 
     return (
         <>
-            <div className='w-full flex border-b border-gray-500 justify-between text-xl text-black py-2 px-2'>
-                <h1 className='flex justify-center items-center gap-2 font-[600] text-black'>
-                    <Code2 size={20} color='green' />
-                </h1>
-                <div className='flex justify-center items-center gap-3'>
+            <style>{`
+                @keyframes iconPop {
+                    0% {
+                        transform: scale(0);
+                        opacity: 0;
+                    }
+                    50% {
+                        transform: scale(1.2);
+                    }
+                    100% {
+                        transform: scale(1);
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes slideInFromLeft {
+                    0% {
+                        transform: translateX(-20px);
+                        opacity: 0;
+                    }
+                    100% {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                }
+
+                @keyframes slideOutToLeft {
+                    0% {
+                        transform: translateX(0);
+                        opacity: 1;
+                    }
+                    100% {
+                        transform: translateX(-20px);
+                        opacity: 0;
+                    }
+                }
+
+                .status-container {
+                    display: flex;
+                    align-items: center;
+                    min-width: 80px;
+                    height: 28px;
+                }
+
+                .icon-wrapper {
+                    display: flex;
+                    align-items: center;
+                    z-index: 2;
+                }
+
+                .status-icon {
+                    animation: iconPop 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55) forwards;
+                }
+
+                .status-text {
+                    margin-left: 8px;
+                    font-size: 13px;
+                    font-weight: 500;
+                    white-space: nowrap;
+                    animation: slideInFromLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                    animation-delay: 0.2s;
+                    opacity: 0;
+                }
+
+                .status-text.online {
+                    color: #22c55e;
+                }
+
+                .status-text.offline {
+                    color: #ef4444;
+                }
+
+                .status-container.hiding .status-icon {
+                    animation: iconPop 0.2s cubic-bezier(0.68, -0.55, 0.265, 1.55) reverse forwards;
+                }
+
+                .status-container.hiding .status-text {
+                    animation: slideOutToLeft 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+                }
+
+                .code-icon {
+                    transition: opacity 0.2s ease-in-out;
+                }
+
+                .code-icon.hidden {
+                    opacity: 0;
+                    pointer-events: none;
+                }
+
+                .top-bar-container {
+                    position: relative;
+                    width: 100%;
+                }
+
+                .center-buttons {
+                    position: absolute;
+                    left: 50%;
+                    top: 50%;
+                    transform: translate(-50%, -50%);
+                    z-index: 10;
+                }
+
+                .left-section {
+                    position: absolute;
+                    left: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+
+                .right-section {
+                    position: absolute;
+                    right: 8px;
+                    top: 50%;
+                    transform: translateY(-50%);
+                }
+            `}</style>
+
+            <div className='top-bar-container w-full flex border-b border-gray-500 h-12 relative'>
+                <div className='left-section flex items-center'>
+                    <div className="status-container">
+                        {!showStatusAnimation && isOnline && (
+                            <div className="code-icon">
+                                <Code2 size={18} color='green' />
+                            </div>
+                        )}
+
+                        {showStatusAnimation && (
+                            <>
+                                <div className="icon-wrapper">
+                                    <span className="status-icon">
+                                        {isOnline
+                                            ? <Wifi size={18} color="#22c55e" aria-label="Online" />
+                                            : <WifiOff size={18} color="#ef4444" aria-label="Offline" />
+                                        }
+                                    </span>
+                                </div>
+                                <span className={`status-text ${isOnline ? 'online' : 'offline'}`}>
+                                    {statusText}
+                                </span>
+                            </>
+                        )}
+
+                        {!showStatusAnimation && !isOnline && (
+                            <span
+                                title={"Offline"}
+                                className="flex items-center"
+                            >
+                                <WifiOff size={16} color="red" aria-label="Offline" />
+                            </span>
+                        )}
+                    </div>
+                </div>
+
+                <div className='center-buttons'>
                     <div className="relative inline-flex shadow-sm">
                         <button
                             disabled={!currentSlug || isRunning || testCases.length === 0}
@@ -60,7 +252,7 @@ const TopBar: React.FC<TopBarProps> = ({
                         </button>
 
                         {showRunTooltip && (
-                            <div className="absolute left-1/1 transform -translate-x-1/2 mt-10 ml-9 w-20 bg-gray-200 dark:bg-[#222222] text-white text-xs rounded-lg text-center py-1 shadow-lg">
+                            <div className="absolute left-1/1 transform -translate-x-1/2 mt-10 ml-9 w-20 bg-gray-200 dark:bg-[#222222] text-white text-xs rounded-lg text-center py-1 shadow-lg z-50">
                                 <span className="dark:text-white text-black"><kbd className="border border-gray-600 px-1 rounded">Ctrl</kbd> + <kbd className="border border-gray-600 px-1 rounded">'</kbd></span>
                             </div>
                         )}
@@ -90,15 +282,17 @@ const TopBar: React.FC<TopBarProps> = ({
                         </button>
 
                         {showSubmitTooltip && (
-                            <div className="absolute left-1/2 transform -translate-x-1/2 mt-10 ml-8 w-28 bg-gray-200 dark:bg-[#222222] text-white text-xs rounded-lg text-center py-1 shadow-lg">
+                            <div className="absolute left-1/2 transform -translate-x-1/2 mt-10 ml-8 w-28 bg-gray-200 dark:bg-[#222222] text-white text-xs rounded-lg text-center py-1 shadow-lg z-50">
                                 <span className="dark:text-white text-black"><kbd className="border border-gray-600 px-1 rounded">Ctrl</kbd> + <kbd className="border border-gray-600 px-1 rounded">Enter</kbd></span>
                             </div>
                         )}
                     </div>
-
                 </div>
-                <div className='cursor-pointer flex justify-center items-center' onClick={() => setShowOptions(true)}>
-                    <Settings color={theme === 'light' ? '#444444' : '#ffffff'} size={20} />
+
+                <div className='right-section'>
+                    <div className='cursor-pointer flex justify-center items-center' onClick={() => setShowOptions(true)}>
+                        <Settings color={theme === 'light' ? '#444444' : '#ffffff'} size={18} />
+                    </div>
                 </div>
             </div>
 

@@ -85,15 +85,57 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
     };
 
     const setCatchError = (error: any) => {
-        if (error.name === 'AbortError') {
+        if (error?.name === 'AbortError') {
             resetStates();
             return;
         }
-        if (error.message.includes("Insufficie")) {
+
+        if (error?.message?.includes("Insufficie")) {
             setShowApiLimitAlert(true);
             testCases.ErrorMessage = "Rate Limit Exceeded";
             testCases.testCases.forEach((testCase: any) => {
                 testCase.Output = "Rate Limit Exceeded";
+                testCase.TimeAndMemory = { Time: '0', Memory: '0' };
+            });
+            return;
+        }
+
+        if (typeof navigator !== 'undefined' && !navigator.onLine) {
+            alert("Network error: Please check your internet connection.");
+            testCases.ErrorMessage = "Network Error";
+            testCases.testCases.forEach((testCase: any) => {
+                testCase.Output = "Network Error";
+                testCase.TimeAndMemory = { Time: '0', Memory: '0' };
+            });
+            return;
+        }
+
+        if (error instanceof TypeError && /failed to fetch/i.test(String(error.message))) {
+            alert("Network error: Please check your internet connection.");
+            testCases.ErrorMessage = "Network Error";
+            testCases.testCases.forEach((testCase: any) => {
+                testCase.Output = "Network Error";
+                testCase.TimeAndMemory = { Time: '0', Memory: '0' };
+            });
+            return;
+        }
+
+        if (error?.isAxiosError && !error?.response) {
+            alert("Network error: Please check your internet connection.");
+            testCases.ErrorMessage = "Network Error";
+            testCases.testCases.forEach((testCase: any) => {
+                testCase.Output = "Network Error";
+                testCase.TimeAndMemory = { Time: '0', Memory: '0' };
+            });
+            return;
+        }
+
+        const networkErrCodes = ['ENOTFOUND', 'ECONNREFUSED', 'ECONNABORTED', 'ETIMEDOUT', 'EHOSTUNREACH', 'EAI_AGAIN'];
+        if (error?.code && networkErrCodes.includes(String(error.code))) {
+            alert("Network error: Please check your internet connection.");
+            testCases.ErrorMessage = "Network Error";
+            testCases.testCases.forEach((testCase: any) => {
+                testCase.Output = "Network Error";
                 testCase.TimeAndMemory = { Time: '0', Memory: '0' };
             });
             return;
@@ -104,7 +146,7 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
             testCase.Output = "Something went wrong. Please try again later or contact support.";
             testCase.TimeAndMemory = { Time: '0', Memory: '0' };
         });
-    }
+    };
 
     const createSubmissionPayload = (code: string, input: string, timeLimit: number) => ({
         language_id: languageMap[language],
@@ -225,6 +267,11 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
     const runCode = async () => {
         if (!editor) {
             alert("Wait for editor to load");
+            return;
+        }
+
+        if (navigator.onLine === false) {
+            alert("No internet connection");
             return;
         }
         const problemName = await getProblemName();

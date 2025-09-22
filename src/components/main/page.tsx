@@ -9,7 +9,7 @@ import { useCodeManagement } from '../../utils/hooks/useCodeManagement';
 import { useTestCases } from '../../utils/hooks/useTestCases';
 import { useTabEvents } from '../../utils/hooks/useTabEvents';
 import { handleSubmission } from '../../utils/services/submissionService';
-import { initializeStorage } from '../../utils/services/storageService';
+import { initializeStorage, saveCodeForSlug } from '../../utils/services/storageService';
 import { loadCodeWithCursor } from '../../utils/codeHandlers';
 import { accessRestrictionMessage } from '../../data/constants';
 import ApiLimitAlert from '../global/popups/ApiLimitAlert';
@@ -30,6 +30,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
         language,
         fontSize,
         currentSlug,
+        totalSize,
         setCurrentSlug,
         setCurrentUrl,
         setTotalSize,
@@ -137,6 +138,72 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
             browserAPI.runtime.onMessage.removeListener(listener);
         };
     }, [currentSlug, testCases]);
+
+    const domNode = monacoInstanceRef.current?.getDomNode();
+    if (domNode && !((domNode as any).__autosave_attached__)) {
+        (domNode as any).__autosave_attached__ = true;
+
+        let debounceTimer: number | null = null;
+        let lastSavedValue: string | null = monacoInstanceRef.current?.getValue() ?? null;
+        const DEBOUNCE_MS = 1500;
+
+        const meaningfulKeys = new Set([
+            'Backspace', 'Delete', 'Enter', 'Tab', ' ',
+        ]);
+
+        const isMeaningfulKey = (k: string) => {
+            if (!k) return false;
+            if (k.length === 1) return true;
+            return meaningfulKeys.has(k);
+        };
+
+        const handler = (event: KeyboardEvent) => {
+            if (!isMeaningfulKey(event.key)) return;
+            if (!currentSlug) return;
+
+            if (debounceTimer) {
+                window.clearTimeout(debounceTimer);
+                debounceTimer = null;
+            }
+
+            debounceTimer = window.setTimeout(async () => {
+                debounceTimer = null;
+
+                const editor = monacoInstanceRef.current;
+                if (!editor) return;
+
+                const value = editor.getValue();
+
+                if (lastSavedValue !== null && value === lastSavedValue) {
+                    return;
+                }
+
+                try {
+                    await saveCodeForSlug(currentSlug, editor, totalSize, setTotalSize);
+                    lastSavedValue = value;
+                    // console.log('Auto-saved for slug:', currentSlug);
+                } catch (err) {
+                    // console.error('Auto-save error:', err);
+                }
+            }, DEBOUNCE_MS);
+        };
+
+        domNode.addEventListener('keydown', handler, true);
+
+        (domNode as any).__autosave_handler__ = handler;
+        (domNode as any).__autosave_detach__ = () => {
+            const h = (domNode as any).__autosave_handler__;
+            if (h) {
+                domNode.removeEventListener('keydown', h, true);
+                delete (domNode as any).__autosave_handler__;
+            }
+            if ((domNode as any).__autosave_attached__) {
+                delete (domNode as any).__autosave_attached__;
+            }
+            (domNode as any).__autosave_detach__ = undefined;
+        };
+    }
+
     return (
         <div className='flex flex-col w-full justify-start items-center h-full dark:bg-[#111111]'>
             <ApiLimitAlert
