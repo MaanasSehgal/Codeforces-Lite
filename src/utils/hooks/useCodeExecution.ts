@@ -14,6 +14,7 @@ const languageMap: { [key: string]: number } = {
     'javascript': 63,
     'cpp': 54,
     'python': 71,
+    'pypy': 71,
     'kotlin': 78,
     'go': 106,
     'rust': 73,
@@ -101,30 +102,27 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
         }
 
         if (typeof navigator !== 'undefined' && !navigator.onLine) {
-            alert("Network error: Please check your internet connection.");
             testCases.ErrorMessage = "Network Error";
             testCases.testCases.forEach((testCase: any) => {
-                testCase.Output = "Network Error";
+                testCase.Output = "Network error: Please check your internet connection.";
                 testCase.TimeAndMemory = { Time: '0', Memory: '0' };
             });
             return;
         }
 
         if (error instanceof TypeError && /failed to fetch/i.test(String(error.message))) {
-            alert("Network error: Please check your internet connection.");
             testCases.ErrorMessage = "Network Error";
             testCases.testCases.forEach((testCase: any) => {
-                testCase.Output = "Network Error";
+                testCase.Output = "Network error: Please check your internet connection.";
                 testCase.TimeAndMemory = { Time: '0', Memory: '0' };
             });
             return;
         }
 
         if (error?.isAxiosError && !error?.response) {
-            alert("Network error: Please check your internet connection.");
             testCases.ErrorMessage = "Network Error";
             testCases.testCases.forEach((testCase: any) => {
-                testCase.Output = "Network Error";
+                testCase.Output = "Network error: Please check your internet connection.";
                 testCase.TimeAndMemory = { Time: '0', Memory: '0' };
             });
             return;
@@ -132,10 +130,9 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
 
         const networkErrCodes = ['ENOTFOUND', 'ECONNREFUSED', 'ECONNABORTED', 'ETIMEDOUT', 'EHOSTUNREACH', 'EAI_AGAIN'];
         if (error?.code && networkErrCodes.includes(String(error.code))) {
-            alert("Network error: Please check your internet connection.");
             testCases.ErrorMessage = "Network Error";
             testCases.testCases.forEach((testCase: any) => {
-                testCase.Output = "Network Error";
+                testCase.Output = "Network error: Please check your internet connection.";
                 testCase.TimeAndMemory = { Time: '0', Memory: '0' };
             });
             return;
@@ -269,11 +266,6 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
             alert("Wait for editor to load");
             return;
         }
-
-        if (navigator.onLine === false) {
-            alert("No internet connection");
-            return;
-        }
         const problemName = await getProblemName();
         const userId = await getUserId();
         const timeLimit = await getTimeLimit();
@@ -284,6 +276,17 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
             return;
         }
         setIsRunning(true);
+
+        if (navigator.onLine === false) {
+            testCases.ErrorMessage = "Network Error";
+            testCases.testCases.forEach((testCase: any) => {
+                testCase.Output = "Network error: Please check your internet connection.";
+                testCase.TimeAndMemory = { Time: '0', Memory: '0' };
+            });
+            setIsRunning(false);
+            return;
+        }
+
         testCases.ErrorMessage = '';
         testCases.testCases.forEach((testCase: any) => {
             testCase.Output = '';
@@ -295,6 +298,10 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
 
         if (!code) {
             testCases.ErrorMessage = 'No code provided';
+            testCases.testCases.forEach((testCase: any) => {
+                testCase.Output = 'No code provided, please write some code to run';
+                testCase.TimeAndMemory = { Time: '0', Memory: '0' };
+            });
             setIsRunning(false);
             return;
         }

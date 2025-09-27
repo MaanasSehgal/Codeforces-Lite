@@ -33,11 +33,13 @@ export const getSlugQueue = (): Queue<string> => {
 export const getValueFromLanguage = (language: string) => {
     switch (language) {
         case "cpp":
-            return "89";
+            return "91";
         case "java":
             return "87";
         case "python":
             return "31";
+        case "pypy":
+            return "70";
         case "javascript":
             return "34";
         case "kotlin":

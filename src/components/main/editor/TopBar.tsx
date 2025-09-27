@@ -317,6 +317,7 @@ const TopBar: React.FC<TopBarProps> = ({
                         <option className='text-black dark:text-zinc-100' value="cpp">C++</option>
                         <option className='text-black dark:text-zinc-100' value="java">Java</option>
                         <option className='text-black dark:text-zinc-100' value="python">Python</option>
+                        <option className='text-black dark:text-zinc-100' value="pypy">PyPy</option>
                         <option className='text-black dark:text-zinc-100' value="javascript">JavaScript</option>
                         <option className='text-black dark:text-zinc-100' value="kotlin">Kotlin</option>
                         <option className='text-black dark:text-zinc-100' value="go">Go</option>
