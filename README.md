@@ -118,7 +118,19 @@ This comprehensive system combines coding, testing, and submission in one seamle
 
 This comprehensive settings system allows you to create the perfect coding environment tailored to your preferences and workflow.
 
-## 5. Custom Templates and Default Cursor Placement
+## 5. Customizable Keyboard Shortcuts
+
+Tailor your coding workflow with customizable keyboard shortcuts. Codeforces Lite allows you to assign your preferred key combinations for essential actions, reducing mouse dependency and speeding up your CP.
+
+- **Configurable Actions**: Set custom shortcuts for:
+  - **Run Code**: Execute your code against test cases.
+  - **Submit Code**: Submit your solution.
+  - **Reset Code**: Clear the editor back to the default template.
+  - **Format Code**: Apply language-specific formatting.
+- **Easy Configuration**: Access all shortcut settings in a dedicated panel within the extension's options.
+- **Dynamic Tooltips**: Button tooltips automatically update to reflect your custom shortcuts, helping you learn and remember them.
+
+## 6. Custom Templates and Default Cursor Placement
 
 #### With Codeforces Lite, you can set up custom templates that automatically load whenever you start solving a new problem. This feature helps you avoid the repetitive task of setting up your environment or writing boilerplate code from scratch.
 
@@ -126,7 +138,7 @@ This comprehensive settings system allows you to create the perfect coding envir
 
 #### Additionally, you can specify the exact position for your cursor using the `$0` symbol in your template, allowing you to start typing right where you need. The extension also remembers the cursor's position when switching tabs and revisiting problems, ensuring you pick up exactly where you left off—saving valuable time during contests.
 
-## 6. UI Enhancements
+## 7. UI Enhancements
 
 ![UI Enhancements](/public/assets/images/preview4.png)
 
@@ -139,13 +151,21 @@ This comprehensive settings system allows you to create the perfect coding envir
 - Customized dark theme for various extension components to ensure consistency with our dark theme design.
 - **User Control:** You can easily toggle the `Change UI` option on or off according to your preferences, allowing you to switch seamlessly between the default user interface and the enhanced version.
 
-## 7. Code Formatting
+## 8. Code Formatting
 
 #### Codeforces Lite now includes a powerful code formatting feature that helps maintain clean, consistent code:
 
 - One-click formatting for all supported languages
 - Language-specific formatting rules
 - Customizable indentation settings
+
+## 9. Auto-save & Network Status
+
+Codeforces Lite is designed to be reliable, even with unstable internet connections.
+
+- **Automatic Code Saving**: Your code is automatically saved in the background as you type, so you never have to worry about losing your progress.
+- **Network Status Indicator**: A real-time indicator in the top bar shows your current network status (online or offline), providing immediate feedback on your connection.
+- **Smart Error Handling**: The extension provides clear alerts if you try to run or submit code while offline, preventing accidental errors.
 
 ---
 
