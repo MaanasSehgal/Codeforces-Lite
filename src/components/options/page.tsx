@@ -63,7 +63,7 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme }) 
             />
 
             <div className="Settings-container w-full h-full flex flex-col items-center justify-center dark:bg-[#111111]">
-                <Toaster theme={theme} position="bottom-left" />
+                <Toaster theme={theme} position="top-left" />
                 <SettingsTopBar theme={theme} setShowOptions={setShowOptions} />
 
                 <div className="w-full h-full overflow-y-auto px-4">

@@ -119,3 +119,10 @@ export interface IVimEditor extends monaco.editor.IStandaloneCodeEditor {
   vimMode: any;
   vimStatusRef: React.RefObject<HTMLDivElement | null>;
 }
+
+export interface ShortcutSettings {
+    run: string;
+    submit: string;
+    reset: string;
+    format: string;
+}

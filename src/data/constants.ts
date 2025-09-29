@@ -1,4 +1,4 @@
-import { EditorSettingsTypes } from "../types/types";
+import { EditorSettingsTypes, ShortcutSettings } from "../types/types";
 
 export const STORAGE_LIMIT_BYTES = 7 * 1024 * 1024; // local storage limit in bytes, 7MB
 export const SINGLE_CODE_LIMIT_BYTES = 0.5 * 1024 * 1024; // single code limit in bytes, 0.5MB
@@ -45,15 +45,22 @@ int main() {
 `;
 
 export const DEFAULT_EDITOR_SETTINGS: EditorSettingsTypes = {
-     indentSize: 4,
-     theme: 'vs-dark',
-     lineWrapping: false,
-     autoSuggestions: true,
-     minimap: true,
-     lineNumbers: "on",
-     keyBinding: "standard",
-     cursorSmoothCaretAnimation: "off",
-     cursorStyle: "line"
+  indentSize: 4,
+  theme: 'vs-dark',
+  lineWrapping: false,
+  autoSuggestions: true,
+  minimap: true,
+  lineNumbers: "on",
+  keyBinding: "standard",
+  cursorSmoothCaretAnimation: "off",
+  cursorStyle: "line"
+};
+
+export const DEFAULT_SHORTCUT_SETTINGS: ShortcutSettings = {
+  run: `Control + '`,
+  submit: `Control + Shift + "`,
+  reset: `Shift + Alt + R`,
+  format: `Control + Shift + F`
 };
 
 export const isProduction = true;

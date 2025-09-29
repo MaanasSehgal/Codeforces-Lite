@@ -10,7 +10,7 @@ const App = () => {
     return (
         <div className="relative w-full h-full overflow-hidden">
             <div className={`w-full h-full`}>
-                <Main setShowOptions={setShowOptions} theme={theme} />
+                <Main showOptions={showOptions} setShowOptions={setShowOptions} theme={theme} />
             </div>
 
             <div

@@ -1,6 +1,8 @@
 import { Braces, ChartNoAxesGantt, CloudUpload, Code2, LoaderCircle, Play, RotateCcw, Settings, Wifi, WifiOff } from 'lucide-react';
-import { TopBarProps } from '../../../types/types';
-import { useEffect, useState, useRef } from 'react';
+import { ShortcutSettings, TopBarProps } from '../../../types/types';
+import React, { useEffect, useState, useRef } from 'react';
+import { useCFStore } from '../../../zustand/useCFStore';
+import { normalizeShortcut } from '../../../utils/helper';
 import Timer from './CodeTimer';
 
 const TopBar: React.FC<TopBarProps> = ({
@@ -29,6 +31,13 @@ const TopBar: React.FC<TopBarProps> = ({
     const [statusText, setStatusText] = useState<string>('');
     const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
     const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+    const shortcutSettings = useCFStore(state => state.shortcutSettings);
+    const [normalizedShortcutSettings, setNormalizedShortcutSettings] = useState<ShortcutSettings>({
+        run: normalizeShortcut(shortcutSettings.run),
+        submit: normalizeShortcut(shortcutSettings.submit),
+        reset: normalizeShortcut(shortcutSettings.reset),
+        format: normalizeShortcut(shortcutSettings.format),
+    });
     const SHOW_DURATION_MS = 4000;
 
     useEffect(() => {
@@ -68,6 +77,15 @@ const TopBar: React.FC<TopBarProps> = ({
             if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
         };
     }, []);
+
+    useEffect(() => {
+        setNormalizedShortcutSettings({
+            run: normalizeShortcut(shortcutSettings.run),
+            submit: normalizeShortcut(shortcutSettings.submit),
+            reset: normalizeShortcut(shortcutSettings.reset),
+            format: normalizeShortcut(shortcutSettings.format),
+        });
+    }, [shortcutSettings]);
 
     return (
         <>
@@ -252,8 +270,20 @@ const TopBar: React.FC<TopBarProps> = ({
                         </button>
 
                         {showRunTooltip && (
-                            <div className="absolute left-1/1 transform -translate-x-1/2 mt-10 ml-9 w-20 bg-gray-200 dark:bg-[#222222] text-white text-xs rounded-lg text-center py-1 shadow-lg z-50">
-                                <span className="dark:text-white text-black"><kbd className="border border-gray-600 px-1 rounded">Ctrl</kbd> + <kbd className="border border-gray-600 px-1 rounded">'</kbd></span>
+                            <div
+                                role="tooltip"
+                                className="absolute left-1/2 -translate-x-1/2 mt-8 z-50 inline-flex items-center justify-center
+                                        px-2 py-1 rounded-lg text-xs text-black dark:text-white bg-gray-200 dark:bg-[#222222]
+                                        shadow-lg min-w-max max-w-[90vw] whitespace-normal break-words"
+                            >
+                                <div className="flex items-center gap-1 flex-wrap justify-center">
+                                {normalizedShortcutSettings.run.split('+').map((key, index, arr) => (
+                                    <React.Fragment key={index}>
+                                    <kbd className="border border-gray-600 rounded px-1 text-[11px] font-semibold">{key.charAt(0).toUpperCase() + key.slice(1)}</kbd>
+                                    {index < arr.length - 1 && <span className="mx-0.5 text-xs">+</span>}
+                                    </React.Fragment>
+                                ))}
+                                </div>
                             </div>
                         )}
 
@@ -282,8 +312,20 @@ const TopBar: React.FC<TopBarProps> = ({
                         </button>
 
                         {showSubmitTooltip && (
-                            <div className="absolute left-1/2 transform -translate-x-1/2 mt-10 ml-8 w-28 bg-gray-200 dark:bg-[#222222] text-white text-xs rounded-lg text-center py-1 shadow-lg z-50">
-                                <span className="dark:text-white text-black"><kbd className="border border-gray-600 px-1 rounded">Ctrl</kbd> + <kbd className="border border-gray-600 px-1 rounded">Enter</kbd></span>
+                            <div
+                                role="tooltip"
+                                className="absolute left-1/2 -translate-x-1/2 mt-8 z-50 inline-flex items-center justify-center
+                                        px-2 py-1 rounded-lg text-xs text-black dark:text-white bg-gray-200 dark:bg-[#222222]
+                                        shadow-lg min-w-max max-w-[90vw] whitespace-normal break-words"
+                            >
+                                <div className="flex items-center gap-1 flex-wrap justify-center">
+                                {normalizedShortcutSettings.submit.split('+').map((key, index, arr) => (
+                                    <React.Fragment key={index}>
+                                    <kbd className="border border-gray-600 rounded px-1 text-[11px] font-semibold">{key.charAt(0).toUpperCase() + key.slice(1)}</kbd>
+                                    {index < arr.length - 1 && <span className="mx-0.5 text-xs">+</span>}
+                                    </React.Fragment>
+                                ))}
+                                </div>
                             </div>
                         )}
                     </div>
@@ -352,7 +394,7 @@ const TopBar: React.FC<TopBarProps> = ({
                     <Timer theme={theme} />
                     <button
                         disabled={!currentSlug || isFormating}
-                        title='Format Code'
+                        title={`Format Code\nShortcut: ${normalizedShortcutSettings.format}`}
                     >
                         {isFormating ? (
                             <LoaderCircle color={theme === 'light' ? '#666666' : '#ffffff'} size={16} className={`animate-spin w-4 h-4 ${!currentSlug || isFormating ? 'cursor-not-allowed' : 'cursor-pointer'}`} />
@@ -368,7 +410,7 @@ const TopBar: React.FC<TopBarProps> = ({
                     </button>
                     <button
                         disabled={!currentSlug}
-                        title='Reset Code'
+                        title={`Reset Code\nShortcut: ${normalizedShortcutSettings.reset}`}
                     >
                         <RotateCcw color={theme === 'light' ? '#666666' : '#ffffff'} size={16} className={`${!currentSlug ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={handleResetCode} />
                     </button>

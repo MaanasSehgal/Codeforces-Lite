@@ -1,7 +1,7 @@
 import { create } from "zustand";
-import { EditorSettingsTypes, TestCaseArray } from "../types/types";
+import { EditorSettingsTypes, TestCaseArray, ShortcutSettings } from "../types/types";
 import themesJSON from '../../themes/themelist.json';
-import { DEFAULT_EDITOR_SETTINGS } from "../data/constants";
+import { DEFAULT_EDITOR_SETTINGS, DEFAULT_SHORTCUT_SETTINGS } from "../data/constants";
 
 interface CFStoreInterface {
     language: string;
@@ -15,6 +15,7 @@ interface CFStoreInterface {
     apiKey: string;
     editorThemeList: Record<string, string>;
     editorSettings: EditorSettingsTypes;
+    shortcutSettings: ShortcutSettings;
 
     // Actions
     setLanguage: (language: string) => void;
@@ -27,6 +28,7 @@ interface CFStoreInterface {
     setIsSubmitting: (submitting: boolean) => void;
     setApiKey: (key: string) => void;
     setEditorSettings: (editorSettings: EditorSettingsTypes) => void;
+    setShortcutSettings: (shortcutSettings: ShortcutSettings) => void;
 }
 
 export const useCFStore = create<CFStoreInterface>((set) => ({
@@ -42,6 +44,7 @@ export const useCFStore = create<CFStoreInterface>((set) => ({
     apiKey: localStorage.getItem('judge0CEApiKey') || '',
     editorThemeList: themesJSON,
     editorSettings: JSON.parse(localStorage.getItem('editorSettings') ?? 'null') ?? DEFAULT_EDITOR_SETTINGS,
+    shortcutSettings: JSON.parse(localStorage.getItem('shortcutSettings') ?? 'null') ?? DEFAULT_SHORTCUT_SETTINGS,
 
     // Actions
     setLanguage: (language) => set({ language }), setFontSize: (size) => set({ fontSize: size }),
@@ -53,4 +56,5 @@ export const useCFStore = create<CFStoreInterface>((set) => ({
     setIsSubmitting: (submitting) => set({ isSubmitting: submitting }),
     setApiKey: (key) => set({ apiKey: key }),
     setEditorSettings: (editorSettings) => set({ editorSettings }),
+    setShortcutSettings: (shortcutSettings) => set({ shortcutSettings }),
 }));

@@ -18,11 +18,12 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { browserAPI } from '../../utils/browser/browserDetect';
 
 interface MainProps {
+    showOptions: boolean;
     setShowOptions: (show: boolean) => void;
     theme: string;
 }
 
-const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
+const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
     const monacoInstanceRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
 
     // Zustand store hooks
@@ -46,6 +47,8 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
     const { loadTestCases, setupTestCaseListener } = useTestCases();
     const { handleTabEvents } = useTabEvents();
     const [isFormating, setIsFormating] = useState(false);
+    const shortcutSettings = useCFStore(state => state.shortcutSettings);
+    const pressedKeysRef = useRef<Set<string>>(new Set());
 
     useEffect(() => {
         setTimeout(() => {
@@ -86,34 +89,53 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
         setTimeout(() => {
             getCurrentSlug();
         }, 100);
-
-        const handleKeyPress = (event: KeyboardEvent) => {
-            if (event.ctrlKey && event.key === 'Enter') {
-                event.stopPropagation();
-                event.preventDefault();
-                handleSubmission(monacoInstanceRef.current, setIsSubmitting, language, testCases);
-                return false;
-            }
-        };
-        document.addEventListener('keydown', handleKeyPress, true);
-        return () => document.removeEventListener('keydown', handleKeyPress, true);
     }, []);
 
     useEffect(() => {
-        const handleRunCode = async (event: KeyboardEvent) => {
-            if (isRunning) return;
-            if (event.ctrlKey && event.key === "'") {
-                if (!currentSlug) {
-                    alert('Please select a problem to run code.');
-                    return;
-                }
-                await runCode();
+        const handleKeyDown = (e: KeyboardEvent) => {
+            pressedKeysRef.current.add(e.key);
+            handleShortcutActions();
+        };
+
+        const handleKeyUp = (e: KeyboardEvent) => {
+            e;
+            pressedKeysRef.current.clear();
+        };
+
+        const handleShortcutActions = () => {
+            const { run, submit , reset, format } = shortcutSettings;
+            const keysArray = Array.from(pressedKeysRef.current);
+            const shortcutString = keysArray.join(' + ');
+
+            switch (shortcutString) {
+                case run:
+                    if(isRunning) return;
+                    runCode();
+                    break;
+                case submit:
+                    if(isSubmitting) return;
+                    handleSubmission(monacoInstanceRef.current, setIsSubmitting, language, testCases);
+                    break;
+                case reset:
+                    handleResetCode();
+                    break;
+                case format:
+                    if(isFormating) return;
+                    handleFormatCode();
+                    break;
             }
         }
 
-        document.addEventListener('keydown', handleRunCode);
-        return () => document.removeEventListener('keydown', handleRunCode);
-    }, [runCode]);
+        if(!showOptions && currentSlug) {
+            window.addEventListener('keydown', handleKeyDown);
+        }
+        window.addEventListener('keyup', handleKeyUp);
+
+        return () => {
+            window.removeEventListener('keydown', handleKeyDown);
+            window.removeEventListener('keyup', handleKeyUp);
+        };
+    }, [showOptions, currentSlug, runCode, handleSubmission]);
 
     useEffect(() => {
         if (monacoInstanceRef.current) {
@@ -202,7 +224,11 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
             }
             (domNode as any).__autosave_detach__ = undefined;
         };
-    }
+    };
+
+    const handleFormatCode = () => {
+        formatCode(monacoInstanceRef, language,  setIsFormating);
+    };
 
     return (
         <div className='flex flex-col w-full justify-start items-center h-full dark:bg-[#111111]'>
@@ -226,7 +252,7 @@ const Main: React.FC<MainProps> = ({ setShowOptions, theme }) => {
                 runCode={runCode}
                 testCases={testCases.testCases}
                 isFormating={isFormating}
-                handleFormatCode={() => formatCode(monacoInstanceRef, language,  setIsFormating)}
+                handleFormatCode={handleFormatCode}
             />
 
             <div className="w-full h-[calc(100vh-88px)]">

@@ -18,5 +18,5 @@ export const handleSaveTemplate = (editor: monaco.editor.IStandaloneCodeEditor |
     }
     const editorValue = editor.getValue();
     localStorage.setItem("template", editorValue);
-    toast.success("Configuration saved successfully!");
+    toast.success("Saved successfully!");
 };

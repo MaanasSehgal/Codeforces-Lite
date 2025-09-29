@@ -1,4 +1,4 @@
-import { CircleCheck, CircleX, Code, Moon, Settings, SunMedium, Trash2 } from "lucide-react";
+import { CircleCheck, CircleX, Code, Moon, Settings, SunMedium, Trash2, Keyboard } from "lucide-react";
 import { OptionsProps } from "../../../types/types";
 import Option from "./Option";
 import { useCFStore } from "../../../zustand/useCFStore";
@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import ThemeCustomizer from "./ThemeCustomizer";
 import { toast } from "sonner";
 import EditorSettings from "./EditorSettings";
+import ShortcutSettingsComponent from "./ShortcutSettings";
 
 const Options = ({ theme, setTheme, changeUI, setChangeUI, setOpenConfirmationPopup }: OptionsProps) => {
     const buttonClass = "w-9 h-9 rounded-xl bg-gray-200 dark:bg-[#2a2a2a] hover:bg-gray-300 dark:hover:bg-[#3a3a3a] transition-all duration-200 flex justify-center items-center shadow-sm";
@@ -13,6 +14,7 @@ const Options = ({ theme, setTheme, changeUI, setChangeUI, setOpenConfirmationPo
     const currentUrl = useCFStore(state => state.currentUrl);
     const [isThemeCustomizerOpen, setIsThemeCustomizerOpen] = useState(false);
     const [isEditorSettingsOpen, setIsEditorSettingsOpen] = useState(false);
+    const [isShortcutSettingsOpen, setIsShortcutSettingsOpen] = useState(false);
 
     const handlOpenThemeCustomizer = () => {
         if (!currentUrl || (currentUrl && !currentUrl.includes('codeforces.com'))) {
@@ -39,6 +41,10 @@ const Options = ({ theme, setTheme, changeUI, setChangeUI, setOpenConfirmationPo
             <EditorSettings
                 isOpen={isEditorSettingsOpen}
                 onClose={() => setIsEditorSettingsOpen(false)}
+            />
+            <ShortcutSettingsComponent
+                isOpen={isShortcutSettingsOpen}
+                onClose={() => setIsShortcutSettingsOpen(false)}
             />
 
             <div className="w-full py-4 max-w-3xl mx-auto">
@@ -72,6 +78,15 @@ const Options = ({ theme, setTheme, changeUI, setChangeUI, setOpenConfirmationPo
                             title="Editor settings"
                         >
                             <Code color={theme === 'light' ? "#111111" : "#ffffff"} />
+                        </button>
+                    </Option>
+                    <Option title="Shortcut Settings">
+                        <button
+                            onClick={() => setIsShortcutSettingsOpen(true)}
+                            className={buttonClass}
+                            title="Shortcut settings"
+                        >
+                            <Keyboard color={theme === 'light' ? "#111111" : "#ffffff"} />
                         </button>
                     </Option>
 
