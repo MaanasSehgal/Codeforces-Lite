@@ -1,10 +1,3 @@
-> [!WARNING]
-> **Important Notice: "Run Code" Functionality Currently Unavailable**
->
-> We are aware of an issue that is currently preventing the "Run Code" feature from working. This is due to a DNS resolution problem with the `ce-zag.judge0.com` service, which we rely on for code execution. This appears to be an issue with the service provider and is likely outside of our direct control.
->
-> We are monitoring the situation and will update as soon as the service is restored. We apologize for any inconvenience this may cause. All other extension features should continue to work as expected.
-
 # Codeforces Lite
 #### A sidebar Chrome extension that enhances Codeforces, making it a more productive platform for competitive programmers.
 
