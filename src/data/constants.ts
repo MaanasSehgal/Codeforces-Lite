@@ -58,7 +58,7 @@ export const DEFAULT_EDITOR_SETTINGS: EditorSettingsTypes = {
 
 export const DEFAULT_SHORTCUT_SETTINGS: ShortcutSettings = {
   run: `Control + '`,
-  submit: `Control + Shift + "`,
+  submit: `Control + Enter`,
   reset: `Shift + Alt + R`,
   format: `Control + Shift + F`
 };

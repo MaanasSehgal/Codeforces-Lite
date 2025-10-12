@@ -93,8 +93,10 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
 
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
-            pressedKeysRef.current.add(e.key);
-            handleShortcutActions();
+            if(!showOptions && currentSlug) {
+                pressedKeysRef.current.add(e.key);
+                handleShortcutActions(e);
+            }
         };
 
         const handleKeyUp = (e: KeyboardEvent) => {
@@ -102,7 +104,7 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
             pressedKeysRef.current.clear();
         };
 
-        const handleShortcutActions = () => {
+        const handleShortcutActions = (e: KeyboardEvent) => {
             const { run, submit , reset, format } = shortcutSettings;
             const keysArray = Array.from(pressedKeysRef.current);
             const shortcutString = keysArray.join(' + ');
@@ -110,30 +112,39 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
             switch (shortcutString) {
                 case run:
                     if(isRunning) return;
+                    e.stopPropagation();
+                    e.preventDefault();
                     runCode();
                     break;
                 case submit:
                     if(isSubmitting) return;
+                    e.stopPropagation();
+                    e.preventDefault();
                     handleSubmission(monacoInstanceRef.current, setIsSubmitting, language, testCases);
                     break;
                 case reset:
+                    e.stopPropagation();
+                    e.preventDefault();
                     handleResetCode();
                     break;
                 case format:
                     if(isFormating) return;
+                    e.stopPropagation();
+                    e.preventDefault();
                     handleFormatCode();
                     break;
             }
         }
 
-        if(!showOptions && currentSlug) {
-            window.addEventListener('keydown', handleKeyDown);
-        }
-        window.addEventListener('keyup', handleKeyUp);
+        const domNode = monacoInstanceRef?.current?.getDomNode() ?? null;
+        if(!domNode) return;
+
+        domNode.addEventListener('keydown', handleKeyDown, { capture: true });
+        domNode.addEventListener('keyup', handleKeyUp, { capture: true });
 
         return () => {
-            window.removeEventListener('keydown', handleKeyDown);
-            window.removeEventListener('keyup', handleKeyUp);
+            domNode.removeEventListener('keydown', handleKeyDown, { capture: true });
+            domNode.removeEventListener('keyup', handleKeyUp, { capture: true });
         };
     }, [showOptions, currentSlug, runCode, handleSubmission]);
 
