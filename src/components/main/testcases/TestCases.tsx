@@ -187,25 +187,7 @@ const TestCases = () => {
                         </h2>
                         {getStatusMessage()}
                     </div>
-
-                    {testCases.ErrorMessage && (
-                        <div className='mt-3'>
-                            <div className="relative">
-                                <div className={`p-2 rounded-md whitespace-pre-wrap ${testCases.testCases[selectedTab]?.Output?.trim() === testCases.testCases[selectedTab]?.ExpectedOutput.trim()
-                                    ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
-                                    : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
-                                    }`}>
-                                    {testCases.testCases[selectedTab]?.Output}
-                                </div>
-                                <button
-                                    onClick={() => handleCopy(testCases.testCases[selectedTab]?.Output || '', 'output')}
-                                    className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
-                                >
-                                    {copied.output ? <Check size={16} /> : <Copy size={16} />}
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    
                     <div className="flex gap-2 mb-2 pr-3 py-3 overflow-x-auto whitespace-nowrap">
                         {testCases.testCases.map((_, index) => (
                             <div key={index} className="relative group">
@@ -272,7 +254,7 @@ const TestCases = () => {
                                 </div>
                             </div>
 
-                            {!testCases.ErrorMessage && testCases.testCases.length > 0 && testCases.testCases[selectedTab]?.Output && (
+                            {testCases.testCases.length > 0 && testCases.testCases[selectedTab]?.Output && (
                                 <div className="mt-4">
                                     <h2 className="text-base font-[600] pb-1 text-zinc-500">Output</h2>
                                     <div className="relative">
