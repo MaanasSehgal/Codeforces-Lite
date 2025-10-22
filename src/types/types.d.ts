@@ -113,6 +113,7 @@ export interface EditorSettingsTypes {
     keyBinding: KeyBinding;
     cursorSmoothCaretAnimation: CursorSmoothCaretAnimation;
     cursorStyle: CursorStyle;
+    fontFamily: string;
 }
 
 export interface IVimEditor extends monaco.editor.IStandaloneCodeEditor {
