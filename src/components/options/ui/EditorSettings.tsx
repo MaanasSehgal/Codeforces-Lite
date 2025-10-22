@@ -154,6 +154,36 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                                 Color scheme for the code editor
                                             </p>
                                         </div>
+                                        {/* VVV  PASTE YOUR NEW CODE BLOCK HERE  VVV
+                                        */}
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                Font Family
+                                            </label>
+                                            <select
+                                                value={editorSettings.fontFamily || "JetBrains Mono, monospace"}
+                                                onChange={(e) => {
+                                                    setEditorSettings({ ...editorSettings, fontFamily: e.target.value })
+                                                }}
+                                                className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                                aria-label="Select font family"
+                                            >
+                                                <option value="JetBrains Mono, monospace">JetBrains Mono</option>
+                                                <option value="Fira Code, monospace">Fira Code</option>
+                                                <option value="Cascadia Code, monospace">Cascadia Code</option>
+                                                <option value="Source Code Pro, monospace">Source Code Pro</option>
+                                                <option value="Menlo, monospace">Menlo</option>
+                                                <option value="Roboto Mono, monospace">Roboto Mono</option>
+                                                <option value="Ubuntu Mono, monospace">Ubuntu Mono</option>
+                                                <option value="Consolas, 'Courier New', monospace">Consolas</option>
+                                                <option value="'Courier New', Courier, monospace">Courier New</option>
+                                                <option value="monospace">Monospace</option>
+                                            </select>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                Select the font for the code editor.
+                                            </p>
+                                        </div>
+                                        {/* END: NEW FONT DROPDOWN BLOCK */}
                                     </div>
                                 </section>
 

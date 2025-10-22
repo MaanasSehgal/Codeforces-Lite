@@ -44,6 +44,7 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
                     language: language,
                     theme: editorSettings.theme,
                     fontSize: fontSize,
+                    fontFamily: editorSettings.fontFamily,
                     tabSize: editorSettings.indentSize,
                     automaticLayout: true,
                     readOnly: false,
