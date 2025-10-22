@@ -54,6 +54,7 @@ export const useEditorSettings = (editorSettings: EditorSettingsTypes, setEditor
                 suggestOnTriggerCharacters: editorSettings.autoSuggestions,
                 cursorSmoothCaretAnimation: editorSettings.cursorSmoothCaretAnimation,
                 cursorStyle: editorSettings.cursorStyle || 'line',
+                fontFamily: editorSettings.fontFamily,
             });
 
             const vimEditor = editor as IVimEditor;
@@ -75,5 +76,6 @@ export const useEditorSettings = (editorSettings: EditorSettingsTypes, setEditor
         getEditorSettings,
         handleToggle,
         saveEditorSettings,
+        applyEditorSettings,
     }
 }
