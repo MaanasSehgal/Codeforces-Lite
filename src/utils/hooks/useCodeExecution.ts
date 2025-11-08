@@ -172,15 +172,28 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
     };
 
     // Unified API handlers
+    // const makeJudge0CERequest = async (endpoint: string, options: any, apiKey: string) => {
+    //     const controller = executionState.startNew();
+    //     const baseUrl = options.method === 'GET' ? 'https://ce.judge0.com' : 'https://judge0-ce.p.sulu.sh';
+    //     return fetch(`${baseUrl}/${endpoint}`, {
+    //         ...options,
+    //         headers: {
+    //             'Accept': 'application/json',
+    //             ...options.headers,
+    //             'Authorization': apiKey ? `Bearer ${apiKey}` : ''
+    //         },
+    //         signal: controller.signal
+    //     });
+    // };
+
     const makeJudge0CERequest = async (endpoint: string, options: any, apiKey: string) => {
         const controller = executionState.startNew();
-        const baseUrl = options.method === 'GET' ? 'https://ce.judge0.com' : 'https://judge0-ce.p.sulu.sh';
-        return fetch(`${baseUrl}/${endpoint}`, {
+        return fetch(`https://judge0-ce.p.rapidapi.com/${endpoint}`, {
             ...options,
             headers: {
-                'Accept': 'application/json',
                 ...options.headers,
-                'Authorization': apiKey ? `Bearer ${apiKey}` : ''
+                'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
+                'X-RapidAPI-Key': apiKey
             },
             signal: controller.signal
         });

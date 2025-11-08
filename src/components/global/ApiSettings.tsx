@@ -16,9 +16,10 @@ const ApiSettings: React.FC = () => {
         }
 
         try {
-            const response = await fetch('https://judge0-ce.p.sulu.sh/languages', {
+            const response = await fetch('https://judge0-ce.p.rapidapi.com/languages', {
                 headers: {
-                    'Authorization': `Bearer ${tempKey}`
+                    'x-rapidapi-host': 'judge0-ce.p.rapidapi.com',
+                    'x-rapidapi-key': `${tempKey}`
                 }
             });
 
