@@ -58,12 +58,8 @@ const ApiLimitAlert: React.FC<ApiLimitAlertProps> = ({ isOpen, setIsOpen }) => {
                   rel="noopener noreferrer"
                   className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
                 >
-                  Get API key
+                  How to Get API Key?
                 </a>
-                <span className="text-gray-600 dark:text-gray-300">
-                  {" "}
-                  for higher limits
-                </span>
               </>
             )}
           </div>

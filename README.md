@@ -186,22 +186,15 @@ This cross-browser compatibility ensures you can enjoy the enhanced Codeforces e
 
 #### To use the run code feature, you'll need to set up an API key. Follow these steps:
 
-1. Visit [Judge0 on RapidAPI](https://rapidapi.com/dishis-technologies-judge0/api/judge029) and [Judge0 CE on RapidAPI](https://rapidapi.com/judge0-official/api/judge0-ce)
-
-2. Sign up or log in to RapidAPI
-3. Subscribe to both Judge0 and Judge0 CE (free tier available)
-
-   ![Subscribe](/public/assets/images/api-guide1_0.png)
-    
-    Repeat the same steps for `judge0-CE`.
-
-4. Once subscribed, you'll find your API key in the "Header Parameters" section
-5. Copy the `X-RapidAPI-Key` value
+1. Sign up or log in to [RapidAPI](https://rapidapi.com/)
+2. Visit [Judge0 CE (GET a Submission) on RapidAPI](https://rapidapi.com/judge0-official/api/judge0-ce/playground/apiendpoint_70574edc-a45b-41f3-8960-3a652b81404a)
+3. You'll find your API key in the "Header Parameters" section
+4. Copy the `X-RapidAPI-Key` value
    
    ![Copy API Key](/public/assets/images/api-guide2.png)
 
 5. Open Codeforces Lite extension and go to "API Settings" section
-6. Click the "Edit" button and paste one of your API keys (because both APIs are same value, you can use any one of them)
+6. Click the "Edit" button and paste your API keys
 
    ![Paste API Key](/public/assets/images/api-guide3.png)
 7. Save the key to enable the run code feature

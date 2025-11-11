@@ -309,6 +309,12 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
         const code = editor.getValue();
         const apiKey = localStorage.getItem('judge0CEApiKey');
 
+        if(!apiKey) {
+            setIsRunning(false);
+            setShowApiLimitAlert(true);
+            return;
+        }
+
         if (!code) {
             testCases.ErrorMessage = 'No code provided';
             testCases.testCases.forEach((testCase: any) => {
