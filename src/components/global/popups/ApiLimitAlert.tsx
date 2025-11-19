@@ -41,7 +41,7 @@ const ApiInstructions = () => (
       </li>
 
       <li>
-        If you see <b>Subscribe to Test</b>, click it and select a plan (free plan is available). If not, your API key is already active.
+        If you see <span className="text-black dark:text-white">Subscribe to Test</span>, click it and select a plan <span className="text-black dark:text-white">(free plan if available)</span>. If not, your API key is already active.
       </li>
 
       <li>
