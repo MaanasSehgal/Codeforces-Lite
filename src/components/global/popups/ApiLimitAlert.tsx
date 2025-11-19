@@ -7,65 +7,86 @@ interface ApiLimitAlertProps {
   setIsOpen: (open: boolean) => void;
 }
 
+const ApiInstructions = () => (
+  <div className="text-sm text-left mt-4">
+    <p className="font-bold text-lg mb-3 text-gray-800 dark:text-gray-200">
+      How to Get API Key
+    </p>
+
+    <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-darkText-400">
+      <li>
+        Sign up or log in to{" "}
+        <a
+          href="https://rapidapi.com/"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          RapidAPI
+        </a>
+        .
+      </li>
+
+      <li>
+        Open{" "}
+        <a
+          href="https://rapidapi.com/judge0-official/api/judge0-ce/playground/apiendpoint_70574edc-a45b-41f3-8960-3a652b81404a"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-blue-600 dark:text-blue-400 hover:underline"
+        >
+          Judge0 CE on RapidAPI
+        </a>
+        .
+      </li>
+
+      <li>
+        If you see <b>Subscribe to Test</b>, click it and select a plan (free available).  
+        If not, your API key is already active.
+      </li>
+
+      <li>
+        Copy the <u>X-RapidAPI-Key</u> from Header Parameters.
+      </li>
+
+      <li>Paste the key in Codeforces Lite → API Settings.</li>
+    </ol>
+  </div>
+);
+
 const ApiLimitAlert: React.FC<ApiLimitAlertProps> = ({ isOpen, setIsOpen }) => {
-  const apiKey = localStorage.getItem("judge0CEApiKey");
-
-  const removeAPIKey = () => {
-    localStorage.removeItem("judge0CEApiKey");
-    setIsOpen(false);
-  };
-
   return (
     <PopupModal isOpen={isOpen} setIsOpen={setIsOpen}>
       <PopupBox
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        title="Sulu Service Unavailable"
-        customClass="max-w-xs"
+        title="API Key Required"
+        customClass="max-w-lg text-lg font-semibold"
         popupHeight="h-auto"
       >
         <div className="text-gray-700 dark:text-darkText-400">
-          <p className="mb-4 text-sm">
-            Sorry for the inconvenience. The Judge0 Sulu API edition is
-            currently down. We've now moved our integration to RapidAPI. Please
-            generate your own RapidAPI key to continue using the service without
-            interruptions.
+          <p className="mb-2 text-sm">
+            To use the code execution feature, you must add your free API key from RapidAPI.
           </p>
-          <div className="mb-6 text-sm">
-            {apiKey ? (
-              <>
-                <button
-                  onClick={removeAPIKey}
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
-                >
-                  Switch to IP-based limit
-                </button>
-                <span className="text-gray-600 dark:text-gray-300"> or </span>
-                <a
-                  href="https://github.com/MaanasSehgal/Codeforces-Lite?tab=readme-ov-file#how-to-get-api-key"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
-                >
-                  upgrade plan
-                </a>
-              </>
-            ) : (
-              <>
-                <a
-                  href="https://github.com/MaanasSehgal/Codeforces-Lite?tab=readme-ov-file#how-to-get-api-key"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
-                >
-                  How to Get API Key?
-                </a>
-              </>
-            )}
+
+          <ApiInstructions />
+
+          <div className="mt-4 text-sm">
+            Detailed guide on{" "}
+            <a
+              href="https://github.com/MaanasSehgal/Codeforces-Lite?tab=readme-ov-file#how-to-get-api-key"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
+            >
+              GitHub
+            </a>
+            .
           </div>
+
           <button
             onClick={() => setIsOpen(false)}
-            className="w-full px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
+            className="w-full mt-6 px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 dark:bg-blue-500 dark:hover:bg-blue-600 rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 active:scale-95"
           >
             Close
           </button>
