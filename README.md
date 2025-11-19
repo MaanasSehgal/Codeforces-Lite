@@ -188,8 +188,15 @@ This cross-browser compatibility ensures you can enjoy the enhanced Codeforces e
 
 1. Sign up or log in to [RapidAPI](https://rapidapi.com/)
 2. Visit [Judge0 CE (GET a Submission) on RapidAPI](https://rapidapi.com/judge0-official/api/judge0-ce/playground/apiendpoint_70574edc-a45b-41f3-8960-3a652b81404a)
-3. You'll find your API key in the "Header Parameters" section
-4. Copy the `X-RapidAPI-Key` value
+3. Look for the **"Subscribe to Test"** button.
+   - If you see it, click it and choose a plan (a free plan is available). After subscribing, you will see the **"Test Endpoint"** button, and your API key will be active.
+     ![Subscribe to Test button](/public/assets/images/subscribe_btn.png)
+   - If you don't see the "Subscribe to Test" button, your API key is already active.
+   - You will see the "Test Endpoint" button. You can use it to test your API key.
+   - If you receive a 404 error, or if CF Lite reports the key as invalid, try using a different account.
+
+     ![Test Endpoint button](/public/assets/images/test_btn.png)
+4. You'll find your API key in the "Header Parameters" section. Copy the `X-RapidAPI-Key` value.
    
    ![Copy API Key](/public/assets/images/api-guide2.png)
 
