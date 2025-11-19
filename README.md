@@ -186,6 +186,8 @@ This cross-browser compatibility ensures you can enjoy the enhanced Codeforces e
 
 #### To use the run code feature, you'll need to set up an API key. Follow these steps:
 
+- See the YouTube video instructions: [Watch the video](https://youtu.be/ngHG_6NfByg)
+
 1. Sign up or log in to [RapidAPI](https://rapidapi.com/)
 2. Visit [Judge0 CE (GET a Submission) on RapidAPI](https://rapidapi.com/judge0-official/api/judge0-ce/playground/apiendpoint_70574edc-a45b-41f3-8960-3a652b81404a)
 3. Look for the **"Subscribe to Test"** button.
