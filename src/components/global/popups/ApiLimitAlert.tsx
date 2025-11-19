@@ -9,11 +9,11 @@ interface ApiLimitAlertProps {
 
 const ApiInstructions = () => (
   <div className="text-sm text-left mt-4">
-    <p className="font-bold text-lg mb-3 text-gray-800 dark:text-gray-200">
+    <p className="font-bold text-xl mb-4 text-gray-800 dark:text-gray-200">
       How to Get API Key
     </p>
 
-    <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-darkText-400">
+    <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-darkText-400 leading-relaxed">
       <li>
         Sign up or log in to{" "}
         <a
@@ -41,12 +41,15 @@ const ApiInstructions = () => (
       </li>
 
       <li>
-        If you see <b>Subscribe to Test</b>, click it and select a plan (free available).  
-        If not, your API key is already active.
+        If you see <b>Subscribe to Test</b>, click it and select a plan (free plan is available). If not, your API key is already active.
       </li>
 
       <li>
-        Copy the <u>X-RapidAPI-Key</u> from Header Parameters.
+        Copy the{" "}
+        <span className="px-2 py-0.5 bg-gray-200 dark:bg-gray-700 rounded text-gray-800 dark:text-gray-200">
+          X-RapidAPI-Key
+        </span>{" "}
+        from the header parameters.
       </li>
 
       <li>Paste the key in Codeforces Lite → API Settings.</li>
@@ -61,28 +64,28 @@ const ApiLimitAlert: React.FC<ApiLimitAlertProps> = ({ isOpen, setIsOpen }) => {
         isOpen={isOpen}
         setIsOpen={setIsOpen}
         title="API Key Required"
-        customClass="max-w-lg text-lg font-semibold"
+        customClass="font-bold text-xl text-gray-800 dark:text-gray-200"
         popupHeight="h-auto"
       >
-        <div className="text-gray-700 dark:text-darkText-400">
-          <p className="mb-2 text-sm">
+        <div className="text-gray-700 dark:text-darkText-400 leading-relaxed text-sm">
+          <p className="mb-4">
             To use the code execution feature, you must add your free API key from RapidAPI.
           </p>
 
           <ApiInstructions />
 
-          <div className="mt-4 text-sm">
-            Detailed guide on{" "}
+          <p className="mt-4">
+            For detailed instructions, click{" "}
             <a
               href="https://github.com/MaanasSehgal/Codeforces-Lite?tab=readme-ov-file#how-to-get-api-key"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"
             >
-              GitHub
+              here
             </a>
             .
-          </div>
+          </p>
 
           <button
             onClick={() => setIsOpen(false)}
