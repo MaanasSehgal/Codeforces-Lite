@@ -12,10 +12,6 @@ export const handleSubmission = async (editor: monaco.editor.IStandaloneCodeEdit
         return;
     }
 
-    if (!navigator.onLine) {
-        alert("You are offline. Please check your internet connection before submitting the code.");
-        return;
-    }
     const problemUrl = await getProblemUrl();
     const problemName = await getProblemName();
     problemName;

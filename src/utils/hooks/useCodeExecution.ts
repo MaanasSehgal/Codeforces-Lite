@@ -290,16 +290,6 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
         }
         setIsRunning(true);
 
-        if (navigator.onLine === false) {
-            testCases.ErrorMessage = "Network Error";
-            testCases.testCases.forEach((testCase: any) => {
-                testCase.Output = "Network error: Please check your internet connection.";
-                testCase.TimeAndMemory = { Time: '0', Memory: '0' };
-            });
-            setIsRunning(false);
-            return;
-        }
-
         testCases.ErrorMessage = '';
         testCases.testCases.forEach((testCase: any) => {
             testCase.Output = '';
