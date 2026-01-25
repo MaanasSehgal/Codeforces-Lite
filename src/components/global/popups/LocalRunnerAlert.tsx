@@ -30,7 +30,7 @@ const LocalRunnerAlert: React.FC<LocalRunnerAlertProps> = ({ isOpen, setIsOpen, 
             <li>
               Run:{" "}
               <code className="px-2 py-1 bg-gray-200 dark:bg-gray-700 rounded text-gray-800 dark:text-gray-200">
-                python3 server.py
+                python3 start.py
               </code>
             </li>
             <li>Try running your code again</li>
