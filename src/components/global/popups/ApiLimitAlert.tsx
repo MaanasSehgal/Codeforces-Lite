@@ -10,7 +10,7 @@ interface ApiLimitAlertProps {
 const ApiInstructions = () => (
   <div className="text-sm text-left mt-4">
     <p className="font-bold text-xl mb-4 text-gray-800 dark:text-gray-200">
-      How to Get API Key
+      How to Get Judge0 API Key
     </p>
 
     <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-darkText-400 leading-relaxed">
@@ -57,27 +57,65 @@ const ApiInstructions = () => (
   </div>
 );
 
+const LocalRunnerInstructions = () => (
+  <div className="text-sm text-left mt-6">
+    <p className="font-bold text-lg mb-3 text-gray-800 dark:text-gray-200">
+      Alternative: Use Local Runner (No API Key Required)
+    </p>
+    <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-darkText-400 leading-relaxed">
+      <li>
+        Open <span className="text-black dark:text-white">API Settings</span>.
+      </li>
+      <li>
+        Enable{" "}
+        <span className="text-black dark:text-white">
+          Use Local Runner
+        </span>
+        .
+      </li>
+      <li>
+        Set the port number{" "}
+        <span className="text-black dark:text-white">(default: 5000)</span>.
+      </li>
+      <li>
+        Start the local server on your machine.
+      </li>
+      <li>
+        Click <span className="text-black dark:text-white">Run</span> again.
+      </li>
+    </ol>
+    <p className="mt-2 text-xs opacity-70">
+      Local Runner executes code on your own machine and does not require any
+      external API or internet access.
+    </p>
+  </div>
+);
 const ApiLimitAlert: React.FC<ApiLimitAlertProps> = ({ isOpen, setIsOpen }) => {
   return (
     <PopupModal isOpen={isOpen} setIsOpen={setIsOpen}>
       <PopupBox
         isOpen={isOpen}
         setIsOpen={setIsOpen}
-        title="API Key Required"
+        title="Execution Setup Required"
         customClass="font-bold text-xl text-gray-800 dark:text-gray-200"
         popupHeight="h-auto"
       >
         <div className="text-gray-700 dark:text-darkText-400 leading-relaxed text-sm">
           <p className="mb-4">
-            To use the code execution feature, you must add your free API key from RapidAPI.
+            You are currently using the{" "}
+            <span className="font-medium text-black dark:text-white">
+              Judge0 execution backend
+            </span>
+            , which requires an API key.
           </p>
 
           <ApiInstructions />
 
-          <p className="mt-4">
-            For detailed instructions, click{" "}
+          <LocalRunnerInstructions />
+          <p className="mt-6">
+            For detailed documentation, click{" "}
             <a
-              href="https://github.com/MaanasSehgal/Codeforces-Lite?tab=readme-ov-file#how-to-get-api-key"
+              href="https://github.com/MaanasSehgal/Codeforces-Lite"
               target="_blank"
               rel="noopener noreferrer"
               className="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium"

@@ -13,6 +13,7 @@ import { initializeStorage } from '../../utils/services/storageService';
 import { loadCodeWithCursor } from '../../utils/codeHandlers';
 import { accessRestrictionMessage } from '../../data/constants';
 import ApiLimitAlert from '../global/popups/ApiLimitAlert';
+import LocalRunnerAlert from '../global/popups/LocalRunnerAlert';
 import CodeEditor from './editor/CodeEditor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { browserAPI } from '../../utils/browser/browserDetect';
@@ -42,7 +43,7 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
     } = useCFStore();
 
     // Custom hooks
-    const { runCode, showApiLimitAlert, setShowApiLimitAlert } = useCodeExecution(monacoInstanceRef.current);
+    const { runCode, showApiLimitAlert, setShowApiLimitAlert, showLocalRunnerAlert, setShowLocalRunnerAlert } = useCodeExecution(monacoInstanceRef.current);
     const { handleResetCode, handleLanguageChange, handleFontSizeChange, handleRedirectToLatestSubmission } = useCodeManagement(monacoInstanceRef);
     const { loadTestCases, setupTestCaseListener } = useTestCases();
     const { handleTabEvents } = useTabEvents();
@@ -247,6 +248,11 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
                 isOpen={showApiLimitAlert}
                 setIsOpen={setShowApiLimitAlert}
             />
+        	<LocalRunnerAlert
+            	isOpen={showLocalRunnerAlert}
+            	setIsOpen={setShowLocalRunnerAlert}
+            	port={Number(localStorage.getItem('localRunnerPort')) || 5000}
+        	/>
             <TopBar
                 theme={theme as "light" | "dark"}
                 handleClick={() => handleSubmission(monacoInstanceRef.current, setIsSubmitting, language, testCases)}
