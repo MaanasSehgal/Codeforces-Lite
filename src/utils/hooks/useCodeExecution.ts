@@ -8,6 +8,10 @@ import { getUserId } from '../dom/getUserId';
 import { getTimeLimit } from '../dom/getTimeLimit';
 import { getProblemUrl } from '../dom/getProblemUrl';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { ExecutionParams } from '../execution/types';
+import { executeLocal } from '../execution/executeLocal';
+
+
 
 const languageMap: { [key: string]: number } = {
     'java': 62,
@@ -80,6 +84,7 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
     const testCases = useCFStore(state => state.testCases);
     const setIsRunning = useCFStore(state => state.setIsRunning);
     const [showApiLimitAlert, setShowApiLimitAlert] = useState(false);
+    const [showLocalRunnerAlert, setShowLocalRunnerAlert] = useState(false);
 
     const resetStates = () => {
         setIsRunning(false);
@@ -288,6 +293,7 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
             alert("Please login to run code");
             return;
         }
+
         setIsRunning(true);
 
         testCases.ErrorMessage = '';
@@ -297,14 +303,6 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
         });
 
         const code = editor.getValue();
-        const apiKey = localStorage.getItem('judge0CEApiKey');
-
-        if(!apiKey) {
-            setIsRunning(false);
-            setShowApiLimitAlert(true);
-            return;
-        }
-
         if (!code) {
             testCases.ErrorMessage = 'No code provided';
             testCases.testCases.forEach((testCase: any) => {
@@ -315,20 +313,79 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
             return;
         }
 
-        await executeCode(code, apiKey || "", timeLimit);
+        try {
+            const controller = executionState.startNew();
+            const backend =
+                localStorage.getItem('executionBackend') || 'judge0';
 
-        setIsRunning(false);
-        problemName;
-        problemUrl
 
-        if (isProduction) {
-            await usageDataHelper(language, testCases, userId).handleUsageData(code, problemUrl, "RUN", problemName);
+            if (backend === 'local') {
+                let result;
+                const params: ExecutionParams = {
+                    code,
+                    language,
+                    inputs: testCases.testCases.map(tc => tc.Input),
+                    timeLimit,
+                };
+
+                result = await executeLocal(params, controller.signal);
+
+                if (
+                    result.errorMessage &&
+                    result.errorMessage.includes('Local runner is not reachable')
+                ) {
+                    setShowLocalRunnerAlert(true);
+                    setIsRunning(false);
+                    return;
+                }
+
+                if (result.errorMessage) {
+                    testCases.ErrorMessage = result.errorMessage;
+                    testCases.testCases.forEach(tc => {
+                        tc.Output = result.errorMessage!;
+                        tc.TimeAndMemory = { Time: '0', Memory: '0' };
+                    });
+                } else {
+                    result.outputs.forEach((out, i) => {
+                        testCases.testCases[i].Output = out;
+                        testCases.testCases[i].TimeAndMemory = {
+                            Time: result.time?.[i] || '0',
+                            Memory: result.memory?.[i] || '0',
+                        };
+                    });
+                }
+
+            } else {
+                const apiKey = localStorage.getItem('judge0CEApiKey');
+
+                if (!apiKey) {
+                    setIsRunning(false);
+                    setShowApiLimitAlert(true);
+                    return;
+                }
+
+                await executeCode(code, apiKey || "", timeLimit);
+
+                if (isProduction) {
+                    await usageDataHelper(language, testCases, userId).handleUsageData(code, problemUrl, "RUN", problemName);
+                }
+            }
+
+            setIsRunning(false);
+            problemName;
+            problemUrl
+
+
+        } catch (error: any) {
+            setCatchError(error);
         }
     };
 
     return {
         runCode,
         showApiLimitAlert,
-        setShowApiLimitAlert
+        setShowApiLimitAlert,
+        showLocalRunnerAlert,
+        setShowLocalRunnerAlert
     };
 };
