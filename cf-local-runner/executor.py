@@ -65,7 +65,7 @@ def execute(code: str, language: str, inputs: list[str], time_limit: int):
                         "results": []
                     }
 
-                binary_path = os.path.join(tmpdir, "main")
+                binary_path = os.path.join(tmpdir, "main") if platform.system() != "Windows" else os.path.join(tmpdir, "main.exe") 
                 os.chmod(binary_path, 0o755)
 
                 if lang["cache"]:
