@@ -59,24 +59,30 @@ const ApiSettings: React.FC = () => {
         toast.success('API key removed');
     };
 
-    // Handle port input change
+    
+    const isValidNumericString = (value: string): boolean => {
+        if (value === '') return true;
+        return /^\d+$/.test(value);
+    };
+
+
     const handlePortChange = (value: string) => {
+        if (!isValidNumericString(value)) {
+            return;
+        }
+
         if (value === '') {
             setLocalPort('');
             return;
         }
 
-        const numValue = parseInt(value, 10);
-        
-        if (!isNaN(numValue)) {
-            setLocalPort(value);
-        }
+        setLocalPort(value);
     };
 
     const savePort = () => {
-        const numValue = parseInt(localPort, 10);
+        const trimmedPort = localPort.trim();
         
-        if (localPort === '' || isNaN(numValue)) {
+        if (trimmedPort === '' || !isValidNumericString(trimmedPort)) {
             setLocalPort('5000');
             setSavedPort('5000');
             localStorage.setItem('localRunnerPort', '5000');
@@ -84,15 +90,17 @@ const ApiSettings: React.FC = () => {
             return;
         }
 
+        const numValue = parseInt(trimmedPort, 10);
+
         if (numValue < 1024 || numValue > 65535) {
             toast.error('Invalid port. Must be between 1024 and 65535');
-            setLocalPort(savedPort); 
+            setLocalPort(savedPort);
             return;
         }
 
-        localStorage.setItem('localRunnerPort', localPort);
-        setSavedPort(localPort);
-        toast.success(`Port saved: ${localPort}`);
+        localStorage.setItem('localRunnerPort', trimmedPort);
+        setSavedPort(trimmedPort);
+        toast.success(`Port saved: ${trimmedPort}`);
     };
 
     const handlePortKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
