@@ -17,12 +17,14 @@ const ApiSettings: React.FC = () => {
     const [localPort, setLocalPort] = useState(
         localStorage.getItem('localRunnerPort') || '5000'
     );
+    const [savedPort, setSavedPort] = useState(
+        localStorage.getItem('localRunnerPort') || '5000'
+    );
 
     // Ensure defaults
     useEffect(() => {
         localStorage.setItem('executionBackend', executionBackend);
-        localStorage.setItem('localRunnerPort', localPort);
-    }, [executionBackend, localPort]);
+    }, [executionBackend]);
 
     const validateAndSaveKey = async () => {
         if (!tempKey.trim()) {
@@ -56,6 +58,50 @@ const ApiSettings: React.FC = () => {
         setApiKey('');
         toast.success('API key removed');
     };
+
+    // Handle port input change
+    const handlePortChange = (value: string) => {
+        if (value === '') {
+            setLocalPort('');
+            return;
+        }
+
+        const numValue = parseInt(value, 10);
+        
+        if (!isNaN(numValue)) {
+            setLocalPort(value);
+        }
+    };
+
+    const savePort = () => {
+        const numValue = parseInt(localPort, 10);
+        
+        if (localPort === '' || isNaN(numValue)) {
+            setLocalPort('5000');
+            setSavedPort('5000');
+            localStorage.setItem('localRunnerPort', '5000');
+            toast.warning('Port reset to default: 5000');
+            return;
+        }
+
+        if (numValue < 1024 || numValue > 65535) {
+            toast.error('Invalid port. Must be between 1024 and 65535');
+            setLocalPort(savedPort); 
+            return;
+        }
+
+        localStorage.setItem('localRunnerPort', localPort);
+        setSavedPort(localPort);
+        toast.success(`Port saved: ${localPort}`);
+    };
+
+    const handlePortKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+        if (e.key === 'Enter') {
+            savePort();
+        }
+    };
+
+    const hasPortChanged = localPort !== savedPort;
 
     return (
         <motion.div 
@@ -232,23 +278,34 @@ const ApiSettings: React.FC = () => {
                                     Local Runner Port
                                 </span>
                             </div>
-                            <input
-                                type="number"
-                                min={1}
-                                max={65535}
-                                value={localPort}
-                                onChange={(e) => {
-                                    const v = Number(e.target.value);
-                                    if (v >= 1 && v <= 65535) {
-                                        setLocalPort(e.target.value);
-                                        localStorage.setItem('localRunnerPort', e.target.value);
-                                    }
-                                }}
-                                className="w-full p-2 border bg-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white"
-                                placeholder="5000"
-                            />
+                            <div className="flex gap-2">
+                                <input
+                                    type="text"
+                                    inputMode="numeric"
+                                    pattern="[0-9]*"
+                                    value={localPort}
+                                    onChange={(e) => handlePortChange(e.target.value)}
+                                    onKeyPress={handlePortKeyPress}
+                                    className="flex-1 p-2 border bg-zinc-200 text-zinc-800 dark:bg-zinc-800 dark:border-zinc-700 dark:text-white rounded-md"
+                                    placeholder="5000"
+                                />
+                                <motion.button
+                                    onClick={savePort}
+                                    className={`px-4 py-2 rounded-md flex items-center gap-2 transition-all ${
+                                        hasPortChanged
+                                            ? 'bg-blue-500 hover:bg-blue-600 text-white'
+                                            : 'bg-green-500 text-white cursor-default'
+                                    }`}
+                                    whileHover={hasPortChanged ? { scale: 1.05 } : {}}
+                                    whileTap={hasPortChanged ? { scale: 0.95 } : {}}
+                                    disabled={!hasPortChanged}
+                                >
+                                    <Check size={18} />
+                                    {hasPortChanged ? 'Save' : 'Saved'}
+                                </motion.button>
+                            </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 mt-2">
-                                Valid range: 1 – 65535. Ensure your local server is running.
+                                Valid range: 1024 – 65535 (default: 5000). Press Enter or click Save to apply changes.
                             </p>
                         </motion.div>
                     )}
