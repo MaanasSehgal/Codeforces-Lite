@@ -1,5 +1,5 @@
-# languages.py
 import os
+import platform
 
 LANGUAGES = {
     "c": {
@@ -16,8 +16,8 @@ LANGUAGES = {
     },
     "python": {
         "source": "main.py",
-        "compile": None,           # interpreted
-        "run": ["python3", "main.py"],
+        "compile": None,
+        "run": ["python3" if platform.system() != "Windows" else "python", "main.py"],
         "cache": False,
     },
 }
