@@ -11,7 +11,7 @@ import { useCFStore } from "../../zustand/useCFStore";
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { browserAPI } from "../../utils/browser/browserDetect";
 import { Save } from "lucide-react";
-import ApiSettings from "../global/ApiSettings";
+// import ApiSettings from "../global/ApiSettings";
 
 const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme }) => {
     const monacoInstanceRef = useRef<monaco.editor.IStandaloneCodeEditor | null>(null);
@@ -74,7 +74,7 @@ const Settings: React.FC<SettingsProps> = ({ setShowOptions, theme, setTheme }) 
                         setChangeUI={setChangeUI}
                         setOpenConfirmationPopup={setOpenConfirmationPopup}
                     />
-                    <ApiSettings />
+                    {/* <ApiSettings /> */}
                     <div className="mx-auto w-full max-w-3xl flex flex-col items-center gap-2 border-t-2 border-zinc-800">
                         <div className="self-center text-base text-zinc-700 font-semibold dark:text-zinc-200 flex justify-between w-full py-3">
                             <div className="flex flex-col gap-1">

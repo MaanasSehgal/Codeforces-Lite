@@ -10,11 +10,11 @@ import { getProblemUrl } from '../dom/getProblemUrl';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 
 const languageMap: { [key: string]: number } = {
-    'java': 62,
+    'java': 4,
     'javascript': 63,
-    'cpp': 54,
-    'python': 71,
-    'pypy': 71,
+    'cpp': 2,
+    'python': 25,
+    'pypy': 28,
     'kotlin': 78,
     'go': 106,
     'rust': 73,
@@ -59,7 +59,7 @@ const handleExecutionStatus = (result: any, testCase: any) => {
         12: { message: 'Execution Timed Out', getOutput: () => 'Execution Timed Out' },
     };
 
-    const handler = statusHandlers[result.status_id] || { message: 'Runtime Error', getOutput: () => result.stderr ? decodeURIComponent(escape(atob(result.stderr))).trim() : 'Something went wrong' };
+    const handler = statusHandlers[result?.status_id ?? result?.status?.id] || { message: 'Runtime Error', getOutput: () => result.stderr ? decodeURIComponent(escape(atob(result.stderr))).trim() : 'Something went wrong' };
     testCase.ErrorMessage = handler.message;
     return handler.getOutput();
 };
@@ -76,9 +76,9 @@ const getTimeAndMemory = (result: any) => {
 };
 
 export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | null) => {
-    const language = useCFStore(state => state.language);
-    const testCases = useCFStore(state => state.testCases);
-    const setIsRunning = useCFStore(state => state.setIsRunning);
+    const language = useCFStore((state: any) => state.language);
+    const testCases = useCFStore((state: any) => state.testCases);
+    const setIsRunning = useCFStore((state: any) => state.setIsRunning);
     const [showApiLimitAlert, setShowApiLimitAlert] = useState(false);
 
     const resetStates = () => {
@@ -153,7 +153,11 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
         compiler_options: compilerOptionsMap[language] || null,
     });
 
-    const processResults = async (tokens: string[], apiKey: string, region: string = 'AUTO') => {
+    const processResults = async (tokens: string[], isBatch: boolean = false) => {
+        const endpoint = isBatch
+        ? `submissions/batch?base64_encoded=true&tokens=${tokens.join(',')}`
+        : `submissions/${tokens[0]}?base64_encoded=true&fields=stdout,stderr,status,compile_output,status_id,time,memory`;
+
         const controller = executionState.startNew();
         await new Promise((resolve, reject) => {
             const timeout = setTimeout(resolve, (language === 'kotlin' ? 6000 : EXECUTE_CODE_LIMIT) * testCases.testCases.length);
@@ -163,51 +167,33 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
             });
         });
 
-        const resultsResponse = await makeJudge0CERequest(
-            `submissions/batch?base64_encoded=true&tokens=${tokens.join(',')}&fields=stdout,stderr,status,compile_output,status_id,time,memory`,
-            { method: 'GET', headers: { 'X-Judge0-Region': region } },
-            apiKey
+        const resultsResponse = await makeJudge0Request(
+            endpoint,
+            { method: 'GET' }
         );
         return resultsResponse.json();
     };
 
-    // Unified API handlers
-    // const makeJudge0CERequest = async (endpoint: string, options: any, apiKey: string) => {
-    //     const controller = executionState.startNew();
-    //     const baseUrl = options.method === 'GET' ? 'https://ce.judge0.com' : 'https://judge0-ce.p.sulu.sh';
-    //     return fetch(`${baseUrl}/${endpoint}`, {
-    //         ...options,
-    //         headers: {
-    //             'Accept': 'application/json',
-    //             ...options.headers,
-    //             'Authorization': apiKey ? `Bearer ${apiKey}` : ''
-    //         },
-    //         signal: controller.signal
-    //     });
-    // };
-
-    const makeJudge0CERequest = async (endpoint: string, options: any, apiKey: string) => {
+    const makeJudge0Request = async (endpoint: string, options: any) => {
         const controller = executionState.startNew();
-        return fetch(`https://judge0-ce.p.rapidapi.com/${endpoint}`, {
+        return fetch(`https://extra-ce.judge0.com/${endpoint}`, {
             ...options,
             headers: {
                 ...options.headers,
-                'X-RapidAPI-Host': 'judge0-ce.p.rapidapi.com',
-                'X-RapidAPI-Key': apiKey
             },
             signal: controller.signal
         });
     };
 
-    const executeCodeCE = async (code: string, apiKey: string, timeLimit: number) => {
-        const submissions = testCases.testCases.map(testCase => createSubmissionPayload(code, testCase.Input, timeLimit));
-
+    const executeCodeJudge0 = async (code: string, timeLimit: number) => {
+        const submissions = testCases.testCases.map((testCase: any) => createSubmissionPayload(code, testCase.Input, timeLimit));
+        const isBatch = submissions.length > 1;
         try {
-            const submitResponse = await makeJudge0CERequest('submissions/batch?base64_encoded=true', {
+            const submitResponse = await makeJudge0Request(`submissions${isBatch ? '/batch' : ''}?base64_encoded=true`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ submissions })
-            }, apiKey);
+                body: JSON.stringify(isBatch ? { submissions } : submissions[0]),
+            });
 
             if (submitResponse.status === 429) {
                 setShowApiLimitAlert(true);
@@ -219,10 +205,10 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
                 return;
             }
 
-            const batchResponse = await submitResponse.json();
+            const response = await submitResponse.json();
 
-            if (!batchResponse || !Array.isArray(batchResponse)) {
-                const errorDetail = batchResponse?.error || 'Unknown error';
+            if (!response || (!isBatch && !response) || (isBatch && !Array.isArray(response))) {
+                const errorDetail = response?.error || 'Unknown error';
                 testCases.ErrorMessage = `Compilation Error`;
                 testCases.testCases.forEach((testCase: any) => {
                     testCase.Output = errorDetail;
@@ -230,10 +216,10 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
                 return;
             }
 
-            const tokens = batchResponse.map(submission => submission.token);
-            let results = await processResults(tokens, apiKey, submitResponse.headers.get('X-Judge0-Region') || 'AUTO');
+            const tokens = isBatch ? response.map((submission: any) => submission.token) : [response.token];
+            let results = await processResults(tokens, isBatch);
 
-            if (!results?.submissions) {
+            if (isBatch && !results?.submissions) {
                 testCases.ErrorMessage = `Compilation Error`;
                 const errorDetail = decodeURIComponent(escape(atob(results?.error))) || 'Compilation Error';
                 testCases.testCases.forEach((testCase: any) => {
@@ -245,14 +231,14 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
             const outputResults: string[] = [];
             const timeMemoryResults: { Time: string; Memory: string }[] = [];
 
-            for (const result of results.submissions) {
-                if (!result) continue;
+            let finalResults = results;
+            if ((isBatch && results.submissions.some((r: any) => r?.status.id === 2)) || (!isBatch && results?.status_id === 2)) {
+                await new Promise(resolve => setTimeout(resolve, 3000));
+                finalResults = await processResults(tokens, isBatch);
+            }
 
-                if (result?.status_id === 2) {
-                    await new Promise(resolve => setTimeout(resolve, 3000));
-                    results = await processResults(tokens, apiKey);
-                }
-
+            const resultList = isBatch ? finalResults.submissions : [finalResults];
+            for (const result of resultList) {
                 timeMemoryResults.push(getTimeAndMemory(result));
                 outputResults.push(handleExecutionStatus(result, testCases));
             }
@@ -266,9 +252,9 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
         }
     };
 
-    const executeCode = async (code: string, apiKey: string, timeLimit: number) => {
+    const executeCode = async (code: string, timeLimit: number) => {
         try {
-            await executeCodeCE(code, apiKey, timeLimit);
+            await executeCodeJudge0(code, timeLimit);
         } catch (error: any) {
             setCatchError(error);
         }
@@ -297,13 +283,6 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
         });
 
         const code = editor.getValue();
-        const apiKey = localStorage.getItem('judge0CEApiKey');
-
-        if(!apiKey) {
-            setIsRunning(false);
-            setShowApiLimitAlert(true);
-            return;
-        }
 
         if (!code) {
             testCases.ErrorMessage = 'No code provided';
@@ -315,7 +294,7 @@ export const useCodeExecution = (editor: monaco.editor.IStandaloneCodeEditor | n
             return;
         }
 
-        await executeCode(code, apiKey || "", timeLimit);
+        await executeCode(code, timeLimit);
 
         setIsRunning(false);
         problemName;

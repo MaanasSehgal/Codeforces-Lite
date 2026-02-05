@@ -47,7 +47,7 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
     const { loadTestCases, setupTestCaseListener } = useTestCases();
     const { handleTabEvents } = useTabEvents();
     const [isFormating, setIsFormating] = useState(false);
-    const shortcutSettings = useCFStore(state => state.shortcutSettings);
+    const shortcutSettings = useCFStore((state: any) => state.shortcutSettings);
     const pressedKeysRef = useRef<Set<string>>(new Set());
 
     useEffect(() => {
