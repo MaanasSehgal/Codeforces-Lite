@@ -9,6 +9,20 @@ import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { PREVIEW_CODE } from '../../../data/constants';
 import { formatCode } from '../../../utils/helper';
 
+// Define font options as a constant for cleaner code
+const FONT_FAMILY_OPTIONS = [
+    { value: "JetBrains Mono, monospace", label: "JetBrains Mono" },
+    { value: "Fira Code, monospace", label: "Fira Code" },
+    { value: "Cascadia Code, monospace", label: "Cascadia Code" },
+    { value: "Source Code Pro, monospace", label: "Source Code Pro" },
+    { value: "Menlo, monospace", label: "Menlo" },
+    { value: "Roboto Mono, monospace", label: "Roboto Mono" },
+    { value: "Ubuntu Mono, monospace", label: "Ubuntu Mono" },
+    { value: "Consolas, 'Courier New', monospace", label: "Consolas" },
+    { value: "'Courier New', Courier, monospace", label: "Courier New" },
+    { value: "monospace", label: "Monospace" }
+];
+
 interface EditorSettingsProps {
     isOpen: boolean;
     onClose: () => void;
@@ -154,6 +168,29 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                                 Color scheme for the code editor
                                             </p>
                                         </div>
+
+                                        <div className="space-y-2">
+                                            <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
+                                                Font Family
+                                            </label>
+                                            <select
+                                                value={editorSettings.fontFamily || "JetBrains Mono, monospace"}
+                                                onChange={(e) => {
+                                                    setEditorSettings({ ...editorSettings, fontFamily: e.target.value })
+                                                }}
+                                                className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                                                aria-label="Select font family"
+                                            >
+                                                {FONT_FAMILY_OPTIONS.map((font) => (
+                                                    <option key={font.value} value={font.value}>
+                                                        {font.label}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                            <p className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                                                Select the font for the code editor.
+                                            </p>
+                                        </div>
                                     </div>
                                 </section>
 
@@ -249,7 +286,7 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                                     setEditorSettings({ ...editorSettings, lineNumbers: e.target.value as LineNumber })
                                                 }}
                                                 className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                                aria-label="Select tab indent size"
+                                                aria-label="Select line number style"
                                             >
                                                 <option value="on">On</option>
                                                 <option value="relative">Relative</option>
@@ -270,7 +307,7 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                                     setEditorSettings({ ...editorSettings, keyBinding: e.target.value as KeyBinding })
                                                 }}
                                                 className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                                aria-label="Select tab indent size"
+                                                aria-label="Select keybinding mode"
                                             >
                                                 <option value="standard">Standard</option>
                                                 <option value="vim">Vim</option>
@@ -290,7 +327,7 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                                     setEditorSettings({ ...editorSettings, cursorSmoothCaretAnimation: e.target.value as CursorSmoothCaretAnimation })
                                                 }}
                                                 className="w-full cursor-pointer bg-gray-100 dark:bg-[#2a2a2a] px-3 py-2 font-medium text-gray-700 dark:text-zinc-100 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
-                                                aria-label="Select tab indent size"
+                                                aria-label="Select smooth caret animation setting"
                                             >
                                                 <option value="on">On</option>
                                                 <option value="explicit">Explicit</option>
