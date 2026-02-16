@@ -53,7 +53,8 @@ export const DEFAULT_EDITOR_SETTINGS: EditorSettingsTypes = {
   lineNumbers: "on",
   keyBinding: "standard",
   cursorSmoothCaretAnimation: "off",
-  cursorStyle: "line"
+  cursorStyle: "line",
+  fontFamily: "JetBrains Mono, monospace"
 };
 
 export const DEFAULT_SHORTCUT_SETTINGS: ShortcutSettings = {

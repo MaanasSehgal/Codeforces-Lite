@@ -20,7 +20,7 @@ const editorStyle: React.CSSProperties = {
 const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: CodeEditorProps) => {
     const editorSettings = useCFStore((state) => state.editorSettings);
     const setEditorSettings = useCFStore((state) => state.setEditorSettings);
-    const { getEditorSettings } = useEditorSettings(editorSettings, setEditorSettings);
+    const { getEditorSettings, applyEditorSettings } = useEditorSettings(editorSettings, setEditorSettings);
     const editorRef = useRef<HTMLDivElement>(null);
     const vimStatusRef = useRef<HTMLDivElement>(null);
 
@@ -44,6 +44,7 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
                     language: language,
                     theme: editorSettings.theme,
                     fontSize: fontSize,
+                    fontFamily: editorSettings.fontFamily,
                     tabSize: editorSettings.indentSize,
                     automaticLayout: true,
                     readOnly: false,
@@ -66,9 +67,7 @@ const CodeEditor = ({ monacoInstanceRef, language, fontSize, templateCode }: Cod
             const vimEditor = monacoInstanceRef.current! as IVimEditor
             vimEditor.vimStatusRef = vimStatusRef;
 
-            if(editorSettings.keyBinding == "vim") {
-                vimEditor.vimMode = initVimMode(monacoInstanceRef.current, vimStatusRef.current);
-            }
+            applyEditorSettings();
         };
 
         loadThemes();
