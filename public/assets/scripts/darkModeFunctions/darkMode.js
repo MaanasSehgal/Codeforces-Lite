@@ -19,7 +19,7 @@ const injectDarkModeCSS = () => {
             }
 
             /* for undo filter */
-            img, picture, video, iframe, canvas, .legendColorBox, #legend_unordered_list li svg, .welldone {
+            img, picture, video, iframe, canvas, .legendColorBox, #legend_unordered_list li svg, .welldone, #heatmap-tooltip, #cf-heatmap svg rect:not([fill="#ebedf0"]) {
                 filter: invert(1) hue-rotate(-160deg) !important;
             }
 
@@ -88,11 +88,16 @@ const injectDarkModeCSS = () => {
             }
 
             a {
-                color: #122a70 !important;
+                color: #197AF6 !important;
             }
 
             .menu-list-container a, .second-level-menu-list a {
                 color: #000000 !important;
+            }
+
+            /* cf-heatmap */
+            #cf-heatmap svg rect:not([fill="#ebedf0"]) {
+                opacity: 0.7;
             }
 
             ::-webkit-scrollbar {
