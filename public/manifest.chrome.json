@@ -1,66 +1,53 @@
 {
-    "manifest_version": 3,
-    "version": "1.5.3",
-    "name": "Codeforces Lite - Dark Mode & Code Runner",
-    "description": "Provides dark theme and code runner for Codeforces",
-    "author": "Devendra Suryavanshi & Maanas Sehgal",
-    "short_name": "Codeforces Lite",
-    "side_panel": {
-        "default_path": "index.html"
-    },
-    "permissions": [
-        "tabs",
-        "storage",
-        "unlimitedStorage",
-        "activeTab",
-        "scripting",
-        "sidePanel",
-        "idle"
-    ],
-    "host_permissions": [
-        "http://*/*",
-        "https://*/*"
-    ],
-    "icons": {
-        "16": "assets/icons/codeforces16.png",
-        "32": "assets/icons/codeforces32.png",
-        "48": "assets/icons/codeforces48.png",
-        "128": "assets/icons/codeforces128.png"
-    },
-    "web_accessible_resources": [
-        {
-            "resources": [
-                "assets/scripts/ftaa-script.js"
-            ],
-            "matches": [
-                "<all_urls>"
-            ]
-        }
-    ],
-    "content_security_policy": {
-        "extension_pages": "script-src 'self'; object-src 'self';"
-    },
-    "background": {
-        "service_worker": "assets/scripts/serviceWorker.js"
-    },
-    "content_scripts": [
-        {
-            "matches": [
-                "https://codeforces.com/*"
-            ],
-            "exclude_matches": [
-                "https://codeforces.com/api/*"
-            ],
-            "css": [
-                "assets/styles/inject-styles.css"
-            ],
-            "js": [
-                "assets/scripts/content.js",
-                "assets/scripts/changeUIFunctions/loginPageChanges.js",
-                "assets/scripts/changeUIFunctions/problemSetPageChanges.js",
-                "assets/scripts/darkModeFunctions/darkMode.js"
-            ],
-            "run_at": "document_start"
-        }
-    ]
+  "manifest_version": 3,
+  "version": "1.5.4",
+  "name": "Codeforces Lite - Dark Mode & Code Runner",
+  "description": "Provides dark theme and code runner for Codeforces",
+  "author": "Devendra Suryavanshi & Maanas Sehgal",
+  "short_name": "Codeforces Lite",
+  "side_panel": {
+    "default_path": "index.html"
+  },
+  "permissions": [
+    "tabs",
+    "storage",
+    "unlimitedStorage",
+    "activeTab",
+    "scripting",
+    "sidePanel",
+    "idle"
+  ],
+  "host_permissions": ["http://*/*", "https://*/*"],
+  "icons": {
+    "16": "assets/icons/codeforces16.png",
+    "32": "assets/icons/codeforces32.png",
+    "48": "assets/icons/codeforces48.png",
+    "128": "assets/icons/codeforces128.png"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["assets/scripts/ftaa-script.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
+  "content_security_policy": {
+    "extension_pages": "script-src 'self'; object-src 'self';"
+  },
+  "background": {
+    "service_worker": "assets/scripts/serviceWorker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://codeforces.com/*"],
+      "exclude_matches": ["https://codeforces.com/api/*"],
+      "css": ["assets/styles/inject-styles.css"],
+      "js": [
+        "assets/scripts/content.js",
+        "assets/scripts/changeUIFunctions/loginPageChanges.js",
+        "assets/scripts/changeUIFunctions/problemSetPageChanges.js",
+        "assets/scripts/darkModeFunctions/darkMode.js"
+      ],
+      "run_at": "document_start"
+    }
+  ]
 }
