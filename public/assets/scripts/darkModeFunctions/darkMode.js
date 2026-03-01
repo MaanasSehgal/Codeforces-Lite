@@ -1,6 +1,6 @@
-if (typeof isFirefox === 'undefined') {
-    let isFirefox = typeof browser !== 'undefined';
-    let browserAPI = isFirefox ? browser : chrome;
+if (typeof isFirefox === "undefined") {
+  let isFirefox = typeof browser !== "undefined";
+  let browserAPI = isFirefox ? browser : chrome;
 }
 
 const currentURL = window.location.href;
@@ -8,8 +8,8 @@ let styleElement;
 let customStyleElement;
 
 const injectDarkModeCSS = () => {
-    styleElement = document.createElement("style");
-    styleElement.textContent = `
+  styleElement = document.createElement("style");
+  styleElement.textContent = `
             html {
                 background-color: #000000 !important;
             }
@@ -88,7 +88,7 @@ const injectDarkModeCSS = () => {
             }
 
             a {
-                color: #197AF6 !important;
+                color: #122A70 !important;
             }
 
             .menu-list-container a, .second-level-menu-list a {
@@ -97,7 +97,11 @@ const injectDarkModeCSS = () => {
 
             /* cf-heatmap */
             #cf-heatmap svg rect:not([fill="#ebedf0"]) {
-                opacity: 0.7;
+                opacity: 1 !important;
+            }
+
+            #heatmap-tooltip > a {
+                color: #197AF6 !important;
             }
 
             ::-webkit-scrollbar {
@@ -117,36 +121,36 @@ const injectDarkModeCSS = () => {
                 color: #121212;
             }
         `;
-    document.addEventListener("DOMContentLoaded", () => {
-        document.head.appendChild(styleElement);
-    });
+  document.addEventListener("DOMContentLoaded", () => {
+    document.head.appendChild(styleElement);
+  });
 
-    if (document.head) {
+  if (document.head) {
+    document.head.appendChild(styleElement);
+  } else {
+    const observer = new MutationObserver(() => {
+      if (document.head) {
         document.head.appendChild(styleElement);
-    } else {
-        const observer = new MutationObserver(() => {
-            if (document.head) {
-                document.head.appendChild(styleElement);
-                observer.disconnect();
-            }
-        });
-        observer.observe(document, { childList: true, subtree: true });
+        observer.disconnect();
+      }
+    });
+    observer.observe(document, { childList: true, subtree: true });
+  }
+
+  browserAPI.storage.local.get("themeCustomSettings", (result) => {
+    if (result.themeCustomSettings) {
+      applyCustomThemeSettings(result.themeCustomSettings);
     }
-
-    browserAPI.storage.local.get("themeCustomSettings", (result) => {
-        if (result.themeCustomSettings) {
-            applyCustomThemeSettings(result.themeCustomSettings);
-        }
-    });
+  });
 };
 
 const applyCustomThemeSettings = (settings) => {
-    if (customStyleElement) {
-        customStyleElement.remove();
-    }
+  if (customStyleElement) {
+    customStyleElement.remove();
+  }
 
-    customStyleElement = document.createElement("style");
-    customStyleElement.textContent = `
+  customStyleElement = document.createElement("style");
+  customStyleElement.textContent = `
       html {
         filter: 
           brightness(${settings.brightness}%) 
@@ -157,35 +161,35 @@ const applyCustomThemeSettings = (settings) => {
       }
     `;
 
-    if (document.head) {
-        document.head.appendChild(customStyleElement);
-    }
+  if (document.head) {
+    document.head.appendChild(customStyleElement);
+  }
 };
 
 const sortToggleImgInvert = () => {
-    if (!currentURL.includes("codeforces.com/problemset")) {
-        return;
-    }
-    const anchorElements = document.querySelectorAll("a.non-decorated");
+  if (!currentURL.includes("codeforces.com/problemset")) {
+    return;
+  }
+  const anchorElements = document.querySelectorAll("a.non-decorated");
 
-    anchorElements.forEach((anchor) => {
-        const imgElements = anchor.querySelectorAll("img");
-        if (imgElements && imgElements.length > 1) {
-            imgElements[1].classList.add("custom-image");
-        }
-    });
+  anchorElements.forEach((anchor) => {
+    const imgElements = anchor.querySelectorAll("img");
+    if (imgElements && imgElements.length > 1) {
+      imgElements[1].classList.add("custom-image");
+    }
+  });
 };
 
 const removeSortToggleImgInvert = () => {
-    if (!currentURL.includes("codeforces.com/problemset")) {
-        return;
-    }
-    const anchorElements = document.querySelectorAll("a.non-decorated");
+  if (!currentURL.includes("codeforces.com/problemset")) {
+    return;
+  }
+  const anchorElements = document.querySelectorAll("a.non-decorated");
 
-    anchorElements.forEach((anchor) => {
-        const imgElements = anchor.querySelectorAll("img");
-        if (imgElements && imgElements.length > 1) {
-            imgElements[1].classList.remove("custom-image");
-        }
-    });
+  anchorElements.forEach((anchor) => {
+    const imgElements = anchor.querySelectorAll("img");
+    if (imgElements && imgElements.length > 1) {
+      imgElements[1].classList.remove("custom-image");
+    }
+  });
 };
