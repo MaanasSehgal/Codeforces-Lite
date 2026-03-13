@@ -1,7 +1,7 @@
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
 import { EditorSettingsTypes, IVimEditor } from '../../types/types';
 import { DEFAULT_EDITOR_SETTINGS } from '../../data/constants';
-import { initVimMode } from 'monaco-vim';
+import { initVimMode, VimMode } from 'monaco-vim';
 
 export const useEditorSettings = (editorSettings: EditorSettingsTypes, setEditorSettings: (settings: EditorSettingsTypes) => void) => {
 
@@ -61,6 +61,19 @@ export const useEditorSettings = (editorSettings: EditorSettingsTypes, setEditor
             if(editorSettings.keyBinding == "vim") {
                 if(!vimEditor.vimMode) {
                     vimEditor.vimMode = initVimMode(editor, vimEditor.vimStatusRef.current);
+                }
+                
+                // Apply custom key bindings
+                if (editorSettings.vimKeyBindings && editorSettings.vimKeyBindings.length > 0) {
+                    try {
+                        editorSettings.vimKeyBindings.forEach(({ key, command, context }) => {
+                            if (key && command && context) {
+                                (VimMode as any).Vim.map(key, command, context);
+                            }
+                        });
+                    } catch (error) {
+                        console.error('Failed to apply custom vim bindings:', error);
+                    }
                 }
             } else {
                 if (vimEditor.vimMode) {

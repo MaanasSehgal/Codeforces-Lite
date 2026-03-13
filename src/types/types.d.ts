@@ -103,6 +103,12 @@ export type LineNumber = "on" | "off" | "relative";
 export type CursorSmoothCaretAnimation = "on" | "off" | "explicit";
 export type CursorStyle = 'line' | 'block' | 'underline' | 'line-thin' | 'block-outline' | 'underline-thin';
 
+export interface IVimKeyBinding {
+    key: string;
+    command: string;
+    context: string;
+}
+
 export interface EditorSettingsTypes {
     indentSize: number;
     theme: string;
@@ -113,6 +119,7 @@ export interface EditorSettingsTypes {
     keyBinding: KeyBinding;
     cursorSmoothCaretAnimation: CursorSmoothCaretAnimation;
     cursorStyle: CursorStyle;
+    vimKeyBindings: IVimKeyBinding[];
 }
 
 export interface IVimEditor extends monaco.editor.IStandaloneCodeEditor {

@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Code, Settings, Palette, Eye } from 'lucide-react';
 import { useCFStore } from '../../../zustand/useCFStore';
-import { CursorSmoothCaretAnimation, CursorStyle, EditorSettingsTypes, KeyBinding, LineNumber } from '../../../types/types';
+import { CursorSmoothCaretAnimation, CursorStyle, EditorSettingsTypes, KeyBinding, LineNumber, IVimKeyBinding } from '../../../types/types';
 import { useEditorSettings } from '../../../utils/hooks/useEditorSettings';
 import CodeEditor from '../../main/editor/CodeEditor';
 import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
@@ -22,6 +22,25 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
     const setEditorSettings = useCFStore(state => state.setEditorSettings);
     const { getEditorSettings, handleToggle, saveEditorSettings } = useEditorSettings(editorSettings, setEditorSettings);
     const { language, fontSize } = useCFStore();
+
+    const [newVimKey, setNewVimKey] = React.useState('');
+    const [newVimCommand, setNewVimCommand] = React.useState('');
+    const [newVimContext, setNewVimContext] = React.useState('insert');
+
+    const addVimBinding = () => {
+        if (!newVimKey || !newVimCommand) return;
+        const newBinding: IVimKeyBinding = { key: newVimKey, command: newVimCommand, context: newVimContext };
+        const updatedBindings = [...(editorSettings.vimKeyBindings || []), newBinding];
+        setEditorSettings({ ...editorSettings, vimKeyBindings: updatedBindings });
+        setNewVimKey('');
+        setNewVimCommand('');
+    };
+
+    const removeVimBinding = (index: number) => {
+        const updatedBindings = [...(editorSettings.vimKeyBindings || [])];
+        updatedBindings.splice(index, 1);
+        setEditorSettings({ ...editorSettings, vimKeyBindings: updatedBindings });
+    };
 
     useEffect(() => {
         if (isOpen) {
@@ -279,6 +298,77 @@ const EditorSettings: React.FC<EditorSettingsProps> = ({ isOpen, onClose }) => {
                                                 Keybinding to use in the editor
                                             </p>
                                         </div>
+
+                                    {editorSettings.keyBinding === 'vim' && (
+                                        <div className="mt-6 p-4 rounded-lg bg-gray-50 dark:bg-[#222222] border border-gray-200 dark:border-gray-800 col-span-1 md:col-span-2">
+                                            <h4 className="text-md font-semibold text-gray-800 dark:text-gray-200 mb-3">Custom Vim Keybindings</h4>
+                                            
+                                            <div className="flex gap-2 mb-4 items-end">
+                                                <div className="flex-1">
+                                                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Key</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="e.g. jk"
+                                                        value={newVimKey}
+                                                        onChange={(e) => setNewVimKey(e.target.value)}
+                                                        className="w-full bg-white dark:bg-[#2a2a2a] px-3 py-2 text-sm text-gray-700 dark:text-zinc-100 rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </div>
+                                                <div className="flex-1">
+                                                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Command</label>
+                                                    <input
+                                                        type="text"
+                                                        placeholder="e.g. <Esc>"
+                                                        value={newVimCommand}
+                                                        onChange={(e) => setNewVimCommand(e.target.value)}
+                                                        className="w-full bg-white dark:bg-[#2a2a2a] px-3 py-2 text-sm text-gray-700 dark:text-zinc-100 rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    />
+                                                </div>
+                                                <div className="w-24">
+                                                    <label className="block text-xs font-medium text-gray-500 dark:text-gray-400 mb-1">Context</label>
+                                                    <select
+                                                        value={newVimContext}
+                                                        onChange={(e) => setNewVimContext(e.target.value)}
+                                                        className="w-full bg-white dark:bg-[#2a2a2a] px-3 py-2 text-sm text-gray-700 dark:text-zinc-100 rounded-md border border-gray-300 dark:border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                                    >
+                                                        <option value="insert">Insert</option>
+                                                        <option value="normal">Normal</option>
+                                                        <option value="visual">Visual</option>
+                                                    </select>
+                                                </div>
+                                                <button
+                                                    onClick={addVimBinding}
+                                                    disabled={!newVimKey || !newVimCommand}
+                                                    className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white font-medium rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center text-sm"
+                                                >
+                                                    Add
+                                                </button>
+                                            </div>
+
+                                            {editorSettings.vimKeyBindings && editorSettings.vimKeyBindings.length > 0 ? (
+                                                <div className="space-y-2 max-h-40 overflow-y-auto">
+                                                    {editorSettings.vimKeyBindings.map((binding, index) => (
+                                                        <div key={index} className="flex items-center justify-between p-2 bg-white dark:bg-[#2a2a2a] rounded border border-gray-200 dark:border-gray-700">
+                                                            <div className="flex items-center gap-2 text-sm">
+                                                                <span className="font-mono bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200">{binding.key}</span>
+                                                                <span className="text-gray-400">→</span>
+                                                                <span className="font-mono bg-gray-100 dark:bg-gray-800 px-1.5 py-0.5 rounded text-gray-800 dark:text-gray-200">{binding.command}</span>
+                                                                <span className="text-xs text-gray-500 dark:text-gray-400">({binding.context})</span>
+                                                            </div>
+                                                            <button
+                                                                onClick={() => removeVimBinding(index)}
+                                                                className="text-red-500 hover:text-red-700 p-1 rounded hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+                                                            >
+                                                                <X size={14} />
+                                                            </button>
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                <p className="text-xs text-gray-500 dark:text-gray-400 text-center py-2">No custom keybindings added.</p>
+                                            )}
+                                        </div>
+                                    )}
 
                                         <div className="space-y-2">
                                             <label className="block text-sm font-medium text-gray-700 dark:text-gray-300">
