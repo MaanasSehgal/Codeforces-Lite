@@ -9,7 +9,7 @@ export const EXECUTE_CODE_LIMIT = 3 * 1000; // max number of minutes to execute 
 export const accessRestrictionMessage = `/* 
 Code Editor Access:
 • The code editor is available only while solving
-  a codeforces problem. Functioanlities are
+  a codeforces problem. Functionalities are
   disabled on other pages.
 
 • To access full functionality,
@@ -46,21 +46,21 @@ int main() {
 
 export const DEFAULT_EDITOR_SETTINGS: EditorSettingsTypes = {
   indentSize: 4,
-  theme: 'vs-dark',
+  theme: "vs-dark",
   lineWrapping: false,
   autoSuggestions: true,
   minimap: true,
   lineNumbers: "on",
   keyBinding: "standard",
   cursorSmoothCaretAnimation: "off",
-  cursorStyle: "line"
+  cursorStyle: "line",
 };
 
 export const DEFAULT_SHORTCUT_SETTINGS: ShortcutSettings = {
   run: `Control + '`,
   submit: `Control + Enter`,
   reset: `Shift + Alt + R`,
-  format: `Control + Shift + F`
+  format: `Control + Shift + F`,
 };
 
 export const isProduction = true;
