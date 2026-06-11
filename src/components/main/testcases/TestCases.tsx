@@ -28,16 +28,24 @@ const TestCases = () => {
         }
     }, [currentSlug, testCases, selectedTab]);
 
+    const normalizeOutput = (s = "") => {
+        return s
+            .replace(/\r/g, "")
+            .replace(/\n/g, " ")
+            .trim()
+            .replace(/\s+/g, " ");
+    };
+
     const isAllTestCasesPassed = () => {
         if (!testCases.testCases[selectedTab]?.Output) return false;
         return testCases.testCases.length > 0 && testCases.testCases.every((testCase) =>
-            testCase.ExpectedOutput?.trim() === testCase.Output?.trim()
+            normalizeOutput(testCase.ExpectedOutput) === normalizeOutput(testCase.Output)
         )
     };
 
     const getInputBorderColor = (testCase: TestCase) => {
         if (!testCase.Output) return 'border-gray-300 dark:border-gray-700';
-        return testCase.Output.trim() === testCase.ExpectedOutput.trim()
+        return normalizeOutput(testCase.Output) === normalizeOutput(testCase.ExpectedOutput)
             ? 'border-green-500 dark:border-green-500'
             : 'border-red-500 dark:border-red-500';
     };
@@ -91,7 +99,7 @@ const TestCases = () => {
 
         let borderStyle = 'border-transparent';
         if (testCases?.testCases?.[index]?.Output) {
-            borderStyle = testCases.testCases[index].Output.trim() === testCases.testCases[index].ExpectedOutput.trim()
+            borderStyle = normalizeOutput(testCases.testCases[index].Output) === normalizeOutput(testCases.testCases[index].ExpectedOutput)
                 ? 'border-green-500'
                 : 'border-red-500';
         }
@@ -258,7 +266,7 @@ const TestCases = () => {
                                 <div className="mt-4">
                                     <h2 className="text-base font-[600] pb-1 text-zinc-500">Output</h2>
                                     <div className="relative">
-                                        <div className={`p-2 rounded-md whitespace-pre-wrap ${testCases.testCases[selectedTab]?.Output.trim() === testCases.testCases[selectedTab].ExpectedOutput.trim()
+                                        <div className={`p-2 rounded-md whitespace-pre-wrap ${normalizeOutput(testCases.testCases[selectedTab]?.Output) === normalizeOutput(testCases.testCases[selectedTab].ExpectedOutput)
                                             ? 'bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300'
                                             : 'bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300'
                                             }`}>

@@ -2,9 +2,17 @@ import { TestCaseArray } from "../types/types";
 
 export const usageDataHelper = (language: string, testCases: TestCaseArray, userId: string) => {
 
+    const normalizeOutput = (s = "") => {
+        return s
+            .replace(/\r/g, "")
+            .replace(/\n/g, " ")
+            .trim()
+            .replace(/\s+/g, " ");
+    };
+
     const isAllTestCasesPassed = () => {
         return testCases.testCases.length > 0 && testCases.testCases.every((testCase) =>
-            testCase.ExpectedOutput?.trim() === testCase.Output?.trim()
+            normalizeOutput(testCase.ExpectedOutput) === normalizeOutput(testCase.Output)
         )
     };
 
