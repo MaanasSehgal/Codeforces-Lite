@@ -1,95 +1,105 @@
-import { Braces, ChartNoAxesGantt, CloudUpload, Code2, LoaderCircle, Play, RotateCcw, Settings, Wifi, WifiOff } from 'lucide-react';
-import { ShortcutSettings, TopBarProps } from '../../../types/types';
-import React, { useEffect, useState, useRef } from 'react';
-import { useCFStore } from '../../../zustand/useCFStore';
-import { normalizeShortcut } from '../../../utils/helper';
-import Timer from './CodeTimer';
+import {
+  Braces,
+  ChartNoAxesGantt,
+  CloudUpload,
+  Code2,
+  LoaderCircle,
+  Play,
+  RotateCcw,
+  Settings,
+  Wifi,
+  WifiOff,
+} from "lucide-react";
+import { ShortcutSettings, TopBarProps } from "src/types/types";
+import React, { useEffect, useState, useRef } from "react";
+import { useCFStore } from "src/zustand/useCFStore";
+import { normalizeShortcut } from "src/utils/helper";
+import Timer from "./CodeTimer";
 
 const TopBar: React.FC<TopBarProps> = ({
-    theme,
-    handleClick,
-    setShowOptions,
-    language,
-    fontSize,
-    handleLanguageChange,
-    handleFontSizeChange,
-    handleResetCode,
-    handleRedirectToLatestSubmission,
-    currentSlug,
-    isRunning,
-    isSubmitting,
-    runCode,
-    testCases,
-    isFormating,
-    handleFormatCode
+  theme,
+  handleClick,
+  setShowOptions,
+  language,
+  fontSize,
+  handleLanguageChange,
+  handleFontSizeChange,
+  handleResetCode,
+  handleRedirectToLatestSubmission,
+  currentSlug,
+  isRunning,
+  isSubmitting,
+  runCode,
+  testCases,
+  isFormating,
+  handleFormatCode,
 }) => {
+  const [showRunTooltip, setShowRunTooltip] = useState<boolean>(false);
+  const [showSubmitTooltip, setShowSubmitTooltip] = useState<boolean>(false);
+  const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
+  const [showStatusAnimation, setShowStatusAnimation] = useState<boolean>(false);
+  const [statusText, setStatusText] = useState<string>("");
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const shortcutSettings = useCFStore((state) => state.shortcutSettings);
+  const [normalizedShortcutSettings, setNormalizedShortcutSettings] = useState<ShortcutSettings>({
+    run: normalizeShortcut(shortcutSettings.run),
+    submit: normalizeShortcut(shortcutSettings.submit),
+    reset: normalizeShortcut(shortcutSettings.reset),
+    format: normalizeShortcut(shortcutSettings.format),
+  });
+  const SHOW_DURATION_MS = 4000;
 
-    const [showRunTooltip, setShowRunTooltip] = useState<boolean>(false);
-    const [showSubmitTooltip, setShowSubmitTooltip] = useState<boolean>(false);
-    const [isOnline, setIsOnline] = useState<boolean>(navigator.onLine);
-    const [showStatusAnimation, setShowStatusAnimation] = useState<boolean>(false);
-    const [statusText, setStatusText] = useState<string>('');
-    const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
-    const shortcutSettings = useCFStore(state => state.shortcutSettings);
-    const [normalizedShortcutSettings, setNormalizedShortcutSettings] = useState<ShortcutSettings>({
-        run: normalizeShortcut(shortcutSettings.run),
-        submit: normalizeShortcut(shortcutSettings.submit),
-        reset: normalizeShortcut(shortcutSettings.reset),
-        format: normalizeShortcut(shortcutSettings.format),
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      setStatusText("Online");
+      setShowStatusAnimation(true);
+
+      if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+
+      hideTimeoutRef.current = setTimeout(() => {
+        setShowStatusAnimation(false);
+      }, SHOW_DURATION_MS);
+    };
+
+    const handleOffline = () => {
+      setIsOnline(false);
+      setStatusText("Offline");
+      setShowStatusAnimation(true);
+
+      if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+
+      hideTimeoutRef.current = setTimeout(() => {
+        setShowStatusAnimation(false);
+      }, SHOW_DURATION_MS);
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+      if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
+      if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
+    };
+  }, []);
+
+  useEffect(() => {
+    setNormalizedShortcutSettings({
+      run: normalizeShortcut(shortcutSettings.run),
+      submit: normalizeShortcut(shortcutSettings.submit),
+      reset: normalizeShortcut(shortcutSettings.reset),
+      format: normalizeShortcut(shortcutSettings.format),
     });
-    const SHOW_DURATION_MS = 4000;
+  }, [shortcutSettings]);
 
-    useEffect(() => {
-        const handleOnline = () => {
-            setIsOnline(true);
-            setStatusText('Online');
-            setShowStatusAnimation(true);
-
-            if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
-            if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-
-            hideTimeoutRef.current = setTimeout(() => {
-                setShowStatusAnimation(false);
-            }, SHOW_DURATION_MS);
-        };
-
-        const handleOffline = () => {
-            setIsOnline(false);
-            setStatusText('Offline');
-            setShowStatusAnimation(true);
-
-            if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
-            if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-
-            hideTimeoutRef.current = setTimeout(() => {
-                setShowStatusAnimation(false);
-            }, SHOW_DURATION_MS);
-        };
-
-        window.addEventListener("online", handleOnline);
-        window.addEventListener("offline", handleOffline);
-
-        return () => {
-            window.removeEventListener("online", handleOnline);
-            window.removeEventListener("offline", handleOffline);
-            if (animationTimeoutRef.current) clearTimeout(animationTimeoutRef.current);
-            if (hideTimeoutRef.current) clearTimeout(hideTimeoutRef.current);
-        };
-    }, []);
-
-    useEffect(() => {
-        setNormalizedShortcutSettings({
-            run: normalizeShortcut(shortcutSettings.run),
-            submit: normalizeShortcut(shortcutSettings.submit),
-            reset: normalizeShortcut(shortcutSettings.reset),
-            format: normalizeShortcut(shortcutSettings.format),
-        });
-    }, [shortcutSettings]);
-
-    return (
-        <>
-            <style>{`
+  return (
+    <>
+      <style>{`
                 @keyframes iconPop {
                     0% {
                         transform: scale(0);
@@ -206,50 +216,48 @@ const TopBar: React.FC<TopBarProps> = ({
                 }
             `}</style>
 
-            <div className='top-bar-container w-full flex border-b border-gray-500 h-12 relative'>
-                <div className='left-section flex items-center'>
-                    <div className="status-container">
-                        {!showStatusAnimation && isOnline && (
-                            <div className="code-icon">
-                                <Code2 size={18} color='green' />
-                            </div>
-                        )}
+      <div className="top-bar-container w-full flex border-b border-gray-500 h-12 relative">
+        <div className="left-section flex items-center">
+          <div className="status-container">
+            {!showStatusAnimation && isOnline && (
+              <div className="code-icon">
+                <Code2 size={18} color="green" />
+              </div>
+            )}
 
-                        {showStatusAnimation && (
-                            <>
-                                <div className="icon-wrapper">
-                                    <span className="status-icon">
-                                        {isOnline
-                                            ? <Wifi size={18} color="#22c55e" aria-label="Online" />
-                                            : <WifiOff size={18} color="#ef4444" aria-label="Offline" />
-                                        }
-                                    </span>
-                                </div>
-                                <span className={`status-text ${isOnline ? 'online' : 'offline'}`}>
-                                    {statusText}
-                                </span>
-                            </>
-                        )}
-
-                        {!showStatusAnimation && !isOnline && (
-                            <span
-                                title={"Offline"}
-                                className="flex items-center"
-                            >
-                                <WifiOff size={16} color="red" aria-label="Offline" />
-                            </span>
-                        )}
-                    </div>
+            {showStatusAnimation && (
+              <>
+                <div className="icon-wrapper">
+                  <span className="status-icon">
+                    {isOnline ? (
+                      <Wifi size={18} color="#22c55e" aria-label="Online" />
+                    ) : (
+                      <WifiOff size={18} color="#ef4444" aria-label="Offline" />
+                    )}
+                  </span>
                 </div>
+                <span className={`status-text ${isOnline ? "online" : "offline"}`}>
+                  {statusText}
+                </span>
+              </>
+            )}
 
-                <div className='center-buttons'>
-                    <div className="relative inline-flex shadow-sm">
-                        <button
-                            disabled={!currentSlug || isRunning || testCases.length === 0}
-                            onClick={runCode}
-                            onMouseEnter={() => setShowRunTooltip(true)}
-                            onMouseLeave={() => setShowRunTooltip(false)}
-                            className={`
+            {!showStatusAnimation && !isOnline && (
+              <span title={"Offline"} className="flex items-center">
+                <WifiOff size={16} color="red" aria-label="Offline" />
+              </span>
+            )}
+          </div>
+        </div>
+
+        <div className="center-buttons">
+          <div className="relative inline-flex shadow-sm">
+            <button
+              disabled={!currentSlug || isRunning || testCases.length === 0}
+              onClick={runCode}
+              onMouseEnter={() => setShowRunTooltip(true)}
+              onMouseLeave={() => setShowRunTooltip(false)}
+              className={`
                                 ${(!currentSlug || isRunning || testCases.length === 0) && "cursor-not-allowed"}
                                 h-7 px-3
                                 text-white text-sm font-medium
@@ -259,40 +267,43 @@ const TopBar: React.FC<TopBarProps> = ({
                                 flex items-center gap-1
                                 transition-colors
                             `}
-                        >
-                            {isRunning ?
-                                <LoaderCircle className="animate-spin w-4 h-4" /> :
-                                <>
-                                    <Play className="w-4 h-4" />
-                                    <span>Run</span>
-                                </>
-                            }
-                        </button>
+            >
+              {isRunning ? (
+                <LoaderCircle className="animate-spin w-4 h-4" />
+              ) : (
+                <>
+                  <Play className="w-4 h-4" />
+                  <span>Run</span>
+                </>
+              )}
+            </button>
 
-                        {showRunTooltip && (
-                            <div
-                                role="tooltip"
-                                className="absolute left-1/2 -translate-x-1/2 mt-8 z-50 inline-flex items-center justify-center
+            {showRunTooltip && (
+              <div
+                role="tooltip"
+                className="absolute left-1/2 -translate-x-1/2 mt-8 z-50 inline-flex items-center justify-center
                                         px-2 py-1 rounded-lg text-xs text-black dark:text-white bg-gray-200 dark:bg-[#222222]
                                         shadow-lg min-w-max max-w-[90vw] whitespace-normal break-words"
-                            >
-                                <div className="flex items-center gap-1 flex-wrap justify-center">
-                                {normalizedShortcutSettings.run.split('+').map((key, index, arr) => (
-                                    <React.Fragment key={index}>
-                                    <kbd className="border border-gray-600 rounded px-1 text-[11px] font-semibold">{key.charAt(0).toUpperCase() + key.slice(1)}</kbd>
-                                    {index < arr.length - 1 && <span className="mx-0.5 text-xs">+</span>}
-                                    </React.Fragment>
-                                ))}
-                                </div>
-                            </div>
-                        )}
+              >
+                <div className="flex items-center gap-1 flex-wrap justify-center">
+                  {normalizedShortcutSettings.run.split("+").map((key, index, arr) => (
+                    <React.Fragment key={index}>
+                      <kbd className="border border-gray-600 rounded px-1 text-[11px] font-semibold">
+                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                      </kbd>
+                      {index < arr.length - 1 && <span className="mx-0.5 text-xs">+</span>}
+                    </React.Fragment>
+                  ))}
+                </div>
+              </div>
+            )}
 
-                        <button
-                            disabled={!currentSlug || isSubmitting}
-                            onClick={handleClick}
-                            onMouseEnter={() => setShowSubmitTooltip(true)}
-                            onMouseLeave={() => setShowSubmitTooltip(false)}
-                            className={`
+            <button
+              disabled={!currentSlug || isSubmitting}
+              onClick={handleClick}
+              onMouseEnter={() => setShowSubmitTooltip(true)}
+              onMouseLeave={() => setShowSubmitTooltip(false)}
+              className={`
                                 ${!currentSlug && "cursor-not-allowed"}
                                 h-7 px-3
                                 bg-green-500 hover:bg-green-600
@@ -301,51 +312,57 @@ const TopBar: React.FC<TopBarProps> = ({
                                 flex items-center gap-1
                                 transition-colors
                             `}
-                        >
-                            {isSubmitting ?
-                                <LoaderCircle className="animate-spin w-4 h-4" /> :
-                                <>
-                                    <CloudUpload className="w-4 h-4" />
-                                    <span>Submit</span>
-                                </>
-                            }
-                        </button>
+            >
+              {isSubmitting ? (
+                <LoaderCircle className="animate-spin w-4 h-4" />
+              ) : (
+                <>
+                  <CloudUpload className="w-4 h-4" />
+                  <span>Submit</span>
+                </>
+              )}
+            </button>
 
-                        {showSubmitTooltip && (
-                            <div
-                                role="tooltip"
-                                className="absolute left-1/2 -translate-x-1/2 mt-8 z-50 inline-flex items-center justify-center
+            {showSubmitTooltip && (
+              <div
+                role="tooltip"
+                className="absolute left-1/2 -translate-x-1/2 mt-8 z-50 inline-flex items-center justify-center
                                         px-2 py-1 rounded-lg text-xs text-black dark:text-white bg-gray-200 dark:bg-[#222222]
                                         shadow-lg min-w-max max-w-[90vw] whitespace-normal break-words"
-                            >
-                                <div className="flex items-center gap-1 flex-wrap justify-center">
-                                {normalizedShortcutSettings.submit.split('+').map((key, index, arr) => (
-                                    <React.Fragment key={index}>
-                                    <kbd className="border border-gray-600 rounded px-1 text-[11px] font-semibold">{key.charAt(0).toUpperCase() + key.slice(1)}</kbd>
-                                    {index < arr.length - 1 && <span className="mx-0.5 text-xs">+</span>}
-                                    </React.Fragment>
-                                ))}
-                                </div>
-                            </div>
-                        )}
-                    </div>
+              >
+                <div className="flex items-center gap-1 flex-wrap justify-center">
+                  {normalizedShortcutSettings.submit.split("+").map((key, index, arr) => (
+                    <React.Fragment key={index}>
+                      <kbd className="border border-gray-600 rounded px-1 text-[11px] font-semibold">
+                        {key.charAt(0).toUpperCase() + key.slice(1)}
+                      </kbd>
+                      {index < arr.length - 1 && <span className="mx-0.5 text-xs">+</span>}
+                    </React.Fragment>
+                  ))}
                 </div>
+              </div>
+            )}
+          </div>
+        </div>
 
-                <div className='right-section'>
-                    <div className='cursor-pointer flex justify-center items-center' onClick={() => setShowOptions(true)}>
-                        <Settings color={theme === 'light' ? '#444444' : '#ffffff'} size={18} />
-                    </div>
-                </div>
-            </div>
+        <div className="right-section">
+          <div
+            className="cursor-pointer flex justify-center items-center"
+            onClick={() => setShowOptions(true)}
+          >
+            <Settings color={theme === "light" ? "#444444" : "#ffffff"} size={18} />
+          </div>
+        </div>
+      </div>
 
-            <div className='w-full flex items-center justify-between py-2 px-2'>
-                <div className='text-black flex items-center gap-2'>
-                    {/* Language Selector */}
-                    <select
-                        disabled={!currentSlug}
-                        value={language}
-                        onChange={handleLanguageChange}
-                        className={`
+      <div className="w-full flex items-center justify-between py-2 px-2">
+        <div className="text-black flex items-center gap-2">
+          {/* Language Selector */}
+          <select
+            disabled={!currentSlug}
+            value={language}
+            onChange={handleLanguageChange}
+            className={`
                             ${!currentSlug && "cursor-not-allowed opacity-70"} 
                             bg-zinc-200 dark:bg-zinc-800  
                             text-gray-700 dark:text-zinc-100 
@@ -355,24 +372,42 @@ const TopBar: React.FC<TopBarProps> = ({
                             text-sm
                             transition-all duration-200 py-1
                         `}
-                    >
-                        <option className='text-black dark:text-zinc-100' value="cpp">C++</option>
-                        <option className='text-black dark:text-zinc-100' value="java">Java</option>
-                        <option className='text-black dark:text-zinc-100' value="python">Python</option>
-                        <option className='text-black dark:text-zinc-100' value="pypy">PyPy</option>
-                        <option className='text-black dark:text-zinc-100' value="javascript">JavaScript</option>
-                        <option className='text-black dark:text-zinc-100' value="kotlin">Kotlin</option>
-                        <option className='text-black dark:text-zinc-100' value="go">Go</option>
-                        <option className='text-black dark:text-zinc-100' value="rust">Rust</option>
-                        <option className='text-black dark:text-zinc-100' value="ruby">Ruby</option>
-                    </select>
+          >
+            <option className="text-black dark:text-zinc-100" value="cpp">
+              C++
+            </option>
+            <option className="text-black dark:text-zinc-100" value="java">
+              Java
+            </option>
+            <option className="text-black dark:text-zinc-100" value="python">
+              Python
+            </option>
+            <option className="text-black dark:text-zinc-100" value="pypy">
+              PyPy
+            </option>
+            <option className="text-black dark:text-zinc-100" value="javascript">
+              JavaScript
+            </option>
+            <option className="text-black dark:text-zinc-100" value="kotlin">
+              Kotlin
+            </option>
+            <option className="text-black dark:text-zinc-100" value="go">
+              Go
+            </option>
+            <option className="text-black dark:text-zinc-100" value="rust">
+              Rust
+            </option>
+            <option className="text-black dark:text-zinc-100" value="ruby">
+              Ruby
+            </option>
+          </select>
 
-                    {/* Font Size Selector */}
-                    <select
-                        disabled={!currentSlug}
-                        value={fontSize}
-                        onChange={handleFontSizeChange}
-                        className={`
+          {/* Font Size Selector */}
+          <select
+            disabled={!currentSlug}
+            value={fontSize}
+            onChange={handleFontSizeChange}
+            className={`
                             ${!currentSlug && "cursor-not-allowed opacity-70"} 
                             bg-zinc-200 dark:bg-zinc-800
                             text-gray-700 dark:text-zinc-100 
@@ -382,41 +417,67 @@ const TopBar: React.FC<TopBarProps> = ({
                             text-sm
                             transition-all duration-200 py-1
                         `}
-                    >
-                        <option className='text-black dark:text-zinc-100' value="12">12px</option>
-                        <option className='text-black dark:text-zinc-100' value="14">14px</option>
-                        <option className='text-black dark:text-zinc-100' value="16">16px</option>
-                        <option className='text-black dark:text-zinc-100' value="18">18px</option>
-                        <option className='text-black dark:text-zinc-100' value="20">20px</option>
-                    </select>
-                </div>
-                <div className={`flex items-center gap-2 cursor-pointer`}>
-                    <Timer theme={theme} />
-                    <button
-                        disabled={!currentSlug || isFormating}
-                        title={`Format Code\nShortcut: ${normalizedShortcutSettings.format}`}
-                    >
-                        {isFormating ? (
-                            <LoaderCircle color={theme === 'light' ? '#666666' : '#ffffff'} size={16} className={`animate-spin w-4 h-4 ${!currentSlug || isFormating ? 'cursor-not-allowed' : 'cursor-pointer'}`} />
-                        ) : (
-                            <ChartNoAxesGantt color={theme === 'light' ? '#666666' : '#ffffff'} size={16} className={`${!currentSlug ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={handleFormatCode} />
-                        )}
-                    </button>
-                    <button
-                        disabled={!currentSlug}
-                        title='Latest Submission'
-                    >
-                        <Braces color={theme === 'light' ? '#666666' : '#ffffff'} size={16} className={`${!currentSlug ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={handleRedirectToLatestSubmission} />
-                    </button>
-                    <button
-                        disabled={!currentSlug}
-                        title={`Reset Code\nShortcut: ${normalizedShortcutSettings.reset}`}
-                    >
-                        <RotateCcw color={theme === 'light' ? '#666666' : '#ffffff'} size={16} className={`${!currentSlug ? 'cursor-not-allowed' : 'cursor-pointer'}`} onClick={handleResetCode} />
-                    </button>
-                </div>
-            </div>
-        </>
-    )
-}
-export default TopBar
+          >
+            <option className="text-black dark:text-zinc-100" value="12">
+              12px
+            </option>
+            <option className="text-black dark:text-zinc-100" value="14">
+              14px
+            </option>
+            <option className="text-black dark:text-zinc-100" value="16">
+              16px
+            </option>
+            <option className="text-black dark:text-zinc-100" value="18">
+              18px
+            </option>
+            <option className="text-black dark:text-zinc-100" value="20">
+              20px
+            </option>
+          </select>
+        </div>
+        <div className={`flex items-center gap-2 cursor-pointer`}>
+          <Timer theme={theme} />
+          <button
+            disabled={!currentSlug || isFormating}
+            title={`Format Code\nShortcut: ${normalizedShortcutSettings.format}`}
+          >
+            {isFormating ? (
+              <LoaderCircle
+                color={theme === "light" ? "#666666" : "#ffffff"}
+                size={16}
+                className={`animate-spin w-4 h-4 ${!currentSlug || isFormating ? "cursor-not-allowed" : "cursor-pointer"}`}
+              />
+            ) : (
+              <ChartNoAxesGantt
+                color={theme === "light" ? "#666666" : "#ffffff"}
+                size={16}
+                className={`${!currentSlug ? "cursor-not-allowed" : "cursor-pointer"}`}
+                onClick={handleFormatCode}
+              />
+            )}
+          </button>
+          <button disabled={!currentSlug} title="Latest Submission">
+            <Braces
+              color={theme === "light" ? "#666666" : "#ffffff"}
+              size={16}
+              className={`${!currentSlug ? "cursor-not-allowed" : "cursor-pointer"}`}
+              onClick={handleRedirectToLatestSubmission}
+            />
+          </button>
+          <button
+            disabled={!currentSlug}
+            title={`Reset Code\nShortcut: ${normalizedShortcutSettings.reset}`}
+          >
+            <RotateCcw
+              color={theme === "light" ? "#666666" : "#ffffff"}
+              size={16}
+              className={`${!currentSlug ? "cursor-not-allowed" : "cursor-pointer"}`}
+              onClick={handleResetCode}
+            />
+          </button>
+        </div>
+      </div>
+    </>
+  );
+};
+export default TopBar;
