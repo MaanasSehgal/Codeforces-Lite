@@ -1,80 +1,81 @@
-import { CodeEntry, TestCaseArray } from '../../types/types';
-import { getCodeMap, getSlugQueue, getTestCaseMap, getTestCaseQueue } from '../helper';
-import { MAX_PROBLEM_IO_SIZE, SINGLE_CODE_LIMIT_BYTES, STORAGE_LIMIT_BYTES } from '../../data/constants';
-import * as monaco from 'monaco-editor/esm/vs/editor/editor.api';
+import { toast } from "sonner";
+import type { TestCaseArray } from "src/types/types";
+import {
+  getTotalCodeSize,
+  saveCode,
+  saveTestCases,
+  SaveOutcome,
+} from "src/utils/storage/codeStorage";
+import { SINGLE_CODE_LIMIT_BYTES } from "src/data/constants";
+import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 
-export const saveCodeForSlug = async (
-    slug: string, 
-    editor: monaco.editor.IStandaloneCodeEditor | null,
-    totalSize: number,
-    setTotalSize: (size: number) => void
-) => {
-    if (editor) {
-        const editorValue = editor.getValue();
-        const size = editorValue?.length || 0;
+/**
+ * Slugs whose save failure has already been reported, so the autosave debounce does not
+ * raise a toast every keystroke. A slug leaves the set once it saves again, so freeing
+ * space or shrinking the file re-arms the warning.
+ */
+const slugsWithReportedFailure = new Set<string>();
 
-        if (size > SINGLE_CODE_LIMIT_BYTES) {
-            alert("Code size exceeds. Please reduce the size of your code.");
-            return;
-        }
+const toMegabytes = (byteCount: number): string => (byteCount / (1024 * 1024)).toFixed(1);
 
-        const codeMap = getCodeMap();
-        const slugQueue = getSlugQueue();
+/**
+ * A refused save is indistinguishable from the disappearing-code bug this whole path
+ * exists to prevent, so the user is told once per problem which of the two limits
+ * they hit and what to do about it.
+ */
+const reportOutcome = (slug: string, outcome: SaveOutcome) => {
+  if (outcome.status === "saved") {
+    slugsWithReportedFailure.delete(slug);
+    return;
+  }
 
-        if (!codeMap.has(slug)) {
-            slugQueue.add(slug);
-        }
+  if (slugsWithReportedFailure.has(slug)) {
+    return;
+  }
+  slugsWithReportedFailure.add(slug);
 
-        const oldSize = codeMap.get(slug)?.size || 0;
-        let newTotalSize = totalSize - oldSize + size;
+  if (outcome.status === "storage-full") {
+    toast.error(
+      "Browser storage is full, so this code could not be saved. Delete saved codes from Settings to free up space.",
+      { duration: 8000 }
+    );
+    return;
+  }
 
-        while (newTotalSize > STORAGE_LIMIT_BYTES) {
-            const oldSlug = slugQueue.remove();
-            if (oldSlug) {
-                const removedSize = codeMap.get(oldSlug)?.size || 0;
-                newTotalSize -= removedSize;
-                codeMap.delete(oldSlug);
-            }
-        }
-
-        setTotalSize(newTotalSize);
-        const position = editor.getPosition();
-        const cursorPos = position ? editor.getModel()?.getOffsetAt(position) : undefined;
-        const codeWithCursor = editorValue.slice(0, cursorPos) + "$0" + editorValue.slice(cursorPos);
-
-        const entry: CodeEntry = {
-            code: codeWithCursor!,
-            size
-        };
-
-        codeMap.set(slug, entry);
-
-        localStorage.setItem('codeMap', JSON.stringify(Array.from(codeMap.entries())));
-        localStorage.setItem('slugQueue', slugQueue.toJSON());
-    }
+  toast.error(
+    `Code is too large to save (${toMegabytes(outcome.size)}MB, limit ${toMegabytes(SINGLE_CODE_LIMIT_BYTES)}MB). It will not be restored later.`,
+    { duration: 8000 }
+  );
 };
 
-export const saveTestCaseForSlug = async (slug: string, testCasesToSave: TestCaseArray) => {
-    const testCaseMap = getTestCaseMap();
-    const testCaseQueue = getTestCaseQueue();
+/**
+ * Reads the editor and persists it against `slug`. Synchronous on purpose: the save
+ * paths run from tab events and from page teardown, and an `await` in either creates
+ * a window where a second event interleaves and writes one problem's code under
+ * another problem's slug.
+ */
+export const saveCodeForSlug = (
+  slug: string | null,
+  editor: monaco.editor.IStandaloneCodeEditor | null
+): SaveOutcome => {
+  if (!slug || !editor) {
+    return { status: "saved" };
+  }
 
-    if (!testCaseMap.has(slug)) {
-        testCaseQueue.add(slug);
-    }
+  const code = editor.getValue();
+  const position = editor.getPosition();
+  const cursorOffset = position ? editor.getModel()?.getOffsetAt(position) : undefined;
 
-    testCaseMap.set(slug, testCasesToSave);
-
-    if (testCaseQueue.size() > MAX_PROBLEM_IO_SIZE) {
-        const slugToRemove = testCaseQueue.remove();
-        if (slugToRemove) {
-            testCaseMap.delete(slugToRemove);
-        }
-    }
+  const outcome = saveCode(slug, code, cursorOffset);
+  reportOutcome(slug, outcome);
+  return outcome;
 };
 
-export const initializeStorage = () => {
-    const storedQueue = getCodeMap();
-    let size = 0;
-    storedQueue.forEach(entry => size += entry.size);
-    return size;
+export const saveTestCaseForSlug = (slug: string | null, testCasesToSave: TestCaseArray) => {
+  if (!slug || !testCasesToSave?.testCases?.length) {
+    return;
+  }
+  saveTestCases(slug, testCasesToSave);
 };
+
+export const initializeStorage = (): number => getTotalCodeSize();

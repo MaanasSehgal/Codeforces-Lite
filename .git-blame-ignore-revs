@@ -1,0 +1,6 @@
+# Commits that mostly reformat or move code. Ignore them in blame:
+#   git config blame.ignoreRevsFile .git-blame-ignore-revs
+# GitHub honours this file automatically.
+
+# Fix the TypeScript config and pin a formatting standard
+2b20dd7eeb7c444f0e43bc33378a1ded51a8acc3

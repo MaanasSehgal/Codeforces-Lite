@@ -1,10 +1,19 @@
 {
   "manifest_version": 3,
-  "version": "1.5.5",
+  "version": "1.5.9",
   "name": "Codeforces Lite - Dark Mode & Code Runner",
   "description": "Provides dark theme and code runner for Codeforces",
   "author": "Devendra Suryavanshi & Maanas Sehgal",
   "short_name": "Codeforces Lite",
+  "action": {
+    "default_title": "Codeforces Lite",
+    "default_icon": {
+      "16": "assets/icons/codeforces16.png",
+      "32": "assets/icons/codeforces32.png",
+      "48": "assets/icons/codeforces48.png",
+      "128": "assets/icons/codeforces128.png"
+    }
+  },
   "side_panel": {
     "default_path": "index.html"
   },
