@@ -1,160 +1,282 @@
-.login-box-custom {
-    background-color: #f3f4f6 !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 20px !important;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    flex-direction: column;
-    justify-content: center !important;
-    align-items: center;
-    gap: 20px;
+/* Codeforces sets a Verdana body font that makes short UI labels look wide and dated. */
+:root {
+  --cfl-ui-font: "Roboto", -apple-system, "Segoe UI", system-ui, sans-serif;
+  /* Codeforces sizes its login and register inputs at 15em of the ~13px default input
+     font, so these actions land on the input column instead of overhanging it. */
+  --cfl-action-width: 200px;
+  --cfl-action-height: 32px;
+  /* Wide enough that the register helper notes do not shred into four lines, narrow
+     enough that they stay inside the card instead of setting the table's width. */
+  --cfl-notice-width: 260px;
 }
 
+/* One rule for both cards so login and register cannot drift apart. Both boxes take
+   their width from Codeforces' own inline 30em, so neither needs a size here. */
+.login-box-custom,
 .register-box-custom {
-    background-color: #f3f4f6 !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 20px !important;
-    height: 500px !important;
-    width: 500px !important;
-    display: flex;
-    flex-direction: column;
-    justify-content: center !important;
-    align-items: center;
-    padding: 5px;
+  background-color: #f3f4f6 !important;
+  border: 1px solid #d1d5db !important;
+  border-radius: 20px !important;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding-bottom: 14px;
+}
+
+/* The form and its table both carry a block margin that pushed the Google action far
+   below the last field, so the box gap alone decides that spacing. */
+.login-box-custom form,
+.register-box-custom form {
+  margin: 0 !important;
+}
+
+.login-box-custom .table-form,
+.register-box-custom .table-form {
+  margin-bottom: 0 !important;
+}
+
+/* Codeforces lets these helper notes size to the table, which stretched them past the
+   box padding and dragged the label/input pair off-centre under the button. Capping them
+   to the input column keeps the form centred and the notes readable. */
+.register-box-custom .shiftUp,
+.register-box-custom .smaller.notice {
+  position: static !important;
+  box-sizing: border-box;
+  font-family: var(--cfl-ui-font);
+  font-size: 11.5px !important;
+  line-height: 1.5;
+}
+
+/* These notes share the input column, so their width sets it. Anything wider than the
+   inputs pushes the label/input pair off the centre the button below sits on. */
+.register-box-custom .shiftUp {
+  max-width: var(--cfl-action-width);
+  padding: 4px 0 6px;
+}
+
+/* This one spans both columns, so it can breathe without moving the form. */
+.register-box-custom .smaller.notice {
+  max-width: var(--cfl-notice-width);
+  margin: 10px auto 0 !important;
+  text-align: center;
+}
+
+.register-box-custom .smaller.notice * {
+  font-size: 11.5px !important;
 }
 
 .title-custom {
-    text-align: center !important;
-    font-size: 40px;
-    font-weight: bold;
-    padding: 20px !important;
+  text-align: center !important;
+  font-size: 40px;
+  font-weight: bold;
+  padding: 20px !important;
 }
 
+/* Right-aligned against the input column reads as one gutter rather than a ragged edge,
+   and nowrap keeps "Confirm Password" on a single line by widening the column instead. */
 .field-label-custom {
-    text-align: left;
-    color: #555;
-    font-size: 1.2rem;
+  text-align: right !important;
+  vertical-align: middle !important;
+  color: #4b5563;
+  font-family: var(--cfl-ui-font);
+  font-size: 14px !important;
+  font-weight: 500;
+  letter-spacing: 0.2px;
+  padding: 6px 16px 6px 0 !important;
+  white-space: nowrap;
 }
 
-.input-field-custom {
-    padding: 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 8px;
-    width: 100%;
-    box-sizing: border-box;
-    background-color: #f9fafb !important;
-    font-size: 1rem;
-    color: #333;
-    transition: border-color 0.3s, box-shadow 0.3s;
+/* Codeforces sets an inline font-size:1.1rem on this label, so a plain rule loses. */
+.remember-me-label-custom {
+  display: flex !important;
+  align-items: center;
+  gap: 6px;
+  width: fit-content;
+  margin: 2px 0 !important;
+  font-family: var(--cfl-ui-font) !important;
+  font-size: 14px !important;
+  color: #4b5563;
 }
 
-.input-field-custom:focus {
-    border-color: #4caf50;
-    box-shadow: 0 0 5px rgba(76, 175, 80, 0.3);
+/* Codeforces nudges the checkbox with an inline position:relative;top:0.25em, which
+   fights the flex centering above. */
+.remember-me-label-custom input[type="checkbox"] {
+  position: static !important;
+  top: auto !important;
+  margin: 0 !important;
 }
 
+/* One rule for both buttons so the primary and the Google action cannot drift apart.
+   Codeforces sizes its submit input from a value attribute, hence the explicit box. */
+.login-button-custom,
+.login-google-custom {
+  box-sizing: border-box !important;
+  width: var(--cfl-action-width) !important;
+  max-width: 100% !important;
+  height: var(--cfl-action-height) !important;
+  padding: 0 12px !important;
+  border-radius: 6px !important;
+  font-family: var(--cfl-ui-font) !important;
+  font-size: 14px !important;
+  font-weight: 500 !important;
+  letter-spacing: 0.2px !important;
+  line-height: 1 !important;
+  cursor: pointer !important;
+  box-shadow: 0 1px 2px rgba(60, 64, 67, 0.12);
+  transition:
+    background-color 0.15s ease,
+    box-shadow 0.15s ease,
+    border-color 0.15s ease;
+}
+
+/* block + auto margins centre the button in any container, table cell or not. */
 .login-button-custom {
-    margin-left: 40% !important;
-    background-color: #423dc8 !important;
-    width: 80px !important;
-    font-weight: 500 !important;
-    display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
-    border-radius: 8px !important;
-    cursor: pointer !important;
-    color: white !important;
-    font-weight: 600 !important;
-    border: none !important;
-    padding: 0px !important;
+  display: block !important;
+  margin: 6px auto 0 !important;
+  background-color: #423dc8 !important;
+  border: 1px solid #423dc8 !important;
+  color: #ffffff !important;
+  text-align: center !important;
+}
+
+.login-button-custom:hover {
+  background-color: #3a35b4 !important;
+  border-color: #3a35b4 !important;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.2);
+}
+
+.login-button-custom:active {
+  background-color: #332ea0 !important;
+  box-shadow: none;
 }
 
 .bottom-links-custom {
-    width: auto;
-    border: none;
-    background-color: transparent !important;
-    border: none !important;
-    border-radius: 8px;
-    margin: 20px auto;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+  width: auto;
+  border: none;
+  background-color: transparent !important;
+  border: none !important;
+  border-radius: 8px;
+  /* Codeforces pads this strip to seat it against the box edge, which the flex gap
+     above now handles. */
+  padding: 0 !important;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* The rules are pseudo-elements so the divider stays one element to create and delete.
+   Its colour matches the box border, which the dark theme already inverts legibly. */
+.social-divider-custom {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: var(--cfl-action-width);
+  font-family: var(--cfl-ui-font);
+  font-size: 12px;
+  letter-spacing: 0.6px;
+  color: #6b7280;
+}
+
+.social-divider-custom::before,
+.social-divider-custom::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background-color: #d1d5db;
 }
 
 .forgot-password-custom {
-    font-size: 1.1rem;
-    cursor: pointer;
-    color: #4027e9 !important;
+  font-family: var(--cfl-ui-font);
+  font-size: 13px;
+  cursor: pointer;
+  color: #423dc8 !important;
 }
 
-div:has(.forgot-password-custom) {
-    margin-top: 10px;
+/* Codeforces sets inline text-align:right here, which reads as detached from the
+   action column it now sits under. */
+.forgot-password-row-custom {
+  margin: 0 !important;
+  text-align: center !important;
 }
 
 .forgot-password-custom:hover {
-    text-decoration: underline;
+  text-decoration: underline;
 }
 
 .login-google-custom {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background-color: #ffffff !important;
-    border: 1px solid #d1d5db !important;
-    border-radius: 8px;
-    padding: 10px;
-    cursor: pointer;
-    text-decoration: none;
-    font-size: 15px;
-    color: #333;
-    transition: background-color 0.3s;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background-color: #ffffff !important;
+  border: 1px solid #dadce0 !important;
+  color: #3c4043;
+  text-decoration: none !important;
+}
+
+.login-google-custom:hover {
+  background-color: #f7f8f8 !important;
+  border-color: #d2d5d9 !important;
+  box-shadow: 0 1px 3px rgba(60, 64, 67, 0.2);
+}
+
+.login-google-custom:active {
+  background-color: #f1f3f4 !important;
+  box-shadow: none;
 }
 
 td:has(.login-google-custom) {
-    display: flex;
-    justify-content: center;
+  display: flex;
+  justify-content: center;
 }
 
-.login-google-custom img {
-    width: 30px;
-    height: 30px;
-    margin-right: 8px;
+.login-google-icon {
+  display: flex;
+  flex-shrink: 0;
+}
+
+.login-google-icon svg {
+  width: 18px;
+  height: 18px;
 }
 
 .custom-image {
-    filter: invert(1) hue-rotate(360deg);
+  filter: invert(1) hue-rotate(360deg);
 }
 
 .custom-cell div:nth-child(2) {
-    margin-top: 5px;
-    width: 100% !important;
-    text-align: left !important;
+  margin-top: 5px;
+  width: 100% !important;
+  text-align: left !important;
 }
 
 .custom-cell a {
-    color: #1e90ff;
-    text-decoration: none;
-    font-weight: 400 !important;
+  color: #1e90ff;
+  text-decoration: none;
+  font-weight: 400 !important;
 }
 
 .custom-cell .notice {
-    margin-bottom: 5px;
-    color: #d3d3d3;
+  margin-bottom: 5px;
+  color: #d3d3d3;
 }
 
 .custom-cell a:hover {
-    text-decoration: underline;
-    color: #87cefa;
+  text-decoration: underline;
+  color: #87cefa;
 }
 
 .custom-cell .notice:hover {
-    color: #ffffff;
+  color: #ffffff;
 }
 
 .custom-cell-fifth {
-    display: flex !important;
-    flex-direction: column !important;
-    justify-content: center !important;
-    align-items: center !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: center !important;
+  align-items: center !important;
 }

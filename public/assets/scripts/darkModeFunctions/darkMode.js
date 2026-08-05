@@ -1,8 +1,4 @@
-if (typeof isFirefox === "undefined") {
-  let isFirefox = typeof browser !== "undefined";
-  let browserAPI = isFirefox ? browser : chrome;
-}
-
+// isFirefox and browserAPI come from content.js, which the manifest loads first.
 const currentURL = window.location.href;
 let styleElement;
 let customStyleElement;
@@ -19,7 +15,7 @@ const injectDarkModeCSS = () => {
             }
 
             /* for undo filter */
-            img, picture, video, iframe, canvas, .legendColorBox, #legend_unordered_list li svg, .welldone, #heatmap-tooltip, #cf-heatmap svg rect:not([fill="#ebedf0"]) {
+            img, picture, video, iframe, canvas, .legendColorBox, #legend_unordered_list li svg, .login-google-icon, .welldone, #heatmap-tooltip, #cf-heatmap svg rect:not([fill="#ebedf0"]) {
                 filter: invert(1) hue-rotate(-160deg) !important;
             }
 
