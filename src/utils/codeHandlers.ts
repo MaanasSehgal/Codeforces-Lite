@@ -1,6 +1,5 @@
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
-
-const TEMPLATE_CURSOR_MARKER = "$0";
+import { TEMPLATE_CURSOR_MARKER } from "src/data/constants";
 
 /**
  * The options panel tells users to write "$0" where they want the caret in their

@@ -1,5 +1,9 @@
 import { EditorSettingsTypes, ShortcutSettings } from "src/types/types";
 
+// Marks the caret: authored by the user in a template, and spliced into the buffer by the
+// pre-1.5.9 save path. Both the template reader and the legacy migration strip it.
+export const TEMPLATE_CURSOR_MARKER = "$0";
+
 export const STORAGE_LIMIT_BYTES = 7 * 1024 * 1024; // local storage limit in bytes, 7MB
 export const SINGLE_CODE_LIMIT_BYTES = 0.5 * 1024 * 1024; // single code limit in bytes, 0.5MB
 export const MAX_PROBLEM_IO_SIZE = 15; // max number problem IO size

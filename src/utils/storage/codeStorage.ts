@@ -3,6 +3,7 @@ import {
   MAX_PROBLEM_IO_SIZE,
   SINGLE_CODE_LIMIT_BYTES,
   STORAGE_LIMIT_BYTES,
+  TEMPLATE_CURSOR_MARKER,
 } from "src/data/constants";
 
 const CODE_MAP_KEY = "codeMap";
@@ -72,19 +73,24 @@ const readJson = <T>(key: string): ReadResult<T> => {
 };
 
 /**
- * Legacy entries stored the editor buffer verbatim and never recorded a caret, so their
- * code is carried through untouched. Any "$0" inside one is the user's own text: the old
- * loader stripped it on every load, and not stripping it here is the point of the change.
+ * The old save path spliced a literal "$0" into the buffer at the caret and the old loader
+ * stripped it again on every load, so a legacy entry's marker is bookkeeping rather than
+ * the user's text. Migration has to complete that round trip: leaving the marker in place
+ * would splice two visible characters into the code the first time it loads after upgrading,
+ * and drop the caret the marker was recording. Stripping mirrors the old loader exactly,
+ * including taking the caret from the first marker only.
  */
 const migrateLegacyEntry = (
   slug: string,
   entry: CodeEntry,
   legacyOrder: string[]
 ): StoredCodeEntry => {
-  const { code } = entry;
+  const markerOffset = entry.code.indexOf(TEMPLATE_CURSOR_MARKER);
+  const code = entry.code.replaceAll(TEMPLATE_CURSOR_MARKER, "");
   const positionInLegacyOrder = legacyOrder.indexOf(slug);
   return {
     code,
+    cursorOffset: markerOffset === -1 ? undefined : markerOffset,
     size: code.length,
     // Preserve the old queue's ordering so the first eviction after upgrading
     // still drops the genuinely oldest problem.
