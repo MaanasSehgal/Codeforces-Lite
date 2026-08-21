@@ -149,3 +149,34 @@ browserAPI.idle.onStateChanged.addListener((newState) => {
     });
   }
 });
+
+// ---- Focus Mode relay ----
+browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
+  if (message?.type === "TOGGLE_FOCUS_MODE") {
+    browserAPI.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+      if (tabs && tabs[0]) {
+        const tab = tabs[0];
+
+        // 1. Toggle native browser window fullscreen via Chrome Extension Windows API
+        if (tab.windowId && browserAPI.windows) {
+          browserAPI.windows
+            .update(tab.windowId, {
+              state: message.isFocusMode ? "fullscreen" : "normal",
+            })
+            .catch((err) => console.log("Window update error:", err));
+        }
+
+        // 2. Forward message to content script on active tab
+        if (tab.id) {
+          browserAPI.tabs.sendMessage(tab.id, message, (response) => {
+            if (browserAPI.runtime.lastError) {
+              console.log("Focus relay error:", browserAPI.runtime.lastError.message);
+            }
+            if (sendResponse) sendResponse({ success: true });
+          });
+        }
+      }
+    });
+    return true;
+  }
+});

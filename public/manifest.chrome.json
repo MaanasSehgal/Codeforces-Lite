@@ -35,7 +35,7 @@
   },
   "web_accessible_resources": [
     {
-      "resources": ["assets/scripts/ftaa-script.js"],
+      "resources": ["*", "assets/*", "assets/scripts/*", "assets/styles/*", "assets/icons/*"],
       "matches": ["<all_urls>"]
     }
   ],
