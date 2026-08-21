@@ -17,6 +17,8 @@ interface CFStoreInterface {
   editorSettings: EditorSettingsTypes;
   shortcutSettings: ShortcutSettings;
 
+  isFocusMode: boolean;
+
   // Actions
   setLanguage: (language: string) => void;
   setFontSize: (size: number) => void;
@@ -29,6 +31,8 @@ interface CFStoreInterface {
   setApiKey: (key: string) => void;
   setEditorSettings: (editorSettings: EditorSettingsTypes) => void;
   setShortcutSettings: (shortcutSettings: ShortcutSettings) => void;
+  setIsFocusMode: (isFocus: boolean) => void;
+  toggleFocusMode: () => void;
 }
 
 export const useCFStore = create<CFStoreInterface>((set) => ({
@@ -47,6 +51,7 @@ export const useCFStore = create<CFStoreInterface>((set) => ({
     JSON.parse(localStorage.getItem("editorSettings") ?? "null") ?? DEFAULT_EDITOR_SETTINGS,
   shortcutSettings:
     JSON.parse(localStorage.getItem("shortcutSettings") ?? "null") ?? DEFAULT_SHORTCUT_SETTINGS,
+  isFocusMode: false,
 
   // Actions
   setLanguage: (language) => set({ language }),
@@ -60,4 +65,6 @@ export const useCFStore = create<CFStoreInterface>((set) => ({
   setApiKey: (key) => set({ apiKey: key }),
   setEditorSettings: (editorSettings) => set({ editorSettings }),
   setShortcutSettings: (shortcutSettings) => set({ shortcutSettings }),
+  setIsFocusMode: (isFocus) => set({ isFocusMode: isFocus }),
+  toggleFocusMode: () => set((state) => ({ isFocusMode: !state.isFocusMode })),
 }));
