@@ -41,6 +41,8 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
     isRunning,
     isSubmitting,
     setIsSubmitting,
+    isFocusMode,
+    setIsFocusMode,
   } = useCFStore();
 
   // Custom hooks
@@ -206,13 +208,56 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
 
   useEffect(() => {
     const listener = (message: any, sender: any, sendResponse: (response: any) => void) => {
+      if (message?.type === "EXIT_FOCUS_MODE") {
+        setIsFocusMode(false);
+      }
       return handleTabEvents(message, sender, sendResponse, monacoInstanceRef.current);
     };
     browserAPI.runtime.onMessage.addListener(listener);
     return () => {
       browserAPI.runtime.onMessage.removeListener(listener);
     };
-  }, [currentSlug, testCases]);
+  }, [currentSlug, testCases, setIsFocusMode]);
+
+  const isFocusIframe =
+    typeof window !== "undefined" && window.location.search.includes("focus=true");
+
+  useEffect(() => {
+    if (isFocusIframe) {
+      setIsFocusMode(true);
+    }
+  }, [isFocusIframe, setIsFocusMode]);
+
+  const isFocusMountRef = useRef(true);
+
+  useEffect(() => {
+    if (isFocusIframe) return; // The embedded iframe must NEVER auto-send focus messages on store updates
+    if (isFocusMountRef.current) {
+      isFocusMountRef.current = false;
+      return;
+    }
+    browserAPI.runtime.sendMessage({ type: "TOGGLE_FOCUS_MODE", isFocusMode }, (response: any) => {
+      if (browserAPI.runtime.lastError) {
+        // ignore
+      }
+    });
+  }, [isFocusMode, isFocusIframe]);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        if (isFocusIframe) {
+          browserAPI.runtime.sendMessage({ type: "TOGGLE_FOCUS_MODE", isFocusMode: false });
+        } else if (isFocusMode) {
+          setIsFocusMode(false);
+        }
+      }
+    };
+    window.addEventListener("keydown", handleGlobalKeyDown);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown);
+    };
+  }, [isFocusMode, isFocusIframe, setIsFocusMode]);
 
   const handleFormatCode = () => {
     formatCode(monacoInstanceRef, language, setIsFormating);

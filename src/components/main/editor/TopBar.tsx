@@ -5,6 +5,8 @@ import {
   Code2,
   LoaderCircle,
   Play,
+  Maximize2,
+  Minimize2,
   RotateCcw,
   Settings,
   Wifi,
@@ -41,7 +43,27 @@ const TopBar: React.FC<TopBarProps> = ({
   const [statusText, setStatusText] = useState<string>("");
   const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
   const hideTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const isFocusIframe =
+    typeof window !== "undefined" && window.location.search.includes("focus=true");
+
+  const handleFocusToggle = () => {
+    if (isFocusIframe) {
+      // Inside iframe: explicit exit message
+      browserAPI.runtime.sendMessage({ type: "TOGGLE_FOCUS_MODE", isFocusMode: false });
+    } else {
+      // Side panel: toggle store state
+      const nextState = !isFocusMode;
+      toggleFocusMode();
+      browserAPI.runtime.sendMessage({ type: "TOGGLE_FOCUS_MODE", isFocusMode: nextState }, () => {
+        if (browserAPI.runtime.lastError) {
+          // ignore
+        }
+      });
+    }
+  };
   const shortcutSettings = useCFStore((state) => state.shortcutSettings);
+  const isFocusMode = useCFStore((state) => state.isFocusMode);
+  const toggleFocusMode = useCFStore((state) => state.toggleFocusMode);
   const [normalizedShortcutSettings, setNormalizedShortcutSettings] = useState<ShortcutSettings>({
     run: normalizeShortcut(shortcutSettings.run),
     submit: normalizeShortcut(shortcutSettings.submit),
@@ -345,7 +367,25 @@ const TopBar: React.FC<TopBarProps> = ({
           </div>
         </div>
 
-        <div className="right-section">
+        <div className="right-section flex items-center gap-2.5 font-medium">
+          {isFocusMode ? (
+            <button
+              onClick={handleFocusToggle}
+              className="flex items-center gap-1.5 px-3 py-1 text-xs font-semibold text-white bg-red-600 hover:bg-red-700 active:bg-red-800 rounded-md transition-colors shadow-sm cursor-pointer"
+              title="Exit Focus Mode (Esc)"
+            >
+              <Minimize2 className="w-3.5 h-3.5" />
+              <span>Esc</span>
+            </button>
+          ) : (
+            <button
+              onClick={handleFocusToggle}
+              title="Focus Mode / Fullscreen (Esc to exit)"
+              className="cursor-pointer flex justify-center items-center hover:opacity-80 transition-opacity p-0.5 rounded"
+            >
+              <Maximize2 color={theme === "light" ? "#444444" : "#ffffff"} size={18} />
+            </button>
+          )}
           <div
             className="cursor-pointer flex justify-center items-center"
             onClick={() => setShowOptions(true)}
