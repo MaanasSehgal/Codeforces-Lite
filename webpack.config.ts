@@ -1,9 +1,13 @@
 import * as path from "path";
+import { fileURLToPath } from "url";
 import * as webpack from "webpack";
 import HtmlWebpackPlugin from "html-webpack-plugin";
 import CopyWebpackPlugin from "copy-webpack-plugin";
 import MonacoWebpackPlugin from "monaco-editor-webpack-plugin";
 import BundleAnalyzerPlugin from "webpack-bundle-analyzer";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const targetBrowser = process.env.TARGET_BROWSER || "chrome";
 

@@ -55,7 +55,7 @@
     "autoprefixer": "^10.4.21",
     "babel-loader": "^10.0.0",
     "bestzip": "^2.2.1",
-    "copy-webpack-plugin": "^13.0.0",
+    "copy-webpack-plugin": "^14.0.0",
     "cross-env": "^7.0.3",
     "css-loader": "^7.1.2",
     "eslint": "^9.9.0",
@@ -74,6 +74,6 @@
     "webpack": "^5.99.6",
     "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^6.0.1",
-    "webpack-dev-server": "^5.2.1"
+    "webpack-dev-server": "^6.0.0"
   }
 }
