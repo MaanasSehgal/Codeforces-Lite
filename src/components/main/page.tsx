@@ -226,38 +226,53 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
     if (isFocusIframe) {
       setIsFocusMode(true);
     }
-  }, [isFocusIframe, setIsFocusMode]);
 
-  const isFocusMountRef = useRef(true);
-
-  useEffect(() => {
-    if (isFocusIframe) return; // The embedded iframe must NEVER auto-send focus messages on store updates
-    if (isFocusMountRef.current) {
-      isFocusMountRef.current = false;
-      return;
-    }
-    browserAPI.runtime.sendMessage({ type: "TOGGLE_FOCUS_MODE", isFocusMode }, (response: any) => {
-      if (browserAPI.runtime.lastError) {
-        // ignore
+    const messageListener = (message: any) => {
+      if (message.type === "FOCUS_MODE_STATE_CHANGED") {
+        setIsFocusMode(message.isFocusMode);
       }
-    });
-  }, [isFocusMode, isFocusIframe]);
+    };
+
+    browserAPI.runtime.onMessage.addListener(messageListener);
+    return () => {
+      browserAPI.runtime.onMessage.removeListener(messageListener);
+    };
+  }, [isFocusIframe, setIsFocusMode]);
 
   useEffect(() => {
     const handleGlobalKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
-        if (isFocusIframe) {
-          browserAPI.runtime.sendMessage({ type: "TOGGLE_FOCUS_MODE", isFocusMode: false });
-        } else if (isFocusMode) {
-          setIsFocusMode(false);
+        const activeEl = document.activeElement;
+        if (
+          activeEl &&
+          (activeEl.tagName === "INPUT" ||
+            activeEl.tagName === "TEXTAREA" ||
+            (activeEl as HTMLElement).isContentEditable)
+        ) {
+          return;
+        }
+
+        const isSuggestOpen = document.querySelector(".suggest-widget.visible");
+        const isFindOpen = document.querySelector(".find-widget.visible");
+        if (isSuggestOpen || isFindOpen) {
+          return;
+        }
+
+        const vimMode = (monacoInstanceRef.current as any)?.vimMode;
+        if (vimMode?.state?.mode === "insert") {
+          return;
+        }
+
+        if (isFocusIframe || isFocusMode) {
+          browserAPI.runtime.sendMessage({ type: "EXIT_FOCUS_MODE" }).catch(() => {});
         }
       }
     };
-    window.addEventListener("keydown", handleGlobalKeyDown);
+    window.addEventListener("keydown", handleGlobalKeyDown, true);
     return () => {
-      window.removeEventListener("keydown", handleGlobalKeyDown);
+      window.removeEventListener("keydown", handleGlobalKeyDown, true);
     };
-  }, [isFocusMode, isFocusIframe, setIsFocusMode]);
+  }, [isFocusMode, isFocusIframe]);
 
   const handleFormatCode = () => {
     formatCode(monacoInstanceRef, language, setIsFormating);
