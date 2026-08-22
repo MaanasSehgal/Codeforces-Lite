@@ -281,7 +281,18 @@ td:has(.login-google-custom) {
   align-items: center !important;
 }
 
-/* ---- LeetCode-Style Split Screen Focus Mode ---- */
+
+/* ---- Pure LeetCode/Codeforces Dark Theme for Focus Mode ---- */
+body.cfl-in-focus-mode {
+  filter: none !important;
+  background-color: #09090b !important;
+}
+
+body.cfl-in-focus-mode #cfl-focus-container {
+  filter: none !important;
+  isolation: isolate !important;
+}
+
 #cfl-focus-container {
   position: fixed !important;
   top: 0 !important;
@@ -291,8 +302,10 @@ td:has(.login-google-custom) {
   z-index: 2147483647 !important;
   display: flex !important;
   flex-direction: row !important;
-  background-color: #111111 !important;
+  background-color: #09090b !important;
   overflow: hidden !important;
+  box-sizing: border-box !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
 }
 
 #cfl-left-pane {
@@ -300,99 +313,199 @@ td:has(.login-google-custom) {
   height: 100% !important;
   overflow-y: auto !important;
   overflow-x: auto !important;
-  padding: 20px 24px !important;
+  padding: 0 28px 28px 28px !important;
   box-sizing: border-box !important;
-  background-color: #18181b !important;
-  color: #f4f4f5 !important;
+  background-color: #121212 !important;
+  color: #e4e4e7 !important;
   font-size: 1rem !important;
-  line-height: 1.6 !important;
+  line-height: 1.7 !important;
 }
 
-#cfl-resizer {
-  width: 6px !important;
-  height: 100% !important;
-  background-color: #27272a !important;
-  cursor: col-resize !important;
-  user-select: none !important;
-  touch-action: none !important;
-  position: relative !important;
-  z-index: 10 !important;
-  transition: background-color 0.15s ease !important;
+#cfl-left-pane-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
   display: flex !important;
   align-items: center !important;
-  justify-content: center !important;
-  flex-shrink: 0 !important;
+  justify-content: space-between !important;
+  padding: 14px 0 !important;
+  margin-bottom: 20px !important;
+  background-color: #121212 !important;
+  border-bottom: 1px solid #27272a !important;
 }
 
-#cfl-resizer:hover,
-#cfl-resizer.cfl-dragging {
-  background-color: #3b82f6 !important;
+.cfl-header-title {
+  font-weight: 600 !important;
+  font-size: 1rem !important;
+  color: #ffffff !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 70% !important;
 }
 
-#cfl-resizer::after {
-  content: "" !important;
-  width: 2px !important;
-  height: 24px !important;
-  background-color: #71717a !important;
-  border-radius: 1px !important;
+#cfl-left-pane .problem-statement {
+  background-color: #121212 !important;
+  color: #e4e4e7 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 1rem !important;
+  line-height: 1.7 !important;
 }
 
-#cfl-resizer:hover::after,
-#cfl-resizer.cfl-dragging::after {
-  background-color: #ffffff !important;
+/* Force pure dark backgrounds & crisp text for all elements */
+#cfl-left-pane div,
+#cfl-left-pane section,
+#cfl-left-pane article,
+#cfl-left-pane p,
+#cfl-left-pane table,
+#cfl-left-pane tbody,
+#cfl-left-pane tr,
+#cfl-left-pane td,
+#cfl-left-pane th,
+#cfl-left-pane span,
+#cfl-left-pane ul,
+#cfl-left-pane li {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #e4e4e7 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  box-shadow: none !important;
+  border-color: #27272a !important;
 }
 
-#cfl-left-pane #pageContent {
+#cfl-left-pane .problem-statement .title {
+  color: #ffffff !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 14px !important;
+}
+
+#cfl-left-pane .problem-statement .header {
+  border-bottom: 1px solid #27272a !important;
+  margin-bottom: 24px !important;
+  padding-bottom: 14px !important;
+}
+
+#cfl-left-pane .problem-statement .header .property-title {
+  color: #a1a1aa !important;
+}
+
+#cfl-left-pane .problem-statement .header .time-limit,
+#cfl-left-pane .problem-statement .header .memory-limit,
+#cfl-left-pane .problem-statement .header .input-file,
+#cfl-left-pane .problem-statement .header .output-file {
+  color: #a1a1aa !important;
+  font-size: 0.85rem !important;
+}
+
+#cfl-left-pane .input,
+#cfl-left-pane .output {
+  background-color: #09090b !important;
+  border: 1px solid #27272a !important;
+  border-radius: 8px !important;
+  margin-bottom: 16px !important;
+  overflow: hidden !important;
+}
+
+#cfl-left-pane .input .title,
+#cfl-left-pane .output .title {
+  background-color: #1c1c1f !important;
+  color: #a1a1aa !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  padding: 8px 14px !important;
+  border-bottom: 1px solid #27272a !important;
+}
+
+#cfl-left-pane .input pre,
+#cfl-left-pane .output pre,
+#cfl-left-pane pre {
+  background-color: #09090b !important;
+  color: #38bdf8 !important;
+  font-family: "JetBrains Mono", Consolas, monospace !important;
+  font-size: 0.9rem !important;
+  line-height: 1.5 !important;
+  padding: 12px 14px !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+#cfl-left-pane code {
+  background-color: #27272a !important;
+  color: #38bdf8 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+}
+
+#cfl-left-pane .MathJax,
+#cfl-left-pane .MathJax_Display,
+#cfl-left-pane .katex,
+#cfl-left-pane .math {
+  color: #f4f4f5 !important;
+  fill: #f4f4f5 !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+#cfl-left-pane .MathJax svg,
+#cfl-left-pane .katex svg {
+  fill: #f4f4f5 !important;
+  color: #f4f4f5 !important;
+}
+
+#cfl-left-pane a {
+  color: #60a5fa !important;
+  text-decoration: none !important;
+}
+
+#cfl-left-pane a:hover {
+  color: #93c5fd !important;
+  text-decoration: underline !important;
+}
+
+/* ---- Full Width & Enlarged Layout for Left Pane ---- */
+#cfl-left-pane #pageContent,
+#cfl-left-pane .problem-statement,
+#cfl-left-pane .problemindexholder,
+#cfl-left-pane .ttypography,
+#cfl-left-pane .problem-statement > div {
   width: 100% !important;
   max-width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
+  box-sizing: border-box !important;
 }
 
-#cfl-left-pane .content-with-sidebar {
+#cfl-left-pane .problem-statement .title {
+  color: #ffffff !important;
+  font-size: 1.6rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 12px !important;
+  letter-spacing: -0.02em !important;
+}
+
+#cfl-left-pane .problem-statement .header {
+  border-bottom: 1px solid #27272a !important;
+  margin-bottom: 24px !important;
+  padding-bottom: 16px !important;
+  text-align: left !important;
+}
+
+#cfl-left-pane .sample-tests,
+#cfl-left-pane .sample-test,
+#cfl-left-pane .input,
+#cfl-left-pane .output {
   width: 100% !important;
-  margin-right: 0 !important;
-}
-
-#cfl-left-pane .problem-statement {
   max-width: 100% !important;
-  margin: 0 !important;
-  font-size: inherit !important;
-  line-height: inherit !important;
+  box-sizing: border-box !important;
 }
 
-#cfl-left-pane #header,
-#cfl-left-pane #menu,
-#cfl-left-pane #sidebar,
-#cfl-left-pane #footer,
-#cfl-left-pane .second-level-menu,
-#cfl-left-pane .lang-chooser,
-#cfl-left-pane .notice {
-  display: none !important;
-}
-
-#cfl-right-pane {
-  width: calc(50% - 6px);
-  height: 100% !important;
-  background-color: #111111 !important;
-  flex-grow: 1 !important;
-}
-
-#cfl-right-pane iframe {
-  width: 100% !important;
-  height: 100% !important;
-  border: none !important;
-}
-
-html:not(.dark) #cfl-left-pane {
-  background-color: #ffffff !important;
-  color: #09090b !important;
-}
-
-html:not(.dark) #cfl-resizer {
-  background-color: #e4e4e7 !important;
-}
-
-html:not(.dark) #cfl-resizer::after {
-  background-color: #a1a1aa !important;
+/* ---- Ensure Right Pane Editor Iframe is Pure Dark (Filter: None) ---- */
+#cfl-right-pane iframe,
+#cfl-focus-container iframe,
+body.cfl-in-focus-mode iframe,
+body.cfl-in-focus-mode #cfl-right-pane iframe {
+  filter: none !important;
 }
