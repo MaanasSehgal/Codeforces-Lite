@@ -317,8 +317,10 @@ body.cfl-in-focus-mode #cfl-focus-container {
   box-sizing: border-box !important;
   background-color: #121212 !important;
   color: #e4e4e7 !important;
-  font-size: 1rem !important;
-  line-height: 1.7 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.65 !important;
+  letter-spacing: -0.01em !important;
+  -webkit-font-smoothing: antialiased !important;
 }
 
 #cfl-left-pane-header {
@@ -348,8 +350,10 @@ body.cfl-in-focus-mode #cfl-focus-container {
   background-color: #121212 !important;
   color: #e4e4e7 !important;
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
-  font-size: 1rem !important;
-  line-height: 1.7 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.65 !important;
+  letter-spacing: -0.01em !important;
+  -webkit-font-smoothing: antialiased !important;
 }
 
 /* Force pure dark backgrounds & crisp text for all elements */
@@ -480,7 +484,7 @@ body.cfl-in-focus-mode #cfl-focus-container {
 
 #cfl-left-pane .problem-statement .title {
   color: #ffffff !important;
-  font-size: 1.6rem !important;
+  font-size: 1.45rem !important;
   font-weight: 700 !important;
   margin-bottom: 12px !important;
   letter-spacing: -0.02em !important;
