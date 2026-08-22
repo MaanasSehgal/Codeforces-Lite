@@ -41,6 +41,8 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
     isRunning,
     isSubmitting,
     setIsSubmitting,
+    isFocusMode,
+    setIsFocusMode,
   } = useCFStore();
 
   // Custom hooks
@@ -206,13 +208,71 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
 
   useEffect(() => {
     const listener = (message: any, sender: any, sendResponse: (response: any) => void) => {
+      if (message?.type === "EXIT_FOCUS_MODE") {
+        setIsFocusMode(false);
+      }
       return handleTabEvents(message, sender, sendResponse, monacoInstanceRef.current);
     };
     browserAPI.runtime.onMessage.addListener(listener);
     return () => {
       browserAPI.runtime.onMessage.removeListener(listener);
     };
-  }, [currentSlug, testCases]);
+  }, [currentSlug, testCases, setIsFocusMode]);
+
+  const isFocusIframe =
+    typeof window !== "undefined" && window.location.search.includes("focus=true");
+
+  useEffect(() => {
+    if (isFocusIframe) {
+      setIsFocusMode(true);
+    }
+
+    const messageListener = (message: any) => {
+      if (message.type === "FOCUS_MODE_STATE_CHANGED") {
+        setIsFocusMode(message.isFocusMode);
+      }
+    };
+
+    browserAPI.runtime.onMessage.addListener(messageListener);
+    return () => {
+      browserAPI.runtime.onMessage.removeListener(messageListener);
+    };
+  }, [isFocusIframe, setIsFocusMode]);
+
+  useEffect(() => {
+    const handleGlobalKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        const activeEl = document.activeElement;
+        if (
+          activeEl &&
+          (activeEl.tagName === "INPUT" ||
+            activeEl.tagName === "TEXTAREA" ||
+            (activeEl as HTMLElement).isContentEditable)
+        ) {
+          return;
+        }
+
+        const isSuggestOpen = document.querySelector(".suggest-widget.visible");
+        const isFindOpen = document.querySelector(".find-widget.visible");
+        if (isSuggestOpen || isFindOpen) {
+          return;
+        }
+
+        const vimMode = (monacoInstanceRef.current as any)?.vimMode;
+        if (vimMode?.state?.mode === "insert") {
+          return;
+        }
+
+        if (isFocusIframe || isFocusMode) {
+          browserAPI.runtime.sendMessage({ type: "EXIT_FOCUS_MODE" }).catch(() => {});
+        }
+      }
+    };
+    window.addEventListener("keydown", handleGlobalKeyDown, true);
+    return () => {
+      window.removeEventListener("keydown", handleGlobalKeyDown, true);
+    };
+  }, [isFocusMode, isFocusIframe]);
 
   const handleFormatCode = () => {
     formatCode(monacoInstanceRef, language, setIsFormating);

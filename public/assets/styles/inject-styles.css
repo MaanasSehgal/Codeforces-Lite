@@ -80,7 +80,7 @@
   vertical-align: middle !important;
   color: #4b5563;
   font-family: var(--cfl-ui-font);
-  font-size: 14px !important;
+  font-size: 1rem !important;
   font-weight: 500;
   letter-spacing: 0.2px;
   padding: 6px 16px 6px 0 !important;
@@ -95,7 +95,7 @@
   width: fit-content;
   margin: 2px 0 !important;
   font-family: var(--cfl-ui-font) !important;
-  font-size: 14px !important;
+  font-size: 1rem !important;
   color: #4b5563;
 }
 
@@ -118,7 +118,7 @@
   padding: 0 12px !important;
   border-radius: 6px !important;
   font-family: var(--cfl-ui-font) !important;
-  font-size: 14px !important;
+  font-size: 1rem !important;
   font-weight: 500 !important;
   letter-spacing: 0.2px !important;
   line-height: 1 !important;
@@ -279,4 +279,295 @@ td:has(.login-google-custom) {
   flex-direction: column !important;
   justify-content: center !important;
   align-items: center !important;
+}
+
+
+/* ---- Pure LeetCode/Codeforces Dark Theme for Focus Mode ---- */
+body.cfl-in-focus-mode {
+  filter: none !important;
+  background-color: #09090b !important;
+}
+
+body.cfl-in-focus-mode #cfl-focus-container {
+  filter: none !important;
+  isolation: isolate !important;
+}
+
+#cfl-focus-container {
+  position: fixed !important;
+  top: 0 !important;
+  left: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 2147483647 !important;
+  display: flex !important;
+  flex-direction: row !important;
+  background-color: #09090b !important;
+  overflow: hidden !important;
+  box-sizing: border-box !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+}
+
+#cfl-left-pane {
+  width: 50%;
+  height: 100% !important;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+  padding: 0 28px 28px 28px !important;
+  box-sizing: border-box !important;
+  background-color: #121212 !important;
+  color: #e4e4e7 !important;
+  font-size: 0.95rem !important;
+  line-height: 1.65 !important;
+  letter-spacing: -0.01em !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+#cfl-left-pane-header {
+  position: sticky !important;
+  top: 0 !important;
+  z-index: 20 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: space-between !important;
+  padding: 14px 0 !important;
+  margin-bottom: 20px !important;
+  background-color: #121212 !important;
+  border-bottom: 1px solid #27272a !important;
+}
+
+.cfl-header-title {
+  font-weight: 700 !important;
+  font-size: 1.35rem !important;
+  letter-spacing: -0.02em !important;
+  color: #ffffff !important;
+  white-space: nowrap !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  max-width: 70% !important;
+}
+
+#cfl-left-pane .problem-statement {
+  background-color: #121212 !important;
+  color: #e4e4e7 !important;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif !important;
+  font-size: 0.95rem !important;
+  line-height: 1.65 !important;
+  letter-spacing: -0.01em !important;
+  -webkit-font-smoothing: antialiased !important;
+}
+
+/* Force pure dark backgrounds & crisp text for all elements */
+#cfl-left-pane div,
+#cfl-left-pane section,
+#cfl-left-pane article,
+#cfl-left-pane p,
+#cfl-left-pane table,
+#cfl-left-pane tbody,
+#cfl-left-pane tr,
+#cfl-left-pane td,
+#cfl-left-pane th,
+#cfl-left-pane span,
+#cfl-left-pane ul,
+#cfl-left-pane li {
+  background-color: transparent !important;
+  background: transparent !important;
+  color: #e4e4e7 !important;
+  opacity: 1 !important;
+  filter: none !important;
+  box-shadow: none !important;
+  border-color: #27272a !important;
+}
+
+#cfl-left-pane .problem-statement .title {
+  color: #ffffff !important;
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 14px !important;
+}
+
+#cfl-left-pane .problem-statement .header {
+  border-bottom: 1px solid #27272a !important;
+  margin-bottom: 24px !important;
+  padding-bottom: 14px !important;
+}
+
+#cfl-left-pane .problem-statement .header .property-title {
+  color: #a1a1aa !important;
+}
+
+#cfl-left-pane .problem-statement .header .time-limit,
+#cfl-left-pane .problem-statement .header .memory-limit,
+#cfl-left-pane .problem-statement .header .input-file,
+#cfl-left-pane .problem-statement .header .output-file {
+  color: #a1a1aa !important;
+  font-size: 0.85rem !important;
+}
+
+#cfl-left-pane .input,
+#cfl-left-pane .output {
+  background-color: #09090b !important;
+  border: 1px solid #27272a !important;
+  border-radius: 8px !important;
+  margin-bottom: 16px !important;
+  overflow: hidden !important;
+}
+
+#cfl-left-pane .input .title,
+#cfl-left-pane .output .title {
+  background-color: #1c1c1f !important;
+  color: #a1a1aa !important;
+  font-size: 0.75rem !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  padding: 8px 14px !important;
+  border-bottom: 1px solid #27272a !important;
+}
+
+#cfl-left-pane .input pre,
+#cfl-left-pane .output pre,
+#cfl-left-pane pre {
+  background-color: #09090b !important;
+  color: #38bdf8 !important;
+  font-family: "JetBrains Mono", Consolas, monospace !important;
+  font-size: 0.9rem !important;
+  line-height: 1.5 !important;
+  padding: 12px 14px !important;
+  margin: 0 !important;
+  border: none !important;
+}
+
+#cfl-left-pane code {
+  background-color: #27272a !important;
+  color: #38bdf8 !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+}
+
+#cfl-left-pane .MathJax,
+#cfl-left-pane .MathJax_Display,
+#cfl-left-pane .katex,
+#cfl-left-pane .math {
+  color: #f4f4f5 !important;
+  fill: #f4f4f5 !important;
+  filter: none !important;
+  opacity: 1 !important;
+}
+
+#cfl-left-pane .MathJax svg,
+#cfl-left-pane .katex svg {
+  fill: #f4f4f5 !important;
+  color: #f4f4f5 !important;
+}
+
+#cfl-left-pane a {
+  color: #60a5fa !important;
+  text-decoration: none !important;
+}
+
+#cfl-left-pane a:hover {
+  color: #93c5fd !important;
+  text-decoration: underline !important;
+}
+
+/* ---- Full Width & Enlarged Layout for Left Pane ---- */
+#cfl-left-pane #pageContent,
+#cfl-left-pane .problem-statement,
+#cfl-left-pane .problemindexholder,
+#cfl-left-pane .ttypography,
+#cfl-left-pane .problem-statement > div {
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+#cfl-left-pane .problem-statement .title {
+  color: #ffffff !important;
+  font-size: 1.45rem !important;
+  font-weight: 700 !important;
+  margin-bottom: 12px !important;
+  letter-spacing: -0.02em !important;
+}
+
+#cfl-left-pane .problem-statement .header {
+  border-bottom: 1px solid #27272a !important;
+  margin-bottom: 24px !important;
+  padding-bottom: 16px !important;
+  text-align: left !important;
+}
+
+#cfl-left-pane .sample-tests,
+#cfl-left-pane .sample-test,
+#cfl-left-pane .input,
+#cfl-left-pane .output {
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+/* ---- Ensure Right Pane Editor Iframe is Pure Dark (Filter: None) ---- */
+#cfl-right-pane iframe,
+#cfl-focus-container iframe,
+body.cfl-in-focus-mode iframe,
+body.cfl-in-focus-mode #cfl-right-pane iframe {
+  filter: none !important;
+}
+
+/* ---- Prominent & Comfortable Question Reading Typography ---- */
+#cfl-left-pane {
+  font-size: 1.15rem !important;
+  line-height: 1.75 !important;
+}
+
+#cfl-left-pane .problem-statement,
+#cfl-left-pane .problem-statement p,
+#cfl-left-pane .problem-statement div,
+#cfl-left-pane .problem-statement span,
+#cfl-left-pane .problem-statement li,
+#cfl-left-pane .problem-statement td,
+#cfl-left-pane .problem-statement th {
+  font-size: 1.125rem !important;
+  line-height: 1.75 !important;
+  color: #e4e4e7 !important;
+}
+
+#cfl-left-pane .problem-statement .title {
+  font-size: 1.85rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-bottom: 16px !important;
+  letter-spacing: -0.02em !important;
+}
+
+#cfl-left-pane .problem-statement .header .time-limit,
+#cfl-left-pane .problem-statement .header .memory-limit,
+#cfl-left-pane .problem-statement .header .input-file,
+#cfl-left-pane .problem-statement .header .output-file,
+#cfl-left-pane .problem-statement .header .property-title {
+  font-size: 0.95rem !important;
+  color: #a1a1aa !important;
+}
+
+#cfl-left-pane .section-title,
+#cfl-left-pane .input-title,
+#cfl-left-pane .output-title {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-top: 20px !important;
+  margin-bottom: 10px !important;
+}
+
+#cfl-left-pane .input pre,
+#cfl-left-pane .output pre,
+#cfl-left-pane pre {
+  font-size: 1.05rem !important;
+  line-height: 1.6 !important;
+}
+
+/* Hide duplicate problem statement title inside left pane content (title is in sticky header) */
+#cfl-left-pane .problem-statement .title {
+  display: none !important;
 }
