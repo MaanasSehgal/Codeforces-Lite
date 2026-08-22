@@ -513,3 +513,55 @@ body.cfl-in-focus-mode iframe,
 body.cfl-in-focus-mode #cfl-right-pane iframe {
   filter: none !important;
 }
+
+/* ---- Prominent & Comfortable Question Reading Typography ---- */
+#cfl-left-pane {
+  font-size: 1.15rem !important;
+  line-height: 1.75 !important;
+}
+
+#cfl-left-pane .problem-statement,
+#cfl-left-pane .problem-statement p,
+#cfl-left-pane .problem-statement div,
+#cfl-left-pane .problem-statement span,
+#cfl-left-pane .problem-statement li,
+#cfl-left-pane .problem-statement td,
+#cfl-left-pane .problem-statement th {
+  font-size: 1.125rem !important;
+  line-height: 1.75 !important;
+  color: #e4e4e7 !important;
+}
+
+#cfl-left-pane .problem-statement .title {
+  font-size: 1.85rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-bottom: 16px !important;
+  letter-spacing: -0.02em !important;
+}
+
+#cfl-left-pane .problem-statement .header .time-limit,
+#cfl-left-pane .problem-statement .header .memory-limit,
+#cfl-left-pane .problem-statement .header .input-file,
+#cfl-left-pane .problem-statement .header .output-file,
+#cfl-left-pane .problem-statement .header .property-title {
+  font-size: 0.95rem !important;
+  color: #a1a1aa !important;
+}
+
+#cfl-left-pane .section-title,
+#cfl-left-pane .input-title,
+#cfl-left-pane .output-title {
+  font-size: 1.25rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-top: 20px !important;
+  margin-bottom: 10px !important;
+}
+
+#cfl-left-pane .input pre,
+#cfl-left-pane .output pre,
+#cfl-left-pane pre {
+  font-size: 1.05rem !important;
+  line-height: 1.6 !important;
+}
