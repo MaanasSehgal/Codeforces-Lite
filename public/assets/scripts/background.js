@@ -150,33 +150,100 @@ browserAPI.idle.onStateChanged.addListener((newState) => {
   }
 });
 
-// ---- Focus Mode relay ----
+// Focus Mode Relay ----
 browserAPI.runtime.onMessage.addListener((message, sender, sendResponse) => {
-  if (message?.type === "TOGGLE_FOCUS_MODE") {
-    browserAPI.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-      if (tabs && tabs[0]) {
-        const tab = tabs[0];
+  if (
+    message?.type === "TOGGLE_FOCUS_MODE" ||
+    message?.type === "EXIT_FOCUS_MODE" ||
+    message?.type === "ENTER_FOCUS_MODE"
+  ) {
+    const isFocusMode =
+      message.type === "EXIT_FOCUS_MODE"
+        ? false
+        : message.type === "ENTER_FOCUS_MODE"
+        ? true
+        : !!message.isFocusMode;
 
-        // 1. Toggle native browser window fullscreen via Chrome Extension Windows API
-        if (tab.windowId && browserAPI.windows) {
-          browserAPI.windows
-            .update(tab.windowId, {
-              state: message.isFocusMode ? "fullscreen" : "normal",
-            })
-            .catch((err) => console.log("Window update error:", err));
-        }
+    const sendFocusToTab = (tab) => {
+      if (!tab || !tab.id) return;
 
-        // 2. Forward message to content script on active tab
-        if (tab.id) {
-          browserAPI.tabs.sendMessage(tab.id, message, (response) => {
-            if (browserAPI.runtime.lastError) {
-              console.log("Focus relay error:", browserAPI.runtime.lastError.message);
+      if (tab.windowId && browserAPI.windows) {
+        browserAPI.windows
+          .update(tab.windowId, {
+            state: isFocusMode ? "fullscreen" : "normal",
+          })
+          .catch((err) => console.log("Window update error:", err));
+      }
+
+      browserAPI.tabs.sendMessage(
+        tab.id,
+        { type: "TOGGLE_FOCUS_MODE", isFocusMode },
+        (response) => {
+          if (browserAPI.runtime.lastError) {
+            console.log(
+              "Focus relay error, injecting content script dynamically:",
+              browserAPI.runtime.lastError.message
+            );
+            if (browserAPI.scripting) {
+              browserAPI.scripting
+                .insertCSS({
+                  target: { tabId: tab.id },
+                  files: ["assets/styles/inject-styles.css"],
+                })
+                .catch(() => {});
+              browserAPI.scripting
+                .executeScript({
+                  target: { tabId: tab.id },
+                  files: CONTENT_SCRIPT_FILES,
+                })
+                .then(() => {
+                  setTimeout(() => {
+                    browserAPI.tabs
+                      .sendMessage(tab.id, { type: "TOGGLE_FOCUS_MODE", isFocusMode })
+                      .catch(() => {});
+                  }, 150);
+                })
+                .catch((err) => console.log("ExecuteScript fallback error:", err));
             }
-            if (sendResponse) sendResponse({ success: true });
+          }
+        }
+      );
+    };
+
+    if (sender.tab?.id) {
+      sendFocusToTab(sender.tab);
+    } else {
+      // 1. Query active tab in last focused browser window
+      browserAPI.tabs.query({ active: true, lastFocusedWindow: true }, (lastTabs) => {
+        if (lastTabs && lastTabs[0]) {
+          sendFocusToTab(lastTabs[0]);
+        } else {
+          // 2. Query active tab in current window
+          browserAPI.tabs.query({ active: true, currentWindow: true }, (curTabs) => {
+            if (curTabs && curTabs[0]) {
+              sendFocusToTab(curTabs[0]);
+            } else {
+              // 3. Fallback: match apex and subdomain URLs for Codeforces
+              browserAPI.tabs.query(
+                { url: ["*://codeforces.com/*", "*://*.codeforces.com/*"] },
+                (cfTabs) => {
+                  if (cfTabs && cfTabs.length > 0) {
+                    const activeCF = cfTabs.find((t) => t.active) || cfTabs[0];
+                    sendFocusToTab(activeCF);
+                  }
+                }
+              );
+            }
           });
         }
-      }
-    });
+      });
+    }
+
+    // Broadcast unified focus state update to runtime views (sidepanel/iframe)
+    browserAPI.runtime
+      .sendMessage({ type: "FOCUS_MODE_STATE_CHANGED", isFocusMode })
+      .catch(() => {});
+    if (sendResponse) sendResponse({ success: true });
     return true;
   }
 });

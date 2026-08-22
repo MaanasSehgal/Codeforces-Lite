@@ -51,10 +51,10 @@
       "exclude_matches": ["https://codeforces.com/api/*"],
       "css": ["assets/styles/inject-styles.css"],
       "js": [
-        "assets/scripts/content.js",
         "assets/scripts/changeUIFunctions/loginPageChanges.js",
         "assets/scripts/changeUIFunctions/problemSetPageChanges.js",
-        "assets/scripts/darkModeFunctions/darkMode.js"
+        "assets/scripts/darkModeFunctions/darkMode.js",
+        "assets/scripts/content.js"
       ],
       "run_at": "document_start"
     }
