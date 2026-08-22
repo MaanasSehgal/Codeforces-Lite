@@ -337,8 +337,9 @@ body.cfl-in-focus-mode #cfl-focus-container {
 }
 
 .cfl-header-title {
-  font-weight: 600 !important;
-  font-size: 1rem !important;
+  font-weight: 700 !important;
+  font-size: 1.35rem !important;
+  letter-spacing: -0.02em !important;
   color: #ffffff !important;
   white-space: nowrap !important;
   overflow: hidden !important;
