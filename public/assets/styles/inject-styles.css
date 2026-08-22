@@ -565,3 +565,8 @@ body.cfl-in-focus-mode #cfl-right-pane iframe {
   font-size: 1.05rem !important;
   line-height: 1.6 !important;
 }
+
+/* Hide duplicate problem statement title inside left pane content (title is in sticky header) */
+#cfl-left-pane .problem-statement .title {
+  display: none !important;
+}
