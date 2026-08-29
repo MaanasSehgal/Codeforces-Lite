@@ -1,5 +1,12 @@
 import { EditorSettingsTypes, ShortcutSettings } from "src/types/types";
 
+export type BoilerplateTemplate = {
+  id: string;
+  label: string;
+  description: string;
+  code: string;
+};
+
 // Marks the caret: authored by the user in a template, and spliced into the buffer by the
 // pre-1.5.9 save path. Both the template reader and the legacy migration strip it.
 export const TEMPLATE_CURSOR_MARKER = "$0";
@@ -54,6 +61,206 @@ int main() {
     return 0;
 }
 `;
+
+export const CPP_BOILERPLATES: BoilerplateTemplate[] = [
+  {
+    id: "cf-boilerplate",
+    label: "CF Boilerplate",
+    description: "From the CompetitiveProgramming repo: standard CF template with helper macros.",
+    code: `// CF Boilerplate
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define endl '\n'
+#define rep(i, a, b) for(int i = a; i < (b); ++i)
+#define f(i, n) for (int i = 0; i < n; i++)
+#define all(x) x.begin(), x.end()
+#define sz(x) ((int)((x).size()))
+#define pb push_back
+#define ppb pop_back
+#define ff first
+#define ss second
+#define cyes cout << "YES" << endl
+#define cno cout << "NO" << endl
+#define cans cout << ans << endl
+#define minpq priority_queue <int, vector<int>, greater<int>>
+#define mxe(v)  *max_element(v.begin(),v.end())
+#define mne(v)  *min_element(v.begin(),v.end())
+#define sumof(v) (ll)accumulate(v.begin(), v.end(), 0ll)
+
+#define int long long
+typedef long long ll;
+typedef pair<int, int> pi;
+typedef vector<int> vi;
+typedef vector<vector<int>> vii;
+typedef vector<pair<int, int>> vpi;
+
+void solve() {
+    int n;
+    cin >> n;
+    cout << n << endl;
+}
+
+int32_t main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    int t = 1;
+    // cin >> t;
+    while (t--) solve();
+    return 0;
+}`,
+  },
+  {
+    id: "icpc-boilerplate",
+    label: "ICPC Boilerplate",
+    description: "From the CompetitiveProgramming repo: compact ICPC-style template.",
+    code: `// ICPC Boilerplate
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define endl '\n'
+#define int long long
+#define rep(i, a, b) for(int i = a; i < (b); ++i)
+#define all(x) begin(x), end(x)
+#define sz(x) ((int)((x).size()))
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef vector<int> vi;
+
+void solve() {
+    
+}
+
+signed main() {
+    ios::sync_with_stdio(false); cin.tie(0); cout.tie(0);
+    int t = 1;
+    cin >> t;
+    while (t--) solve();
+}`,
+  },
+  {
+    id: "tree-boilerplate",
+    label: "Tree Boilerplate",
+    description: "From the CompetitiveProgramming repo: tree-focused template with common macros.",
+    code: `// Tree Boilerplate
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define endl '\n'
+#define rep(i, a, b) for(int i = a; i < (b); ++i)
+#define f(i, n) for (int i = 0; i < n; i++)
+#define all(x) x.begin(), x.end()
+#define sz(x) ((int)((x).size()))
+#define pb push_back
+#define ppb pop_back
+#define ff first
+#define ss second
+#define cyes cout << "YES" << endl
+#define cno cout << "NO" << endl
+#define cans cout << ans << endl
+#define minpq priority_queue <int, vector<int>, greater<int>>
+#define mxe(v)  *max_element(v.begin(),v.end())
+#define mne(v)  *min_element(v.begin(),v.end())
+#define sumof(v) (ll)accumulate(v.begin(), v.end(), 0ll)
+
+#define int long long
+typedef long long ll;
+typedef pair<int, int> pi;
+typedef vector<int> vi;
+typedef vector<vector<int>> vii;
+typedef vector<pair<int, int>> vpi;
+
+struct Node {
+    int val;
+    Node *left, *right;
+};
+
+void solve() {
+    int n;
+    cin >> n;
+    cout << n << endl;
+}
+
+int32_t main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    int t = 1;
+    cin >> t;
+    while (t--) solve();
+    return 0;
+}`,
+  },
+  {
+    id: "graph-boilerplate",
+    label: "graph Boilerplate",
+    description: "From the CompetitiveProgramming repo: graph-oriented template.",
+    code: `// graph Boilerplate
+
+#include <bits/stdc++.h>
+using namespace std;
+
+#define endl '\n'
+#define rep(i, a, b) for(int i = a; i < (b); ++i)
+#define f(i, n) for (int i = 0; i < n; i++)
+#define all(x) x.begin(), x.end()
+#define sz(x) ((int)((x).size()))
+#define pb push_back
+#define ppb pop_back
+#define ff first
+#define ss second
+#define cyes cout << "YES" << endl
+#define cno cout << "NO" << endl
+#define cans cout << ans << endl
+#define minpq priority_queue <int, vector<int>, greater<int>>
+#define mxe(v)  *max_element(v.begin(),v.end())
+#define mne(v)  *min_element(v.begin(),v.end())
+#define sumof(v) (ll)accumulate(v.begin(), v.end(), 0ll)
+
+#define int long long
+typedef long long ll;
+typedef pair<int, int> pi;
+typedef vector<int> vi;
+typedef vector<vector<int>> vii;
+typedef vector<pair<int, int>> vpi;
+
+vector<vector<int>> graph;
+
+void solve() {
+    int n, m;
+    cin >> n >> m;
+    graph.assign(n + 1, {});
+    for (int i = 0; i < m; i++) {
+        int u, v;
+        cin >> u >> v;
+        graph[u].push_back(v);
+        graph[v].push_back(u);
+    }
+}
+
+int32_t main() {
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+    cout.tie(nullptr);
+
+    int t = 1;
+    cin >> t;
+    while (t--) solve();
+    return 0;
+}`,
+  },
+];
+
+export const DEFAULT_CPP_BOILERPLATE_ID = "cf-boilerplate";
+
+export const getCppBoilerplateById = (id: string) =>
+  CPP_BOILERPLATES.find((template) => template.id === id) ?? CPP_BOILERPLATES[0];
 
 export const DEFAULT_EDITOR_SETTINGS: EditorSettingsTypes = {
   indentSize: 4,

@@ -6,6 +6,10 @@ import { getUserId } from "src/utils/dom/getUserId";
 import { usageDataHelper } from "src/utils/usageDataHelper";
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { browserAPI } from "src/utils/browser/browserDetect";
+import {
+  getProblemRatingFromPage,
+  saveAcceptedSolutionToGitHub,
+} from "src/utils/services/githubSaveService";
 
 // Reported back by the injected function, which runs in the Codeforces page where sonner
 // does not exist, so the panel raises the toast for whatever the page found missing.
@@ -16,6 +20,31 @@ const submissionFailureMessages: Record<Exclude<SubmissionOutcome, "submitted">,
   fileInputMissing: "Couldn't find the Codeforces file upload field on this page",
   submitButtonMissing: "Couldn't find the Codeforces submit button on this page",
   injectionFailed: "Couldn't reach the Codeforces tab to submit. Reload the problem page.",
+};
+
+const detectSubmissionVerdict = async (tabId: number): Promise<"accepted" | "submitted" | "unknown"> => {
+  try {
+    const result = await browserAPI.scripting.executeScript({
+      target: { tabId },
+      func: () => {
+        const text = (document.body?.innerText ?? "").toLowerCase();
+        if (text.includes("accepted")) {
+          return "accepted";
+        }
+        if (text.includes("wrong answer") || text.includes("runtime error")) {
+          return "unknown";
+        }
+        if (text.includes("submitted") || text.includes("successfully submitted")) {
+          return "submitted";
+        }
+        return "unknown";
+      },
+    });
+
+    return (result?.[0]?.result as "accepted" | "submitted" | "unknown") ?? "unknown";
+  } catch {
+    return "unknown";
+  }
 };
 
 export const handleSubmission = async (
@@ -94,6 +123,19 @@ export const handleSubmission = async (
     toast.error(submissionFailureMessages[submissionOutcome]);
     setIsSubmitting(false);
     return;
+  }
+
+  const verdict = await detectSubmissionVerdict(tab.id!);
+  const shouldSaveToGithub = verdict === "accepted" || verdict === "submitted";
+
+  if (shouldSaveToGithub) {
+    const rating = await getProblemRatingFromPage();
+    await saveAcceptedSolutionToGitHub({
+      code: editorValue,
+      language,
+      problemName,
+      rating,
+    });
   }
 
   if (isProduction) {
