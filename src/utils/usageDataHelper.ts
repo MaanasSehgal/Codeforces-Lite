@@ -28,6 +28,11 @@ export const usageDataHelper = (language: string, testCases: TestCaseArray, user
               : "Wrong Answer"
           : "Submitted";
 
+      const shouldSendTelemetry = localStorage.getItem("telemetryEnabled") === "true";
+      if (!shouldSendTelemetry) {
+        return null;
+      }
+
       const response = await fetch("https://codeforces-lite-dashboard.vercel.app/api/usage", {
         method: "POST",
         headers: {
