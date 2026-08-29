@@ -66,7 +66,7 @@ export const sanitizeGithubPath = (value: string) =>
     .replace(/\s+/g, " ");
 
 export const getRatingBucket = (rating?: number, fallback: number = 1000) => {
-  if (!Number.isFinite(rating) || rating <= 0) {
+  if (rating === undefined || !Number.isFinite(rating) || rating <= 0) {
     return fallback;
   }
   return Math.floor(rating / 100) * 100;

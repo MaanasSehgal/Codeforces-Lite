@@ -126,7 +126,7 @@ export const handleSubmission = async (
   }
 
   const verdict = await detectSubmissionVerdict(tab.id!);
-  const shouldSaveToGithub = verdict === "accepted" || verdict === "submitted";
+  const shouldSaveToGithub = verdict === "accepted";
 
   if (shouldSaveToGithub) {
     const rating = await getProblemRatingFromPage();
