@@ -57,3 +57,10 @@ body {
 .cursor-row-resize {
   cursor: row-resize;
 }
+
+.execution-output-container {
+  white-space: pre-wrap;
+  word-break: break-word;
+  max-height: 250px;
+  overflow-y: auto;
+}
