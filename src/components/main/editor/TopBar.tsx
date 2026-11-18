@@ -3,6 +3,7 @@ import {
   ChartNoAxesGantt,
   CloudUpload,
   Code2,
+  Download,
   LoaderCircle,
   Play,
   RotateCcw,
@@ -33,6 +34,7 @@ const TopBar: React.FC<TopBarProps> = ({
   testCases,
   isFormating,
   handleFormatCode,
+  handleDownloadCode,
 }) => {
   const [showRunTooltip, setShowRunTooltip] = useState<boolean>(false);
   const [showSubmitTooltip, setShowSubmitTooltip] = useState<boolean>(false);
@@ -473,6 +475,17 @@ const TopBar: React.FC<TopBarProps> = ({
               size={16}
               className={`${!currentSlug ? "cursor-not-allowed" : "cursor-pointer"}`}
               onClick={handleResetCode}
+            />
+          </button>
+          <button
+            disabled={!currentSlug}
+            title="Download Code"
+          >
+            <Download
+              color={theme === "light" ? "#666666" : "#ffffff"}
+              size={16}
+              className={`${!currentSlug ? "cursor-not-allowed" : "cursor-pointer"}`}
+              onClick={handleDownloadCode}
             />
           </button>
         </div>

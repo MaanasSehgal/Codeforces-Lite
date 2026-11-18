@@ -29,6 +29,7 @@ export interface TopBarProps {
   testCases: TestCase[];
   isFormating: boolean;
   handleFormatCode: () => void;
+  handleDownloadCode: () => void;
 }
 
 export interface CodeEditorProps {

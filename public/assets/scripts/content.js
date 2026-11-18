@@ -3,8 +3,18 @@
 // injectDarkModeCSS, sortToggleImgInvert, removeSortToggleImgInvert -> darkModeFunctions
 // Chrome 148+ also defines `browser`, so its presence no longer identifies Firefox.
 // The extension URL scheme does: moz-extension:// only ever comes from Firefox.
-const browserAPI = globalThis.browser ?? globalThis.chrome;
-const isFirefox = browserAPI.runtime.getURL("/").startsWith("moz-extension://");
+
+// Guard: skip all content-script work on non-Codeforces pages.
+// The manifest matches *://*.codeforces.com/* but this protects against
+// programmatic injection or future match changes.
+const isCodeforcesSite = window.location.hostname.includes("codeforces.com");
+
+const browserAPI = isCodeforcesSite ? (globalThis.browser ?? globalThis.chrome) : undefined;
+const isFirefox = isCodeforcesSite
+  ? browserAPI.runtime.getURL("/").startsWith("moz-extension://")
+  : false;
+
+if (isCodeforcesSite) {
 
 // The manifest runs this at document_start, but the background worker also injects it
 // into tabs that were already open at install time. DOMContentLoaded has long since
@@ -88,3 +98,5 @@ browserAPI.runtime.onMessage.addListener((message, sendResponse) => {
   }
   return true;
 });
+
+} // end isCodeforcesSite guard
