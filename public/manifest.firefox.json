@@ -36,8 +36,8 @@
   },
   "content_scripts": [
     {
-      "matches": ["https://codeforces.com/*"],
-      "exclude_matches": ["https://codeforces.com/api/*"],
+      "matches": ["*://*.codeforces.com/*"],
+      "exclude_matches": ["*://*.codeforces.com/api/*"],
       "css": ["assets/styles/inject-styles.css"],
       "js": [
         "assets/scripts/content.js",

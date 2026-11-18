@@ -50,6 +50,7 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
     handleLanguageChange,
     handleFontSizeChange,
     handleRedirectToLatestSubmission,
+    handleDownloadCode,
   } = useCodeManagement(monacoInstanceRef);
   const { loadTestCases, setupTestCaseListener } = useTestCases();
   const { handleTabEvents } = useTabEvents();
@@ -239,6 +240,7 @@ const Main: React.FC<MainProps> = ({ showOptions, setShowOptions, theme }) => {
         testCases={testCases.testCases}
         isFormating={isFormating}
         handleFormatCode={handleFormatCode}
+        handleDownloadCode={handleDownloadCode}
       />
 
       <div className="w-full h-[calc(100vh-88px)]">

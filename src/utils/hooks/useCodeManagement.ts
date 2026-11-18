@@ -5,9 +5,23 @@ import { loadCodeWithCursor, readTemplateWithCursor } from "src/utils/codeHandle
 import * as monaco from "monaco-editor/esm/vs/editor/editor.api";
 import { browserAPI } from "src/utils/browser/browserDetect";
 
+const EXTENSION_MAP: Record<string, string> = {
+  cpp: "cpp",
+  c: "c",
+  python: "py",
+  pypy: "py",
+  java: "java",
+  javascript: "js",
+  kotlin: "kt",
+  go: "go",
+  rust: "rs",
+  ruby: "rb",
+};
+
 export const useCodeManagement = (
   monacoInstanceRef: React.MutableRefObject<monaco.editor.IStandaloneCodeEditor | null>
 ) => {
+  const language = useCFStore((state) => state.language);
   const setLanguage = useCFStore((state) => state.setLanguage);
   const setFontSize = useCFStore((state) => state.setFontSize);
   const currentSlug = useCFStore((state) => state.currentSlug);
@@ -101,10 +115,38 @@ export const useCodeManagement = (
     );
   };
 
+  const handleDownloadCode = () => {
+    if (!currentSlug) {
+      toast.error("Open a problem to download code");
+      return;
+    }
+    const code = monacoInstanceRef.current?.getValue();
+    if (!code) {
+      toast.error("No code to download");
+      return;
+    }
+
+    const extension = EXTENSION_MAP[language] || "txt";
+    // Sanitize slug or fallback to problem
+    const filename = `${currentSlug}.${extension}`;
+
+    const blob = new Blob([code], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+    toast.success(`Downloaded ${filename}`);
+  };
+
   return {
     handleResetCode,
     handleLanguageChange,
     handleFontSizeChange,
     handleRedirectToLatestSubmission,
+    handleDownloadCode,
   };
 };
